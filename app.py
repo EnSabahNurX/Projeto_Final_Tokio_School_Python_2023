@@ -1,11 +1,12 @@
 import os
-from datetime import datetime, timedelta
-from flask import Flask
+import pytz
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import pytz
+from datetime import timedelta
 
 app = Flask(__name__)
+app.secret_key = 'chave_secreta_aqui'
 
 # Configuração para usar o fuso horário de Portugal
 app.config['TIMEZONE'] = 'Europe/Lisbon'
@@ -69,6 +70,14 @@ class Disponibilidade(db.Model):
         'disponibilidades', lazy=True))
     data_disponivel = db.Column(db.Date, nullable=False)
 
+# Definição da classe User para armazenar as credenciais do administrador
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
 # Event Listener para calcular a data de alerta antes de salvar o registro
 
 
@@ -103,11 +112,10 @@ else:
 
 
 # Definição das rotas
-
-
+# Rota da página inicial
 @app.route('/')
-def home():
-    return 'Luxury Wheels, aluguer de carros e motas'
+def index():
+    return render_template('index.html')
 
 
 @app.route('/carros')
@@ -118,6 +126,45 @@ def listar_carros():
 @app.route('/carros/<int:carro_id>')
 def exibir_carro(carro_id):
     return f'Detalhes do carro {carro_id}'
+
+# Rota de login para o administrador
+
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Verifica se o usuário e senha correspondem ao administrador (por simplicidade, vamos assumir que o username e password são "admin")
+        if username == 'admin' and password == 'admin':
+            # Autenticação bem-sucedida, cria uma sessão de administrador
+            session['admin_logged_in'] = True
+            flash('Login bem-sucedido!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Credenciais inválidas. Tente novamente.', 'error')
+
+    return render_template('admin_login.html')
+
+# Rota da página de administração (dashboard)
+
+
+@app.route('/admin/dashboard', methods=['GET', 'POST'])
+def admin_dashboard():
+    # Verifica se o administrador está autenticado
+    if not session.get('admin_logged_in'):
+        flash(
+            'Acesso não autorizado. Faça login como administrador para continuar.', 'error')
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        # Lógica para adicionar novos carros e motas ao banco de dados
+        # ...
+
+        flash('Novo carro/mota adicionado com sucesso!', 'success')
+
+    return render_template('admin_dashboard.html')
 
 
 # Execução da app
