@@ -1,52 +1,52 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard - Luxury Wheels</title>
-    <!-- Adicione o link para o Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
+<html lang="en">
 
-        <!-- Navbar -->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">Luxury Wheels</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Luxury Wheels</title>
+    <!-- Adicionar links do Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Luxury Wheels</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Página Inicial</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/carros">Carros</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/motas">Motas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/contatos">Contatos</a>
-                </li>
-                <!-- Adicione o link para fazer logout -->
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/logout">Logout</a>
-                </li>
-            </ul>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carros">Carros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/motas">Motas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contatos">Contatos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/login">Admin</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <div class="container mt-5">
-        <h1>Bem-vindo à Área de Administração</h1>
-
-        <!-- Formulário para adicionar novos veículos -->
-        <h2>Adicionar Novo Veículo</h2>
-        <form method="post" enctype="multipart/form-data">
+        <h1 class="mb-4">Admin Dashboard - Luxury Wheels</h1>
+        <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="tipo">Tipo:</label>
+                <label for="tipo">Tipo de Veículo:</label>
                 <select class="form-control" id="tipo" name="tipo" required>
+                    <option value="" disabled selected>Selecione o tipo de veículo</option>
                     <option value="carro">Carro</option>
                     <option value="mota">Mota</option>
                 </select>
@@ -60,77 +60,86 @@
                 <input type="text" class="form-control" id="modelo" name="modelo" required>
             </div>
             <div class="form-group">
+                <label for="cor">Cor:</label>
+                <input type="text" class="form-control" id="cor" name="cor" required>
+            </div>
+            <div class="form-group">
+                <label for="quilometragem">Quilometragem:</label>
+                <input type="number" class="form-control" id="quilometragem" name="quilometragem" required>
+            </div>
+            <div class="form-group">
+                <label for="ano">Ano:</label>
+                <input type="number" class="form-control" id="ano" name="ano" required>
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoria:</label>
+                <input type="text" class="form-control" id="categoria" name="categoria" required>
+            </div>
+            <div class="form-group">
+                <label for="utilizacoes">Utilizações:</label>
+                <input type="number" class="form-control" id="utilizacoes" name="utilizacoes" required>
+            </div>
+            <div class="form-group">
+                <label for="limite_utilizacoes">Limite de Utilizações:</label>
+                <input type="number" class="form-control" id="limite_utilizacoes" name="limite_utilizacoes" required>
+            </div>
+
+            <div class="carro-specific" style="display: none;">
+                <div class="form-group">
+                    <label for="potencia">Potência:</label>
+                    <input type="number" class="form-control" id="potencia" name="potencia" required>
+                </div>
+                <div class="form-group">
+                    <label for="transmissao">Transmissão:</label>
+                    <input type="text" class="form-control" id="transmissao" name="transmissao" required>
+                </div>
+            </div>
+
+            <div class="mota-specific" style="display: none;">
+                <div class="form-group">
+                    <label for="cilindradas">Cilindradas:</label>
+                    <input type="number" class="form-control" id="cilindradas" name="cilindradas" required>
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso:</label>
+                    <input type="number" step="0.01" class="form-control" id="peso" name="peso" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="data_legalizacao">Data de Legalização:</label>
+                <input type="date" class="form-control" id="data_legalizacao" name="data_legalizacao" required>
+            </div>
+
+            <div class="form-group">
                 <label for="diaria">Diária:</label>
                 <input type="number" step="0.01" class="form-control" id="diaria" name="diaria" required>
             </div>
 
-            <!-- Campos específicos de Carro -->
-            <div class="carro-specific">
-                <div class="form-group">
-                    <label for="potencia">Potência:</label>
-                    <input type="number" class="form-control" id="potencia" name="potencia">
-                </div>
-                <div class="form-group">
-                    <label for="transmissao">Transmissão:</label>
-                    <input type="text" class="form-control" id="transmissao" name="transmissao">
-                </div>
-            </div>
-
-            <!-- Campos específicos de Mota -->
-            <div class="mota-specific">
-                <div class="form-group">
-                    <label for="cilindradas">Cilindradas:</label>
-                    <input type="number" class="form-control" id="cilindradas" name="cilindradas">
-                </div>
-                <div class="form-group">
-                    <label for="peso">Peso:</label>
-                    <input type="number" step="0.01" class="form-control" id="peso" name="peso">
-                </div>
-            </div>
-
-            <!-- Upload de imagens -->
             <div class="form-group">
                 <label for="imagens">Imagens (selecione uma ou mais imagens):</label>
-                <input type="file" class="form-control-file" id="imagens" name="imagens" multiple>
+                <input type="file" class="form-control-file" id="imagens" name="imagens" multiple required>
             </div>
 
-            <!-- ... (outros campos para os detalhes do veículo) -->
-            <button type="submit" class="btn btn-primary">Adicionar</button>
+            <button type="submit" class="btn btn-primary">Adicionar Veículo</button>
+            <a href="/admin/logout" class="btn btn-danger">Logout</a>
         </form>
-
-        <!-- ... (conteúdo principal da página) -->
     </div>
 
-    <!-- Adicione o link para o Bootstrap JS e jQuery (necessários para alguns componentes do Bootstrap) -->
+    <!-- Adicionar scripts do Bootstrap, jQuery e o JavaScript para tornar a seleção dinâmica -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script>
-        // Função para mostrar ou ocultar os campos específicos de Carro e Mota
-        function showHideFields() {
-            const tipoSelecionado = document.getElementById('tipo').value;
-            const carroSpecificFields = document.querySelector('.carro-specific');
-            const motaSpecificFields = document.querySelector('.mota-specific');
-
-            if (tipoSelecionado === 'carro') {
-                carroSpecificFields.style.display = 'block';
-                motaSpecificFields.style.display = 'none';
-            } else if (tipoSelecionado === 'mota') {
-                carroSpecificFields.style.display = 'none';
-                motaSpecificFields.style.display = 'block';
-            } else {
-                carroSpecificFields.style.display = 'none';
-                motaSpecificFields.style.display = 'none';
-            }
-        }
-
-        // Evento para chamar a função quando o tipo de veículo for alterado
-        document.getElementById('tipo').addEventListener('change', showHideFields);
-
-        // Chama a função inicialmente para definir a visibilidade inicial dos campos específicos
-        showHideFields();
+        // Script para tornar a seleção dinâmica
+        $(document).ready(function () {
+            $("#tipo").change(function () {
+                const selectedType = $(this).val();
+                $(".carro-specific, .mota-specific").hide();
+                $(`.${selectedType}-specific`).show();
+            });
+        });
     </script>
-
 </body>
+
 </html>
