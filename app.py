@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import timedelta
 
+
 app = Flask(__name__)
 app.secret_key = 'chave_secreta_aqui'
 
@@ -129,44 +130,45 @@ def listar_carros():
 def exibir_carro(carro_id):
     return f'Detalhes do carro {carro_id}'
 
-# Rota de login para o administrador
 
 
+# Rota para a página de login do administrador
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # Verifica se o usuário e senha correspondem ao administrador (por simplicidade, vamos assumir que o username e password são "admin")
+        # Verifica as credenciais do administrador
         if username == 'admin' and password == 'admin':
-            # Autenticação bem-sucedida, cria uma sessão de administrador
             session['admin_logged_in'] = True
-            flash('Login bem-sucedido!', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Credenciais inválidas. Tente novamente.', 'error')
 
     return render_template('admin_login.html')
 
-# Rota da página de administração (dashboard)
-
-
-@app.route('/admin/dashboard', methods=['GET', 'POST'])
+# Rota para a página de administração após o login
+@app.route('/admin/dashboard')
 def admin_dashboard():
     # Verifica se o administrador está autenticado
     if not session.get('admin_logged_in'):
-        flash(
-            'Acesso não autorizado. Faça login como administrador para continuar.', 'error')
+        flash('Acesso não autorizado. Faça login como administrador para continuar.', 'error')
         return redirect(url_for('admin_login'))
 
-    if request.method == 'POST':
-        # Lógica para adicionar novos carros e motas ao banco de dados
-        # ...
+    # Obtenha os dados dos carros e motas do banco de dados (exemplo)
+    carros = Carro.query.all()
+    motas = Mota.query.all()
 
-        flash('Novo carro/mota adicionado com sucesso!', 'success')
+    return render_template('admin_dashboard.html', carros=carros, motas=motas)
 
-    return render_template('admin_dashboard.html')
+# Rota para fazer o logout do administrador
+@app.route('/admin/logout')
+def admin_logout():
+    # Limpa a sessão do administrador
+    session.pop('admin_logged_in', None)
+    flash('Logout realizado com sucesso.', 'success')
+    return redirect(url_for('admin_login'))
 
 
 # Rota para adicionar novo carro ao banco de dados

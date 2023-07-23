@@ -1,67 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Painel de Administração</title>
+    <title>Admin Dashboard - Luxury Wheels</title>
     <!-- Adicione o link para o Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 
     <!-- Navbar -->
-    <!-- ... (código da barra de navegação, caso queira incluir na página de administração) -->
-
-    <div class="container mt-5">
-        <h2 class="mb-4">Painel de Administração</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">Adicionar Novo Carro</div>
-                    <div class="card-body">
-                        <!-- Formulário para adicionar novo carro -->
-                        <form method="post" action="{{ url_for('add_car') }}">
-                            <div class="form-group">
-                                <label for="marca">Marca:</label>
-                                <input type="text" class="form-control" id="marca" name="marca" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modelo">Modelo:</label>
-                                <input type="text" class="form-control" id="modelo" name="modelo" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="diaria">Diária:</label>
-                                <input type="number" class="form-control" id="diaria" name="diaria" required>
-                            </div>
-                            <!-- Adicione outros campos específicos do carro aqui (combustível, lugares, etc.) -->
-                            <button type="submit" class="btn btn-primary">Adicionar Carro</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">Adicionar Nova Mota</div>
-                    <div class="card-body">
-                        <!-- Formulário para adicionar nova mota -->
-                        <form method="post" action="{{ url_for('add_mota') }}">
-                            <div class="form-group">
-                                <label for="marca_mota">Marca:</label>
-                                <input type="text" class="form-control" id="marca_mota" name="marca_mota" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="modelo_mota">Modelo:</label>
-                                <input type="text" class="form-control" id="modelo_mota" name="modelo_mota" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="diaria_mota">Diária:</label>
-                                <input type="number" class="form-control" id="diaria_mota" name="diaria_mota" required>
-                            </div>
-                            <!-- Adicione outros campos específicos da mota aqui (cilindradas, peso, etc.) -->
-                            <button type="submit" class="btn btn-primary">Adicionar Mota</button>
-                        </form>
-                    </div>
-                </div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Admin Dashboard - Luxury Wheels</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto"> <!-- ml-auto para alinhar à direita -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Voltar à Página Inicial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/logout">Logout</a>
+                    </li>
+                </ul>
             </div>
         </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1>Bem-vindo à Área de Administração</h1>
+        <!-- ... (conteúdo principal da página) -->
     </div>
 
     <!-- Adicione o link para o Bootstrap JS e jQuery (necessários para alguns componentes do Bootstrap) -->
