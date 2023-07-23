@@ -42,6 +42,8 @@ class Mota(db.Model):
     cilindradas = db.Column(db.Integer)
     peso = db.Column(db.Float)
     categoria = db.Column(db.String(50))
+    utilizacoes = db.Column(db.Integer, default=0)
+    limite_utilizacoes = db.Column(db.Integer)
     disponibilidades = db.relationship('Disponibilidade', backref='mota', lazy=True)
 
 class Disponibilidade(db.Model):
@@ -76,3 +78,4 @@ def exibir_carro(carro_id):
 if __name__ == '__main__':
     # O debug=True faz com que cada vez que reiniciemos o servidor ou modifiquemos o código, o servidor de Flask reinicia-se sozinho
     app.run(debug=True)
+
