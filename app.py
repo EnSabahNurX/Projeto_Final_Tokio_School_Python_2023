@@ -28,3 +28,19 @@ class Carro(db.Model):
 if not os.path.exists('database.db'):
     with app.app_context():
         db.create_all()
+
+
+# Definição das rotas
+@app.route('/')
+def home():
+    return 'Página inicial'
+
+@app.route('/carros')
+def listar_carros():
+    return 'Listagem de carros'
+
+@app.route('/carros/<int:carro_id>')
+def exibir_carro(carro_id):
+    return f'Detalhes do carro {carro_id}'
+
+
