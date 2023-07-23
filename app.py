@@ -30,6 +30,7 @@ migrate = Migrate(app, db)
 
 class Carro(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    imagem = db.Column(db.String(200), default='default_car.png')
     marca = db.Column(db.String(100), nullable=False)
     modelo = db.Column(db.String(100), nullable=False)
     ano = db.Column(db.Integer, nullable=False)
@@ -47,6 +48,7 @@ class Carro(db.Model):
 
 class Mota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    imagem = db.Column(db.String(200), default='default_mota.png')
     marca = db.Column(db.String(100), nullable=False)
     modelo = db.Column(db.String(100), nullable=False)
     ano = db.Column(db.Integer, nullable=False)
@@ -165,6 +167,64 @@ def admin_dashboard():
         flash('Novo carro/mota adicionado com sucesso!', 'success')
 
     return render_template('admin_dashboard.html')
+
+
+# Rota para adicionar novo carro ao banco de dados
+@app.route('/admin/add_car', methods=['POST'])
+def add_car():
+    # Verifica se o administrador está autenticado
+    if not session.get('admin_logged_in'):
+        flash(
+            'Acesso não autorizado. Faça login como administrador para continuar.', 'error')
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        marca = request.form['marca']
+        modelo = request.form['modelo']
+        diaria = float(request.form['diaria'])
+        # ... (obtenha os outros campos específicos do carro)
+
+        # Cria um novo objeto Carro com os dados fornecidos
+        novo_carro = Carro(marca=marca, modelo=modelo, diaria=diaria)
+        # ... (atribua os outros campos específicos do carro)
+
+        # Adiciona o novo carro ao banco de dados
+        db.session.add(novo_carro)
+        db.session.commit()
+
+        flash('Novo carro adicionado com sucesso!', 'success')
+
+    return redirect(url_for('admin_dashboard'))
+
+# Rota para adicionar nova mota ao banco de dados
+
+
+@app.route('/admin/add_mota', methods=['POST'])
+def add_mota():
+    # Verifica se o administrador está autenticado
+    if not session.get('admin_logged_in'):
+        flash(
+            'Acesso não autorizado. Faça login como administrador para continuar.', 'error')
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        marca_mota = request.form['marca_mota']
+        modelo_mota = request.form['modelo_mota']
+        diaria_mota = float(request.form['diaria_mota'])
+        # ... (obtenha os outros campos específicos da mota)
+
+        # Cria um novo objeto Mota com os dados fornecidos
+        nova_mota = Mota(marca=marca_mota, modelo=modelo_mota,
+                         diaria=diaria_mota)
+        # ... (atribua os outros campos específicos da mota)
+
+        # Adiciona a nova mota ao banco de dados
+        db.session.add(nova_mota)
+        db.session.commit()
+
+        flash('Nova mota adicionada com sucesso!', 'success')
+
+    return redirect(url_for('admin_dashboard'))
 
 
 # Execução da app

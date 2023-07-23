@@ -1,7 +1,9 @@
+<!-- index.html (código atualizado) -->
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Luxury Wheels - Aluguer de Veículos de Luxo</title>
+    <title>Luxury Wheels</title>
     <!-- Adicione o link para o Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
@@ -10,56 +12,44 @@
     <!-- Navbar -->
     <!-- ... (código da barra de navegação) -->
 
-    <!-- Conteúdo principal -->
-    <div class="container mt-4">
-        <div class="jumbotron">
-            <h1 class="display-4">Bem-vindo à Luxury Wheels!</h1>
-            <p class="lead">Seu melhor lugar para alugar carros e motas de luxo.</p>
-            <!-- Adicione mais informações, formulários ou botões aqui, se necessário -->
+    <div class="container mt-5">
+        <h1>Bem-vindo ao Luxury Wheels</h1>
+        <!-- ... (conteúdo principal da página) -->
+
+        <!-- Galeria de carros -->
+        <div class="row mt-5">
+            {% for carro in carros %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ url_for('static', filename=carro.imagem) }}" class="card-img-top" alt="{{ carro.marca }} {{ carro.modelo }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ carro.marca }} {{ carro.modelo }}</h5>
+                            <p class="card-text">Diária: {{ carro.diaria }}</p>
+                            <!-- ... (outros detalhes do carro) -->
+                            <a href="#" class="btn btn-primary">Ver detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Galeria de motas -->
+        <div class="row mt-5">
+            {% for mota in motas %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ url_for('static', filename=mota.imagem) }}" class="card-img-top" alt="{{ mota.marca }} {{ mota.modelo }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ mota.marca }} {{ mota.modelo }}</h5>
+                            <p class="card-text">Diária: {{ mota.diaria }}</p>
+                            <!-- ... (outros detalhes da mota) -->
+                            <a href="#" class="btn btn-primary">Ver detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
-
-    <!-- Galeria de Carros -->
-    <section id="carros" class="bg-light py-5">
-        <div class="container">
-            <h2 class="text-center">Galeria de Carros</h2>
-            <div class="row">
-                <!-- Item da galeria -->
-                <div class="col-sm-6 col-md-4 mb-4">
-                    <div class="card">
-                        <img src="caminho_para_imagem_carro.jpg" class="card-img-top" alt="Carro 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Carro 1</h5>
-                            <p class="card-text">Descrição básica do carro 1.</p>
-                            <a href="#" class="btn btn-primary">Detalhes</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Adicione mais itens da galeria aqui -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Galeria de Motas -->
-    <section id="motas" class="bg-light py-5">
-        <div class="container">
-            <h2 class="text-center">Galeria de Motas</h2>
-            <div class="row">
-                <!-- Item da galeria -->
-                <div class="col-sm-6 col-md-4 mb-4">
-                    <div class="card">
-                        <img src="caminho_para_imagem_mota.jpg" class="card-img-top" alt="Mota 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Mota 1</h5>
-                            <p class="card-text">Descrição básica da mota 1.</p>
-                            <a href="#" class="btn btn-primary">Detalhes</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Adicione mais itens da galeria aqui -->
-            </div>
-        </div>
-    </section>
 
     <!-- Adicione o link para o Bootstrap JS e jQuery (necessários para alguns componentes do Bootstrap) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

@@ -18,8 +18,20 @@
                     <div class="card-header">Adicionar Novo Carro</div>
                     <div class="card-body">
                         <!-- Formulário para adicionar novo carro -->
-                        <form method="post">
-                            <!-- Campos do formulário (marca, modelo, diária, combustível, lugares, etc.) -->
+                        <form method="post" action="{{ url_for('add_car') }}">
+                            <div class="form-group">
+                                <label for="marca">Marca:</label>
+                                <input type="text" class="form-control" id="marca" name="marca" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="modelo">Modelo:</label>
+                                <input type="text" class="form-control" id="modelo" name="modelo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="diaria">Diária:</label>
+                                <input type="number" class="form-control" id="diaria" name="diaria" required>
+                            </div>
+                            <!-- Adicione outros campos específicos do carro aqui (combustível, lugares, etc.) -->
                             <button type="submit" class="btn btn-primary">Adicionar Carro</button>
                         </form>
                     </div>
@@ -30,8 +42,20 @@
                     <div class="card-header">Adicionar Nova Mota</div>
                     <div class="card-body">
                         <!-- Formulário para adicionar nova mota -->
-                        <form method="post">
-                            <!-- Campos do formulário (marca, modelo, diária, cilindradas, peso, etc.) -->
+                        <form method="post" action="{{ url_for('add_mota') }}">
+                            <div class="form-group">
+                                <label for="marca_mota">Marca:</label>
+                                <input type="text" class="form-control" id="marca_mota" name="marca_mota" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="modelo_mota">Modelo:</label>
+                                <input type="text" class="form-control" id="modelo_mota" name="modelo_mota" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="diaria_mota">Diária:</label>
+                                <input type="number" class="form-control" id="diaria_mota" name="diaria_mota" required>
+                            </div>
+                            <!-- Adicione outros campos específicos da mota aqui (cilindradas, peso, etc.) -->
                             <button type="submit" class="btn btn-primary">Adicionar Mota</button>
                         </form>
                     </div>
