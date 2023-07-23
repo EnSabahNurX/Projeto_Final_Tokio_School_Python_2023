@@ -121,15 +121,21 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/motas')
+def listar_motas():
+    return 'Listagem de motas'
+
+@app.route('/contatos')
+def contatos():
+    return 'Contatos'
+
 @app.route('/carros')
 def listar_carros():
     return 'Listagem de carros'
 
-
 @app.route('/carros/<int:carro_id>')
 def exibir_carro(carro_id):
     return f'Detalhes do carro {carro_id}'
-
 
 
 # Rota para a página de login do administrador
@@ -149,6 +155,8 @@ def admin_login():
     return render_template('admin_login.html')
 
 # Rota para a página de administração após o login, adicionar veículos e processar o formulário de adição
+
+
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     if request.method == 'POST':
@@ -163,7 +171,8 @@ def admin_dashboard():
         if tipo == 'carro':
             potencia = request.form['potencia']
             transmissao = request.form['transmissao']
-            campos_especificos = {'potencia': potencia, 'transmissao': transmissao}
+            campos_especificos = {
+                'potencia': potencia, 'transmissao': transmissao}
         elif tipo == 'mota':
             cilindradas = request.form['cilindradas']
             peso = request.form['peso']
@@ -175,17 +184,21 @@ def admin_dashboard():
         for imagem in imagens:
             if imagem.filename != '':
                 # Gera um nome único para a imagem usando um UUID
-                nome_imagem = str(uuid.uuid4()) + secure_filename(imagem.filename)
-                caminho_imagem = os.path.join(app.config['UPLOAD_FOLDER'], nome_imagem)
+                nome_imagem = str(uuid.uuid4()) + \
+                    secure_filename(imagem.filename)
+                caminho_imagem = os.path.join(
+                    app.config['UPLOAD_FOLDER'], nome_imagem)
                 imagem.save(caminho_imagem)
                 caminhos_imagens.append(caminho_imagem)
 
         # Cria uma instância de Carro ou Mota com os dados do formulário
         veiculo = None
         if tipo == 'carro':
-            veiculo = Carro(marca=marca, modelo=modelo, diaria=diaria, **campos_especificos)
+            veiculo = Carro(marca=marca, modelo=modelo,
+                            diaria=diaria, **campos_especificos)
         elif tipo == 'mota':
-            veiculo = Mota(marca=marca, modelo=modelo, diaria=diaria, **campos_especificos)
+            veiculo = Mota(marca=marca, modelo=modelo,
+                           diaria=diaria, **campos_especificos)
 
         # Adiciona os caminhos das imagens ao veículo
         veiculo.imagens = caminhos_imagens
@@ -204,9 +217,6 @@ def admin_logout():
     session.pop('admin_logged_in', None)
     flash('Logout realizado com sucesso.', 'success')
     return redirect(url_for('admin_login'))
-
-
-
 
 
 # Execução da app
