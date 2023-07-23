@@ -149,7 +149,7 @@ def admin_login():
     return render_template('admin_login.html')
 
 # Rota para a página de administração após o login
-@app.route('/admin/dashboard')
+@app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     # Verifica se o administrador está autenticado
     if not session.get('admin_logged_in'):
@@ -160,7 +160,31 @@ def admin_dashboard():
     carros = Carro.query.all()
     motas = Mota.query.all()
 
+    if request.method == 'POST':
+        tipo = request.form['tipo']
+        marca = request.form['marca']
+        modelo = request.form['modelo']
+        diaria = float(request.form['diaria'])
+        # Receba os demais campos do formulário e salve em suas respectivas variáveis
+
+        # Verifica o tipo de veículo e insere no banco de dados (exemplo)
+        if tipo.lower() == 'carro':
+            novo_carro = Carro(marca=marca, modelo=modelo, diaria=diaria)
+            # Preencha os demais campos do carro antes de adicionar ao banco de dados
+            db.session.add(novo_carro)
+            db.session.commit()
+            flash('Carro adicionado com sucesso.', 'success')
+        elif tipo.lower() == 'mota':
+            nova_mota = Mota(marca=marca, modelo=modelo, diaria=diaria)
+            # Preencha os demais campos da mota antes de adicionar ao banco de dados
+            db.session.add(nova_mota)
+            db.session.commit()
+            flash('Mota adicionada com sucesso.', 'success')
+        else:
+            flash('Tipo de veículo inválido. Insira "Carro" ou "Mota".', 'error')
+
     return render_template('admin_dashboard.html', carros=carros, motas=motas)
+
 
 # Rota para fazer o logout do administrador
 @app.route('/admin/logout')
@@ -171,62 +195,7 @@ def admin_logout():
     return redirect(url_for('admin_login'))
 
 
-# Rota para adicionar novo carro ao banco de dados
-@app.route('/admin/add_car', methods=['POST'])
-def add_car():
-    # Verifica se o administrador está autenticado
-    if not session.get('admin_logged_in'):
-        flash(
-            'Acesso não autorizado. Faça login como administrador para continuar.', 'error')
-        return redirect(url_for('admin_login'))
 
-    if request.method == 'POST':
-        marca = request.form['marca']
-        modelo = request.form['modelo']
-        diaria = float(request.form['diaria'])
-        # ... (obtenha os outros campos específicos do carro)
-
-        # Cria um novo objeto Carro com os dados fornecidos
-        novo_carro = Carro(marca=marca, modelo=modelo, diaria=diaria)
-        # ... (atribua os outros campos específicos do carro)
-
-        # Adiciona o novo carro ao banco de dados
-        db.session.add(novo_carro)
-        db.session.commit()
-
-        flash('Novo carro adicionado com sucesso!', 'success')
-
-    return redirect(url_for('admin_dashboard'))
-
-# Rota para adicionar nova mota ao banco de dados
-
-
-@app.route('/admin/add_mota', methods=['POST'])
-def add_mota():
-    # Verifica se o administrador está autenticado
-    if not session.get('admin_logged_in'):
-        flash(
-            'Acesso não autorizado. Faça login como administrador para continuar.', 'error')
-        return redirect(url_for('admin_login'))
-
-    if request.method == 'POST':
-        marca_mota = request.form['marca_mota']
-        modelo_mota = request.form['modelo_mota']
-        diaria_mota = float(request.form['diaria_mota'])
-        # ... (obtenha os outros campos específicos da mota)
-
-        # Cria um novo objeto Mota com os dados fornecidos
-        nova_mota = Mota(marca=marca_mota, modelo=modelo_mota,
-                         diaria=diaria_mota)
-        # ... (atribua os outros campos específicos da mota)
-
-        # Adiciona a nova mota ao banco de dados
-        db.session.add(nova_mota)
-        db.session.commit()
-
-        flash('Nova mota adicionada com sucesso!', 'success')
-
-    return redirect(url_for('admin_dashboard'))
 
 
 # Execução da app
