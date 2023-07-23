@@ -3,6 +3,7 @@ import pytz
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from werkzeug.utils import secure_filename
 from datetime import timedelta
 
 
@@ -11,6 +12,7 @@ app.secret_key = 'chave_secreta_aqui'
 
 # Configuração para usar o fuso horário de Portugal
 app.config['TIMEZONE'] = 'Europe/Lisbon'
+
 
 # Verifica se o diretório "database" existe e, se não existir, cria-o
 database_dir = os.path.join(app.root_path, 'database')
@@ -31,36 +33,44 @@ migrate = Migrate(app, db)
 
 class Carro(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    imagens = db.Column(db.String(200), default='default_car.png')
-    marca = db.Column(db.String(100), nullable=False)
-    modelo = db.Column(db.String(100), nullable=False)
+    tipo = db.Column(db.String(10), nullable=False)
+    marca = db.Column(db.String(50), nullable=False)
+    modelo = db.Column(db.String(50), nullable=False)
+    cor = db.Column(db.String(20), nullable=False)
+    quilometragem = db.Column(db.Float, nullable=False)
     ano = db.Column(db.Integer, nullable=False)
-    diaria = db.Column(db.Float, nullable=False)
-    combustivel = db.Column(db.String(50), nullable=False)
-    lugares = db.Column(db.Integer, nullable=False)
-    potencia = db.Column(db.String(50), nullable=False)
-    transmissao = db.Column(db.String(50), nullable=False)
     categoria = db.Column(db.String(50), nullable=False)
-    utilizacoes = db.Column(db.Integer, default=0)
-    limite_utilizacoes = db.Column(db.Integer, nullable=False, default=5)
+    utilizacoes = db.Column(db.Integer, nullable=False)
+    limite_utilizacoes = db.Column(db.Integer, nullable=False)
+    potencia = db.Column(db.Integer)
+    transmissao = db.Column(db.String(20))
+    diaria = db.Column(db.Float, nullable=False)
     data_legalizacao = db.Column(db.Date, nullable=False)
-    data_alerta_legalizacao = db.Column(db.Date, nullable=False)
+    data_alerta_legalizacao = db.Column(db.Date)
+
+    def __repr__(self):
+        return f'<Carro {self.marca} {self.modelo}>'
 
 
 class Mota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    imagens = db.Column(db.String(200), default='default_mota.png')
-    marca = db.Column(db.String(100), nullable=False)
-    modelo = db.Column(db.String(100), nullable=False)
+    tipo = db.Column(db.String(10), nullable=False)
+    marca = db.Column(db.String(50), nullable=False)
+    modelo = db.Column(db.String(50), nullable=False)
+    cor = db.Column(db.String(20), nullable=False)
+    quilometragem = db.Column(db.Float, nullable=False)
     ano = db.Column(db.Integer, nullable=False)
-    diaria = db.Column(db.Float, nullable=False)
-    cilindradas = db.Column(db.String(50), nullable=False)
-    peso = db.Column(db.String(50), nullable=False)
     categoria = db.Column(db.String(50), nullable=False)
-    utilizacoes = db.Column(db.Integer, default=0)
-    limite_utilizacoes = db.Column(db.Integer, nullable=False, default=3)
+    utilizacoes = db.Column(db.Integer, nullable=False)
+    limite_utilizacoes = db.Column(db.Integer, nullable=False)
+    cilindradas = db.Column(db.Integer)
+    peso = db.Column(db.Float)
+    diaria = db.Column(db.Float, nullable=False)
     data_legalizacao = db.Column(db.Date, nullable=False)
-    data_alerta_legalizacao = db.Column(db.Date, nullable=False)
+    data_alerta_legalizacao = db.Column(db.Date)
+
+    def __repr__(self):
+        return f'<Mota {self.marca} {self.modelo}>'
 
 
 class Disponibilidade(db.Model):
@@ -160,60 +170,60 @@ def admin_login():
 
     return render_template('admin_login.html')
 
+
 # Rota para a página de administração após o login, adicionar veículos e processar o formulário de adição
-
-
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
+    if not session.get('logged_in'):
+        return redirect(url_for('admin_login'))
+
     if request.method == 'POST':
-        # Obtém os dados do formulário
         tipo = request.form['tipo']
         marca = request.form['marca']
         modelo = request.form['modelo']
+        cor = request.form['cor']
+        quilometragem = request.form['quilometragem']
+        ano = request.form['ano']
+        categoria = request.form['categoria']
+        utilizacoes = request.form['utilizacoes']
+        limite_utilizacoes = request.form['limite_utilizacoes']
         diaria = request.form['diaria']
+        data_legalizacao = request.form['data_legalizacao']
 
-        # Cria um dicionário com os campos específicos de Carro ou Mota, dependendo do tipo selecionado
-        campos_especificos = {}
+        # Tratamento dos campos específicos para cada tipo de veículo
         if tipo == 'carro':
             potencia = request.form['potencia']
             transmissao = request.form['transmissao']
-            campos_especificos = {
-                'potencia': potencia, 'transmissao': transmissao}
+            veiculo = Carro(tipo=tipo, marca=marca, modelo=modelo, cor=cor, quilometragem=quilometragem,
+                            ano=ano, categoria=categoria, utilizacoes=utilizacoes, limite_utilizacoes=limite_utilizacoes,
+                            potencia=potencia, transmissao=transmissao, diaria=diaria,
+                            data_legalizacao=datetime.strptime(data_legalizacao, '%Y-%m-%d').date())
         elif tipo == 'mota':
             cilindradas = request.form['cilindradas']
             peso = request.form['peso']
-            campos_especificos = {'cilindradas': cilindradas, 'peso': peso}
+            veiculo = Mota(tipo=tipo, marca=marca, modelo=modelo, cor=cor, quilometragem=quilometragem,
+                           ano=ano, categoria=categoria, utilizacoes=utilizacoes, limite_utilizacoes=limite_utilizacoes,
+                           cilindradas=cilindradas, peso=peso, diaria=diaria,
+                           data_legalizacao=datetime.strptime(data_legalizacao, '%Y-%m-%d').date())
 
-        # Processa o upload de imagens
+        # Processar o upload das imagens
         imagens = request.files.getlist('imagens')
-        caminhos_imagens = []
+        imagens_paths = []
         for imagem in imagens:
-            if imagem.filename != '':
-                # Gera um nome único para a imagem usando um UUID
-                nome_imagem = str(uuid.uuid4()) + \
-                    secure_filename(imagem.filename)
-                caminho_imagem = os.path.join(
-                    app.config['UPLOAD_FOLDER'], nome_imagem)
-                imagem.save(caminho_imagem)
-                caminhos_imagens.append(caminho_imagem)
+            filename = secure_filename(imagem.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            imagem.save(path)
+            imagens_paths.append(path)
 
-        # Cria uma instância de Carro ou Mota com os dados do formulário
-        veiculo = None
-        if tipo == 'carro':
-            veiculo = Carro(marca=marca, modelo=modelo,
-                            diaria=diaria, **campos_especificos)
-        elif tipo == 'mota':
-            veiculo = Mota(marca=marca, modelo=modelo,
-                           diaria=diaria, **campos_especificos)
+        # Salvar os caminhos das imagens no veículo
+        veiculo.imagens = imagens_paths
 
-        # Adiciona os caminhos das imagens ao veículo
-        veiculo.imagens = caminhos_imagens
-
-        # Adiciona o veículo ao banco de dados
         db.session.add(veiculo)
         db.session.commit()
 
-    return render_template('admin_dashboard.html')
+        flash('Veículo adicionado com sucesso!', 'success')
+
+    return render_template('admin_dashboard.html', title='Admin Dashboard')
 
 
 # Rota para fazer o logout do administrador
