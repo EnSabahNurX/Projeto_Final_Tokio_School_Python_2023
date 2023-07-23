@@ -152,23 +152,23 @@ def exibir_carro(carro_id):
 
 
 # Rota para a página de login do administrador
+
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    # Verifica se o administrador já está logado (sessão existe)
     if 'admin_logged_in' in session and session['admin_logged_in']:
         return redirect(url_for('admin_dashboard'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # Verifica as credenciais do administrador
+        # Simulação do login do administrador
         if username == 'admin' and password == 'admin':
-            session['admin_logged_in'] = True
+            session['logged_in'] = True
             return redirect(url_for('admin_dashboard'))
         else:
-            flash('Credenciais inválidas. Tente novamente.', 'error')
+            flash('Credenciais inválidas. Tente novamente.', 'danger')
 
-    return render_template('admin_login.html')
+    return render_template('admin_login.html', title='Admin Login')
 
 
 # Rota para a página de administração após o login, adicionar veículos e processar o formulário de adição
