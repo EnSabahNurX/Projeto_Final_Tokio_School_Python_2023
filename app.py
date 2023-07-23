@@ -31,7 +31,7 @@ migrate = Migrate(app, db)
 
 class Carro(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    imagem = db.Column(db.String(200), default='default_car.png')
+    imagens = db.Column(db.String(200), default='default_car.png')
     marca = db.Column(db.String(100), nullable=False)
     modelo = db.Column(db.String(100), nullable=False)
     ano = db.Column(db.Integer, nullable=False)
@@ -49,7 +49,7 @@ class Carro(db.Model):
 
 class Mota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    imagem = db.Column(db.String(200), default='default_mota.png')
+    imagens = db.Column(db.String(200), default='default_mota.png')
     marca = db.Column(db.String(100), nullable=False)
     modelo = db.Column(db.String(100), nullable=False)
     ano = db.Column(db.Integer, nullable=False)
@@ -148,42 +148,53 @@ def admin_login():
 
     return render_template('admin_login.html')
 
-# Rota para a página de administração após o login
+# Rota para a página de administração após o login, adicionar veículos e processar o formulário de adição
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
-    # Verifica se o administrador está autenticado
-    if not session.get('admin_logged_in'):
-        flash('Acesso não autorizado. Faça login como administrador para continuar.', 'error')
-        return redirect(url_for('admin_login'))
-
-    # Obtenha os dados dos carros e motas do banco de dados (exemplo)
-    carros = Carro.query.all()
-    motas = Mota.query.all()
-
     if request.method == 'POST':
+        # Obtém os dados do formulário
         tipo = request.form['tipo']
         marca = request.form['marca']
         modelo = request.form['modelo']
-        diaria = float(request.form['diaria'])
-        # Receba os demais campos do formulário e salve em suas respectivas variáveis
+        diaria = request.form['diaria']
 
-        # Verifica o tipo de veículo e insere no banco de dados (exemplo)
-        if tipo.lower() == 'carro':
-            novo_carro = Carro(marca=marca, modelo=modelo, diaria=diaria)
-            # Preencha os demais campos do carro antes de adicionar ao banco de dados
-            db.session.add(novo_carro)
-            db.session.commit()
-            flash('Carro adicionado com sucesso.', 'success')
-        elif tipo.lower() == 'mota':
-            nova_mota = Mota(marca=marca, modelo=modelo, diaria=diaria)
-            # Preencha os demais campos da mota antes de adicionar ao banco de dados
-            db.session.add(nova_mota)
-            db.session.commit()
-            flash('Mota adicionada com sucesso.', 'success')
-        else:
-            flash('Tipo de veículo inválido. Insira "Carro" ou "Mota".', 'error')
+        # Cria um dicionário com os campos específicos de Carro ou Mota, dependendo do tipo selecionado
+        campos_especificos = {}
+        if tipo == 'carro':
+            potencia = request.form['potencia']
+            transmissao = request.form['transmissao']
+            campos_especificos = {'potencia': potencia, 'transmissao': transmissao}
+        elif tipo == 'mota':
+            cilindradas = request.form['cilindradas']
+            peso = request.form['peso']
+            campos_especificos = {'cilindradas': cilindradas, 'peso': peso}
 
-    return render_template('admin_dashboard.html', carros=carros, motas=motas)
+        # Processa o upload de imagens
+        imagens = request.files.getlist('imagens')
+        caminhos_imagens = []
+        for imagem in imagens:
+            if imagem.filename != '':
+                # Gera um nome único para a imagem usando um UUID
+                nome_imagem = str(uuid.uuid4()) + secure_filename(imagem.filename)
+                caminho_imagem = os.path.join(app.config['UPLOAD_FOLDER'], nome_imagem)
+                imagem.save(caminho_imagem)
+                caminhos_imagens.append(caminho_imagem)
+
+        # Cria uma instância de Carro ou Mota com os dados do formulário
+        veiculo = None
+        if tipo == 'carro':
+            veiculo = Carro(marca=marca, modelo=modelo, diaria=diaria, **campos_especificos)
+        elif tipo == 'mota':
+            veiculo = Mota(marca=marca, modelo=modelo, diaria=diaria, **campos_especificos)
+
+        # Adiciona os caminhos das imagens ao veículo
+        veiculo.imagens = caminhos_imagens
+
+        # Adiciona o veículo ao banco de dados
+        db.session.add(veiculo)
+        db.session.commit()
+
+    return render_template('admin_dashboard.html')
 
 
 # Rota para fazer o logout do administrador
@@ -200,5 +211,7 @@ def admin_logout():
 
 # Execução da app
 if __name__ == '__main__':
-    # O debug=True faz com que cada vez que reiniciemos o servidor ou modifiquemos o código, o servidor de Flask reinicia-se sozinho
+    # Define o diretório de upload de imagens (pasta 'static')
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static')
+    # Roda o servidor de desenvolvimento do Flask
     app.run(debug=True)

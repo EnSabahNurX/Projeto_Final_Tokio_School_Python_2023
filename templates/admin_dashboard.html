@@ -7,10 +7,36 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <!-- ... (código do navbar) -->
-    </nav>
+        <!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Luxury Wheels</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Página Inicial</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/carros">Carros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/motas">Motas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contatos">Contatos</a>
+                </li>
+                <!-- Adicione o link para fazer logout -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
     <div class="container mt-5">
         <h1>Bem-vindo à Área de Administração</h1>
