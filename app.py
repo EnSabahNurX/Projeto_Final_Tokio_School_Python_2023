@@ -125,13 +125,16 @@ def index():
 def listar_motas():
     return 'Listagem de motas'
 
+
 @app.route('/contatos')
 def contatos():
     return 'Contatos'
 
+
 @app.route('/carros')
 def listar_carros():
     return 'Listagem de carros'
+
 
 @app.route('/carros/<int:carro_id>')
 def exibir_carro(carro_id):
@@ -141,6 +144,9 @@ def exibir_carro(carro_id):
 # Rota para a página de login do administrador
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
+    # Verifica se o administrador já está logado (sessão existe)
+    if 'admin_logged_in' in session and session['admin_logged_in']:
+        return redirect(url_for('admin_dashboard'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
