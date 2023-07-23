@@ -17,7 +17,7 @@
 
         <!-- Formulário para adicionar novos veículos -->
         <h2>Adicionar Novo Veículo</h2>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="tipo">Tipo:</label>
                 <select class="form-control" id="tipo" name="tipo" required>
@@ -60,6 +60,12 @@
                     <label for="peso">Peso:</label>
                     <input type="number" step="0.01" class="form-control" id="peso" name="peso">
                 </div>
+            </div>
+
+            <!-- Upload de imagens -->
+            <div class="form-group">
+                <label for="imagens">Imagens (selecione uma ou mais imagens):</label>
+                <input type="file" class="form-control-file" id="imagens" name="imagens" multiple>
             </div>
 
             <!-- ... (outros campos para os detalhes do veículo) -->
