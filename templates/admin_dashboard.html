@@ -37,24 +37,31 @@
                 <label for="diaria">Diária:</label>
                 <input type="number" step="0.01" class="form-control" id="diaria" name="diaria" required>
             </div>
-            <!-- Adicione os campos específicos de Carro -->
-            <div class="form-group">
-                <label for="potencia">Potência:</label>
-                <input type="number" class="form-control" id="potencia" name="potencia">
+
+            <!-- Campos específicos de Carro -->
+            <div class="carro-specific">
+                <div class="form-group">
+                    <label for="potencia">Potência:</label>
+                    <input type="number" class="form-control" id="potencia" name="potencia">
+                </div>
+                <div class="form-group">
+                    <label for="transmissao">Transmissão:</label>
+                    <input type="text" class="form-control" id="transmissao" name="transmissao">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="transmissao">Transmissão:</label>
-                <input type="text" class="form-control" id="transmissao" name="transmissao">
+
+            <!-- Campos específicos de Mota -->
+            <div class="mota-specific">
+                <div class="form-group">
+                    <label for="cilindradas">Cilindradas:</label>
+                    <input type="number" class="form-control" id="cilindradas" name="cilindradas">
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso:</label>
+                    <input type="number" step="0.01" class="form-control" id="peso" name="peso">
+                </div>
             </div>
-            <!-- Adicione os campos específicos de Mota -->
-            <div class="form-group">
-                <label for="cilindradas">Cilindradas:</label>
-                <input type="number" class="form-control" id="cilindradas" name="cilindradas">
-            </div>
-            <div class="form-group">
-                <label for="peso">Peso:</label>
-                <input type="number" step="0.01" class="form-control" id="peso" name="peso">
-            </div>
+
             <!-- ... (outros campos para os detalhes do veículo) -->
             <button type="submit" class="btn btn-primary">Adicionar</button>
         </form>
@@ -66,6 +73,32 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Função para mostrar ou ocultar os campos específicos de Carro e Mota
+        function showHideFields() {
+            const tipoSelecionado = document.getElementById('tipo').value;
+            const carroSpecificFields = document.querySelector('.carro-specific');
+            const motaSpecificFields = document.querySelector('.mota-specific');
+
+            if (tipoSelecionado === 'carro') {
+                carroSpecificFields.style.display = 'block';
+                motaSpecificFields.style.display = 'none';
+            } else if (tipoSelecionado === 'mota') {
+                carroSpecificFields.style.display = 'none';
+                motaSpecificFields.style.display = 'block';
+            } else {
+                carroSpecificFields.style.display = 'none';
+                motaSpecificFields.style.display = 'none';
+            }
+        }
+
+        // Evento para chamar a função quando o tipo de veículo for alterado
+        document.getElementById('tipo').addEventListener('change', showHideFields);
+
+        // Chama a função inicialmente para definir a visibilidade inicial dos campos específicos
+        showHideFields();
+    </script>
 
 </body>
 </html>
