@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate  # Importar o Flask-Migrate
 import pytz
 import enum
 
@@ -19,6 +20,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar a extensão SQLAlchemy
 db = SQLAlchemy(app)
+
+# Configuração do Flask-Migrate
+migrate = Migrate(app, db)
 
 # Definir as opções válidas para o campo 'type' (Carro e Mota)
 
