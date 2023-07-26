@@ -1,11 +1,14 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate  # Importar o Flask-Migrate
 import pytz
 import enum
 
 app = Flask(__name__)
+
+# Definir a chave secreta para a sessão
+app.secret_key = 'sua_chave_secreta_aqui'
 
 # Configurar o fuso horário de Portugal
 app.config['TIMEZONE'] = pytz.timezone('Europe/Lisbon')
