@@ -23,7 +23,7 @@ if not os.path.exists(database_dir):
 db_path = os.path.join(database_dir, 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads')
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static')
 db = SQLAlchemy(app)
 
 # Configuração do Flask-Migrate
@@ -167,7 +167,7 @@ def admin_login():
         # Simulação do login do administrador
         if username == 'admin' and password == 'admin':
             session['logged_in'] = True
-            return redirect(url_for('admin_dashboard'))
+            #return redirect(url_for('admin_dashboard'))
         else:
             flash('Credenciais inválidas. Tente novamente.', 'danger')
 
@@ -214,6 +214,7 @@ def admin_dashboard():
         # Processar o upload das imagens
         # Adicionando o campo imagens no método POST
         imagens = request.files.getlist('imagens')
+        app.logger.info(f"Imagens: {imagens}")
         imagens_paths = []
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
@@ -221,12 +222,17 @@ def admin_dashboard():
             imagem.save(path)
             imagens_paths.append(path)
 
+        app.logger.info(f"Caminhos das imagens: {imagens_paths}")
+
         # Salvar o caminho das imagens no veículo
         if veiculo:
             veiculo.imagens = ','.join(imagens_paths)
 
             db.session.add(veiculo)
             db.session.commit()
+
+            app.logger.info(
+                "Veículo adicionado ao banco de dados com sucesso!")
 
             flash('Veículo adicionado com sucesso!', 'success')
 
