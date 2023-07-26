@@ -2,8 +2,6 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pytz
-from models.models import Vehicle  # Importe a classe Vehicle do arquivo models.py
-
 
 app = Flask(__name__)
 
@@ -20,6 +18,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar a extensão SQLAlchemy
 db = SQLAlchemy(app)
+
+class Vehicle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50), nullable=False)
+    brand = db.Column(db.String(100), nullable=False)
+    model = db.Column(db.String(100), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    price_per_day = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"{self.brand} {self.model} ({self.year})"
 
 # Rota inicial
 @app.route('/')
@@ -46,9 +55,47 @@ def login():
 # Rota para o painel de administração
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_panel():
-    # Aqui você pode implementar a lógica para adicionar, editar e excluir veículos no banco de dados.
-    # Por enquanto, vamos apenas exibir uma mensagem de boas-vindas.
-    return "Bem-vindo ao Painel de Administração!"
+    if request.method == 'POST':
+        # Obter dados do formulário
+        vehicle_id = request.form.get('id')
+        type = request.form['type']
+        brand = request.form['brand']
+        model = request.form['model']
+        year = int(request.form['year'])
+        price_per_day = float(request.form['price_per_day'])
+
+        # Verificar se é uma adição ou edição de veículo
+        if vehicle_id:
+            # Edição de veículo existente
+            vehicle = Vehicle.query.get(vehicle_id)
+            vehicle.type = type
+            vehicle.brand = brand
+            vehicle.model = model
+            vehicle.year = year
+            vehicle.price_per_day = price_per_day
+        else:
+            # Adição de novo veículo
+            vehicle = Vehicle(type=type, brand=brand, model=model, year=year, price_per_day=price_per_day)
+            db.session.add(vehicle)
+
+        # Salvar as alterações no banco de dados
+        db.session.commit()
+
+    # Consultar todos os veículos no banco de dados
+    vehicles = Vehicle.query.all()
+    return render_template('admin.html', vehicles=vehicles)
+
+# Rota para exclusão de veículo
+@app.route('/delete_vehicle/<int:id>', methods=['POST'])
+def delete_vehicle(id):
+    # Obter o veículo pelo ID
+    vehicle = Vehicle.query.get_or_404(id)
+
+    # Remover o veículo do banco de dados
+    db.session.delete(vehicle)
+    db.session.commit()
+
+    return redirect(url_for('admin_panel'))
 
 # Verificar e criar o diretório "database" se não existir
 if not os.path.exists(db_folder):
