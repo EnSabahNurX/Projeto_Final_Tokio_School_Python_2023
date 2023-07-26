@@ -6,50 +6,55 @@
 <body>
     <h1>Painel de Administração</h1>
 
-    <!-- Formulário para adicionar ou editar veículo -->
     <h2>Adicionar/Editar Veículo</h2>
-    <form action="/admin" method="POST">
-        <input type="hidden" name="id" value="">
+    <form method="POST" action="/admin">
+        <input type="hidden" name="id" value="{{ vehicle.id if vehicle else '' }}">
         <label for="type">Tipo:</label>
-        <input type="text" name="type" required>
+        <select name="type" id="type">
+            <option value="Carro" {% if vehicle and vehicle.type == 'Carro' %}selected{% endif %}>Carro</option>
+            <option value="Mota" {% if vehicle and vehicle.type == 'Mota' %}selected{% endif %}>Mota</option>
+        </select>
         <br>
         <label for="brand">Marca:</label>
-        <input type="text" name="brand" required>
+        <input type="text" name="brand" id="brand" value="{{ vehicle.brand if vehicle else '' }}" required>
         <br>
         <label for="model">Modelo:</label>
-        <input type="text" name="model" required>
+        <input type="text" name="model" id="model" value="{{ vehicle.model if vehicle else '' }}" required>
         <br>
         <label for="year">Ano:</label>
-        <input type="number" name="year" required>
+        <input type="number" name="year" id="year" min="1900" max="2099" value="{{ vehicle.year if vehicle else '' }}" required>
         <br>
-        <label for="price_per_day">Preço por Dia:</label>
-        <input type="number" step="0.01" name="price_per_day" required>
+        <label for="price_per_day">Preço por Dia (€):</label>
+        <input type="number" name="price_per_day" id="price_per_day" step="0.01" value="{{ vehicle.price_per_day if vehicle else '' }}" required>
         <br>
         <input type="submit" value="Salvar">
     </form>
 
-    <!-- Lista de veículos existentes -->
-    <h2>Veículos Existentes</h2>
-    <ul>
+    <h2>Veículos Registrados</h2>
+    <table border="1">
+        <tr>
+            <th>Tipo</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Ano</th>
+            <th>Preço por Dia (€)</th>
+            <th>Ações</th>
+        </tr>
         {% for vehicle in vehicles %}
-            <li>
-                Marca: {{ vehicle.brand }}, Modelo: {{ vehicle.model }}, Ano: {{ vehicle.year }}, Tipo: {{ vehicle.type }}, Preço por Dia: R$ {{ vehicle.price_per_day }}
-                <a href="/delete_vehicle/{{ vehicle.id }}" onclick="return confirm('Tem certeza que deseja excluir este veículo?')">Excluir</a>
-                <button onclick="editVehicle({{ vehicle.id }}, '{{ vehicle.type }}', '{{ vehicle.brand }}', '{{ vehicle.model }}', {{ vehicle.year }}, {{ vehicle.price_per_day }})">Editar</button>
-            </li>
+        <tr>
+            <td>{{ vehicle.type.value }}</td>
+            <td>{{ vehicle.brand }}</td>
+            <td>{{ vehicle.model }}</td>
+            <td>{{ vehicle.year }}</td>
+            <td>{{ vehicle.price_per_day }}</td>
+            <td>
+                <a href="/admin?id={{ vehicle.id }}">Editar</a>
+                <form method="POST" action="/delete_vehicle/{{ vehicle.id }}" style="display: inline-block;">
+                    <input type="submit" value="Excluir">
+                </form>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
-
-    <script>
-        // Função para preencher o formulário de edição quando o botão "Editar" é clicado
-        function editVehicle(id, type, brand, model, year, price_per_day) {
-            document.querySelector('input[name="id"]').value = id;
-            document.querySelector('input[name="type"]').value = type;
-            document.querySelector('input[name="brand"]').value = brand;
-            document.querySelector('input[name="model"]').value = model;
-            document.querySelector('input[name="year"]').value = year;
-            document.querySelector('input[name="price_per_day"]').value = price_per_day;
-        }
-    </script>
+    </table>
 </body>
 </html>

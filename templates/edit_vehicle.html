@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Veículo</title>
+</head>
+<body>
+    <h1>Editar Veículo</h1>
+    <form method="POST" action="/edit_vehicle/{{ vehicle.id }}">
+        <label for="type">Tipo:</label>
+        <select name="type" id="type">
+            <option value="Carro" {% if vehicle.type == 'Carro' %}selected{% endif %}>Carro</option>
+            <option value="Mota" {% if vehicle.type == 'Mota' %}selected{% endif %}>Mota</option>
+        </select>
+        <br>
+        <label for="brand">Marca:</label>
+        <input type="text" name="brand" id="brand" value="{{ vehicle.brand }}" required>
+        <br>
+        <label for="model">Modelo:</label>
+        <input type="text" name="model" id="model" value="{{ vehicle.model }}" required>
+        <br>
+        <label for="year">Ano:</label>
+        <input type="number" name="year" id="year" min="1900" max="2099" value="{{ vehicle.year }}" required>
+        <br>
+        <label for="price_per_day">Preço por Dia (€):</label>
+        <input type="number" name="price_per_day" id="price_per_day" step="0.01" value="{{ vehicle.price_per_day }}" required>
+        <br>
+        <input type="submit" value="Salvar">
+    </form>
+</body>
+</html>

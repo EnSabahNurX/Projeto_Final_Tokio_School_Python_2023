@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pytz
+import enum
 
 app = Flask(__name__)
 
@@ -19,9 +20,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializar a extensão SQLAlchemy
 db = SQLAlchemy(app)
 
+# Definir as opções válidas para o campo 'type' (Carro e Mota)
+
+
+class VehicleType(enum.Enum):
+    CARRO = 'Carro'
+    MOTA = 'Mota'
+
+
 class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(50), nullable=False)
+    type = db.Column(db.Enum(VehicleType), nullable=False)
     brand = db.Column(db.String(100), nullable=False)
     model = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer, nullable=False)
@@ -31,6 +40,8 @@ class Vehicle(db.Model):
         return f"{self.brand} {self.model} ({self.year})"
 
 # Rota inicial
+
+
 @app.route('/')
 def index():
     # Consultar todos os veículos no banco de dados
@@ -38,6 +49,8 @@ def index():
     return render_template('index.html', vehicles=vehicles)
 
 # Rota para a página de login do administrador
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Administradores temporários (em um projeto real, deve ser armazenado de forma segura)
@@ -53,6 +66,8 @@ def login():
     return render_template('login.html')
 
 # Rota para o painel de administração
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_panel():
     if request.method == 'POST':
@@ -68,14 +83,16 @@ def admin_panel():
         if vehicle_id:
             # Edição de veículo existente
             vehicle = Vehicle.query.get(vehicle_id)
-            vehicle.type = type
+            # Converter o valor para VehicleType
+            vehicle.type = VehicleType[type.upper()]
             vehicle.brand = brand
             vehicle.model = model
             vehicle.year = year
             vehicle.price_per_day = price_per_day
         else:
             # Adição de novo veículo
-            vehicle = Vehicle(type=type, brand=brand, model=model, year=year, price_per_day=price_per_day)
+            vehicle = Vehicle(type=VehicleType[type.upper(
+            )], brand=brand, model=model, year=year, price_per_day=price_per_day)
             db.session.add(vehicle)
 
         # Salvar as alterações no banco de dados
@@ -85,7 +102,42 @@ def admin_panel():
     vehicles = Vehicle.query.all()
     return render_template('admin.html', vehicles=vehicles)
 
+# Rota para a página de edição de veículo
+
+
+@app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
+def edit_vehicle(id):
+    # Obter o veículo pelo ID
+    vehicle = Vehicle.query.get_or_404(id)
+
+    if request.method == 'POST':
+        # Obter dados do formulário
+        type = request.form['type']
+        brand = request.form['brand']
+        model = request.form['model']
+        year = int(request.form['year'])
+        price_per_day = float(request.form['price_per_day'])
+
+        # Atualizar os dados do veículo
+        # Converter o valor para VehicleType
+        vehicle.type = VehicleType[type.upper()]
+        vehicle.brand = brand
+        vehicle.model = model
+        vehicle.year = year
+        vehicle.price_per_day = price_per_day
+
+        # Salvar as alterações no banco de dados
+        db.session.commit()
+
+        # Redirecionar de volta para o painel de administração
+        return redirect(url_for('admin_panel'))
+
+    # Renderizar a página de edição de veículo com o formulário preenchido
+    return render_template('edit_vehicle.html', vehicle=vehicle)
+
 # Rota para exclusão de veículo
+
+
 @app.route('/delete_vehicle/<int:id>', methods=['POST'])
 def delete_vehicle(id):
     # Obter o veículo pelo ID
@@ -96,6 +148,7 @@ def delete_vehicle(id):
     db.session.commit()
 
     return redirect(url_for('admin_panel'))
+
 
 # Verificar e criar o diretório "database" se não existir
 if not os.path.exists(db_folder):

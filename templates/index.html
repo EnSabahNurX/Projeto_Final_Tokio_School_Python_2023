@@ -8,7 +8,7 @@
     <h2>Veículos Disponíveis:</h2>
     <ul>
         {% for vehicle in vehicles %}
-            <li>Marca: {{ vehicle.brand }}, Modelo: {{ vehicle.model }}, Ano: {{ vehicle.year }}, Tipo: {{ vehicle.type }}, Preço por Dia: R$ {{ vehicle.price_per_day }}</li>
+            <li>Marca: {{ vehicle.brand }}, Modelo: {{ vehicle.model }}, Ano: {{ vehicle.year }}, Tipo: {{ vehicle.type }}, Preço por Dia: € {{ vehicle.price_per_day }}</li>
         {% endfor %}
     </ul>
     <h2>Reservar Veículo:</h2>
