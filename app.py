@@ -102,8 +102,8 @@ def admin_panel():
     vehicles = Vehicle.query.all()
     return render_template('admin.html', vehicles=vehicles)
 
-# Rota para a página de edição de veículo
 
+# Rota para a página de edição de veículo
 
 @app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
 def edit_vehicle(id):

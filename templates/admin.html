@@ -48,7 +48,7 @@
             <td>{{ vehicle.year }}</td>
             <td>{{ vehicle.price_per_day }}</td>
             <td>
-                <a href="/admin?id={{ vehicle.id }}">Editar</a>
+                <a href="/edit_vehicle/{{ vehicle.id }}">Editar</a>
                 <form method="POST" action="/delete_vehicle/{{ vehicle.id }}" style="display: inline-block;">
                     <input type="submit" value="Excluir">
                 </form>
