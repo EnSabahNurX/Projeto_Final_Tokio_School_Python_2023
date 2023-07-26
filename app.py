@@ -52,6 +52,18 @@ def index():
     vehicles = Vehicle.query.all()
     return render_template('index.html', vehicles=vehicles)
 
+# Função de middleware para verificar a sessão de administrador
+
+
+@app.before_request
+def check_admin_session():
+    # Lista de rotas que requerem autenticação de administrador
+    admin_routes = ['/admin', '/edit_vehicle/', '/delete_vehicle/']
+
+    if request.path in admin_routes:
+        if 'admin' not in session:
+            return redirect(url_for('login'))
+
 # Rota para a página de login do administrador
 
 
@@ -65,6 +77,8 @@ def login():
         password = request.form['password']
 
         if username in admins and admins[username] == password:
+            # Definir a sessão de administrador como ativa
+            session['admin'] = True
             return redirect(url_for('admin_panel'))
 
     return render_template('login.html')
@@ -152,6 +166,15 @@ def delete_vehicle(id):
     db.session.commit()
 
     return redirect(url_for('admin_panel'))
+
+# Rota para logout
+
+
+@app.route('/logout')
+def logout():
+    # Remover a sessão de administrador
+    session.pop('admin', None)
+    return redirect(url_for('login'))
 
 
 # Verificar e criar o diretório "database" se não existir

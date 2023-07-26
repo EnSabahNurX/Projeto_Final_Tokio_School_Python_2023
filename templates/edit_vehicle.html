@@ -4,6 +4,9 @@
     <title>Editar Veículo</title>
 </head>
 <body>
+    <!-- Incluir o template do cabeçalho -->
+    {% include 'header.html' %}
+    
     <h1>Editar Veículo</h1>
     <form method="POST" action="/edit_vehicle/{{ vehicle.id }}">
         <label for="type">Tipo:</label>
