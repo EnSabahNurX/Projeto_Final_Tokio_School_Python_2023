@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
@@ -244,6 +244,5 @@ if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static')
-    db.create_all()
     # Roda o servidor de desenvolvimento do Flask
     app.run(debug=True)
