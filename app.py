@@ -22,7 +22,8 @@ if not os.path.exists(database_dir):
 # Configuração do URI do banco de dados SQLite
 db_path = os.path.join(database_dir, 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads')
 db = SQLAlchemy(app)
 
 # Configuração do Flask-Migrate
@@ -238,6 +239,9 @@ def admin_logout():
 # Execução da app
 if __name__ == '__main__':
     # Define o diretório de upload de imagens (pasta 'static')
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static')
+    db.create_all()
     # Roda o servidor de desenvolvimento do Flask
     app.run(debug=True)
