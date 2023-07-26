@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
-from datetime import timedelta
+from datetime import datetime,timedelta
 
 
 app = Flask(__name__)
@@ -48,6 +48,7 @@ class Carro(db.Model):
     diaria = db.Column(db.Float, nullable=False)
     data_legalizacao = db.Column(db.Date, nullable=False)
     data_alerta_legalizacao = db.Column(db.Date)
+    imagens = db.Column(db.String(255))  # Caminho das imagens
 
     def __repr__(self):
         return f'<Carro {self.marca} {self.modelo}>'
@@ -69,6 +70,7 @@ class Mota(db.Model):
     diaria = db.Column(db.Float, nullable=False)
     data_legalizacao = db.Column(db.Date, nullable=False)
     data_alerta_legalizacao = db.Column(db.Date)
+    imagens = db.Column(db.String(255))  # Caminho das imagens
 
     def __repr__(self):
         return f'<Mota {self.marca} {self.modelo}>'
@@ -217,7 +219,7 @@ def admin_dashboard():
             imagens_paths.append(path)
 
         # Salvar os caminhos das imagens no veículo
-        veiculo.imagens = imagens_paths
+        veiculo.imagens = ','.join(imagens_paths)
 
         db.session.add(veiculo)
         db.session.commit()
