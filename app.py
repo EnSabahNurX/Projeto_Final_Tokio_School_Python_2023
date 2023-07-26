@@ -177,6 +177,8 @@ def admin_login():
 # Rota para a página de administração após o login, adicionar veículos e processar o formulário de adição
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
+    veiculo = None  # Criando a variável veiculo antes de processar o formulário
+
     if not session.get('logged_in'):
         return redirect(url_for('admin_login'))
 
@@ -210,6 +212,7 @@ def admin_dashboard():
                            data_legalizacao=datetime.strptime(data_legalizacao, '%Y-%m-%d').date())
 
         # Processar o upload das imagens
+        # Adicionando o campo imagens no método POST
         imagens = request.files.getlist('imagens')
         imagens_paths = []
         for imagem in imagens:
@@ -218,15 +221,19 @@ def admin_dashboard():
             imagem.save(path)
             imagens_paths.append(path)
 
-        # Salvar os caminhos das imagens no veículo
-        veiculo.imagens = ','.join(imagens_paths)
+        # Salvar o caminho das imagens no veículo
+        if veiculo:
+            veiculo.imagens = ','.join(imagens_paths)
 
-        db.session.add(veiculo)
-        db.session.commit()
+            db.session.add(veiculo)
+            db.session.commit()
 
-        flash('Veículo adicionado com sucesso!', 'success')
+            flash('Veículo adicionado com sucesso!', 'success')
 
-    return render_template('admin_dashboard.html', title='Admin Dashboard')
+            # Limpar os campos do formulário (reiniciar a variável veiculo)
+            veiculo = None
+
+    return render_template('admin_dashboard.html', title='Admin Dashboard', veiculo=veiculo)
 
 
 # Rota para fazer o logout do administrador
