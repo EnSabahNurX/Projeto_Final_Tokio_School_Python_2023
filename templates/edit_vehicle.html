@@ -1,12 +1,16 @@
+<!-- edit_vehicle.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Editar Veículo</title>
 </head>
 <body>
-    
+    <!-- Incluir o template do cabeçalho -->
+    {% include 'header.html' %}
+
     <h1>Editar Veículo</h1>
     <form method="POST" action="/edit_vehicle/{{ vehicle.id }}">
+        <input type="hidden" name="id" value="{{ vehicle.id }}">
         <label for="type">Tipo:</label>
         <select name="type" id="type">
             <option value="Carro" {% if vehicle.type == 'Carro' %}selected{% endif %}>Carro</option>
@@ -27,5 +31,8 @@
         <br>
         <input type="submit" value="Salvar">
     </form>
+
+    <!-- Botão "Voltar" que redireciona para a página de administração -->
+    <a href="{{ url_for('admin_panel') }}">Voltar</a>
 </body>
 </html>
