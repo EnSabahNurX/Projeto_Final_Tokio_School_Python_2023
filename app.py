@@ -49,6 +49,9 @@ class Vehicle(db.Model):
     model = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     price_per_day = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(20), nullable=False)
+    daily_value = db.Column(db.Float, nullable=False)
+    is_available = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return f"{self.brand} {self.model} ({self.year})"
@@ -81,9 +84,8 @@ class Cliente(db.Model):
     def __repr__(self):
         return f'<Cliente {self.nome} {self.apelido}>'
 
+
 # Rota inicial
-
-
 @app.route('/')
 def index():
     # Carrega todos os veículos do banco de dados
@@ -97,9 +99,8 @@ def index():
 
     return render_template('index.html', veiculos=veiculos, cliente=cliente)
 
+
 # Função de middleware para verificar a sessão de administrador
-
-
 @app.before_request
 def check_admin_session():
     # Lista de rotas que requerem autenticação de administrador
@@ -109,9 +110,8 @@ def check_admin_session():
         if 'admin' not in session:
             return redirect(url_for('login'))
 
+
 # Rota para a página de login do administrador
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Verifica se já há uma sessão de admin ativa
@@ -132,9 +132,8 @@ def login():
 
     return render_template('login.html')
 
+
 # Rota para o painel de administração
-
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_panel():
     if request.method == 'POST':
@@ -158,9 +157,8 @@ def admin_panel():
     vehicles = Vehicle.query.all()
     return render_template('admin.html', vehicles=vehicles)
 
+
 # Rota para a página de edição de veículo
-
-
 @app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
 def edit_vehicle(id):
     # Obter o veículo pelo ID
