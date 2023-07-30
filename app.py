@@ -171,6 +171,7 @@ def edit_vehicle(id):
         model = request.form['model']
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
+        status = int(request.form['status'])
 
         # Atualizar os dados do veículo
         # Converter o valor para VehicleType
@@ -179,6 +180,15 @@ def edit_vehicle(id):
         vehicle.model = model
         vehicle.year = year
         vehicle.price_per_day = price_per_day
+        vehicle.status = status
+
+        # Atualizar a categoria do veículo com base no novo preço por dia
+        if price_per_day <= 50:
+            vehicle.categoria = 'Económico'
+        elif price_per_day <= 250:
+            vehicle.categoria = 'Silver'
+        else:
+            vehicle.categoria = 'Gold'
 
         # Salvar as alterações no banco de dados
         db.session.commit()
