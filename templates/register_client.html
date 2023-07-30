@@ -1,49 +1,66 @@
-<!-- register_client.html -->
-{% include 'client_header.html' %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Client - {{ title }}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+</head>
+<body>
+    {% include 'client_header.html' %}
 
-<h1>Registrar Cliente</h1>
+    <div class="container mt-4">
+        <h1>Registar Cliente</h1>
+        {% if error_message %}
+            <div class="alert alert-danger mt-4" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        <form method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" required>
+            </div>
+            <div class="mb-3">
+                <label for="apelido" class="form-label">Apelido</label>
+                <input type="text" class="form-control" id="apelido" name="apelido" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone</label>
+                <input type="tel" class="form-control" id="telefone" name="telefone" required>
+            </div>
+            <div class="mb-3">
+                <label for="data_nascimento" class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" required>
+            </div>
+            <div class="mb-3">
+                <label for="morada" class="form-label">Morada</label>
+                <input type="text" class="form-control" id="morada" name="morada" required>
+            </div>
+            <div class="mb-3">
+                <label for="nif" class="form-label">NIF (Contribuinte Fiscal)</label>
+                <input type="text" class="form-control" id="nif" name="nif" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label">Confirmar Password</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Registar</button>
+        </form>
+    </div>
 
-<form method="post" action="{{ url_for('register_client') }}">
-    <div>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
-    </div>
-    <div>
-        <label for="apelido">Apelido:</label>
-        <input type="text" id="apelido" name="apelido" required>
-    </div>
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-    </div>
-    <div>
-        <label for="telefone">Telefone:</label>
-        <input type="text" id="telefone" name="telefone" required>
-    </div>
-    <div>
-        <label for="data_nascimento">Data de Nascimento:</label>
-        <input type="date" id="data_nascimento" name="data_nascimento" required>
-    </div>
-    <div>
-        <label for="morada">Morada:</label>
-        <input type="text" id="morada" name="morada" required>
-    </div>
-    <div>
-        <label for="nif">NIF:</label>
-        <input type="text" id="nif" name="nif" required>
-    </div>
-    <div>
-        <label for="password">Senha:</label>
-        <input type="password" id="password" name="password" minlength="8" required>
-    </div>
-    <div>
-        <label for="confirm_password">Confirmar Senha:</label>
-        <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
-    </div>
-    <button type="submit">Registrar</button>
-</form>
-{% if success_message %}
-    <div class="alert alert-success" role="alert">
-        {{ success_message }}
-    </div>
-{% endif %}
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

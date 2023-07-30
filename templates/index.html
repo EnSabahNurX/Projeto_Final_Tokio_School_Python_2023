@@ -1,21 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
-    <title>Aluguel de Veículos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 </head>
 <body>
     {% include 'client_header.html' %}
 
-    <h1>Bem-vindo ao nosso website de aluguel de veículos!</h1>
-    <h2>Veículos Disponíveis:</h2>
-    <ul>
-        {% for veiculo in veiculos %}
-            <li>Marca: {{ veiculo.brand }}, Modelo: {{ veiculo.model }}, Ano: {{ veiculo.year }}, Tipo: {{ veiculo.type }}, Preço por Dia: € {{ veiculo.price_per_day }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Reservar Veículo:</h2>
-    <form action="/alugar" method="POST">
-        <!-- Resto do formulário permanece igual -->
-    </form>
+    <div class="container mt-4">
+        <h1 class="mb-4">Veículos Disponíveis</h1>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for veiculo in veiculos %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ veiculo.brand }}</h5>
+                            <p class="card-text">{{ veiculo.model }}</p>
+                            <p class="card-text">Ano: {{ veiculo.year }}</p>
+                            <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('edit_vehicle', id=veiculo.id) }}" class="btn btn-primary">Editar</a>
+                            <form action="{{ url_for('delete_vehicle', id=veiculo.id) }}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-danger">Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

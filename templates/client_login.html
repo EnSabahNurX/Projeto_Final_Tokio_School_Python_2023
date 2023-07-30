@@ -1,29 +1,38 @@
-<!-- client_login.html -->
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
-    <title>Login do Cliente</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Login - {{ title }}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 </head>
 <body>
-    <!-- Incluir o template do cabeçalho específico para o login do cliente -->
     {% include 'client_header.html' %}
 
-    <h1>Login do Cliente</h1>
+    <div class="container mt-4">
+        <h1>Cliente Login</h1>
+        {% if error_message %}
+            <div class="alert alert-danger mt-4" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        <form method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
 
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
-
-    <form method="post" action="{{ url_for('client_login') }}">
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div>
-            <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Login</button>
-    </form>
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
