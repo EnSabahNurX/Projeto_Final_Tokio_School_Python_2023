@@ -217,9 +217,8 @@ def client_login():
 
 @app.route('/client_logout')
 def client_logout():
-    # Remover a sessão do cliente
-    session.pop('client', None)
-    return redirect(url_for('index'))
+    session.pop('client', None)  # Remove a chave 'client' da sessão
+    return redirect(url_for('client_login'))  # Redireciona para a página de login do cliente
 
 
 # Rota para logout
