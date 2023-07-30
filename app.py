@@ -170,8 +170,6 @@ def delete_vehicle(id):
 
     return redirect(url_for('admin_panel'))
 
-# Rota para logout
-
 
 # Rota para a página de login do cliente
 @app.route('/client_login', methods=['GET', 'POST'])
@@ -191,6 +189,8 @@ def client_login():
     return render_template('client_login.html')
 
 # Rota para logout do cliente
+
+
 @app.route('/client_logout')
 def client_logout():
     # Remover a sessão do cliente
@@ -198,6 +198,7 @@ def client_logout():
     return redirect(url_for('index'))
 
 
+# Rota para logout
 @app.route('/logout')
 def logout():
     # Remover a sessão de administrador

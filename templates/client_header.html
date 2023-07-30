@@ -1,0 +1,8 @@
+<!-- client_header.html -->
+<div style="text-align: right;">
+    {% if 'client' in session %}
+        <a href="{{ url_for('client_logout') }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('client_login') }}">Login do Cliente</a>
+    {% endif %}
+</div>
