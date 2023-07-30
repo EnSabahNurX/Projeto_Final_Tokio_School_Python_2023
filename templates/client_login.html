@@ -9,14 +9,21 @@
     {% include 'client_header.html' %}
 
     <h1>Login do Cliente</h1>
-    <form method="POST" action="/client_login">
-        <label for="username">Usuário:</label>
-        <input type="text" name="username" id="username" required>
-        <br>
-        <label for="password">Senha:</label>
-        <input type="password" name="password" id="password" required>
-        <br>
-        <input type="submit" value="Login">
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('client_login') }}">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
     </form>
 </body>
 </html>

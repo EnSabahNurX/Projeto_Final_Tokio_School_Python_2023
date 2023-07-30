@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate  # Importar o Flask-Migrate
 import pytz
+import datetime
 import enum
 
 app = Flask(__name__)
@@ -205,17 +206,27 @@ def delete_vehicle(id):
 # Rota para a página de login do cliente
 @app.route('/client_login', methods=['GET', 'POST'])
 def client_login():
-    # Clientes temporários (em um projeto real, deve ser armazenado de forma segura)
-    clients = {'cliente1': 'senha123', 'cliente2': 'senha456'}
-
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
 
-        if username in clients and clients[username] == password:
-            # Definir a sessão do cliente como ativa
-            session['client'] = username
-            return redirect(url_for('index'))
+        # Consulta todos os clientes existentes no banco de dados
+        clientes = Cliente.query.all()
+
+        # Verifica se as credenciais de login estão corretas
+        for cliente in clientes:
+            if cliente.email == email and cliente.password == password:
+                # Define a sessão do cliente logado
+                session['client'] = {
+                    'id': cliente.id,
+                    'nome': cliente.nome,
+                    'email': cliente.email
+                }
+                return redirect(url_for('index'))
+
+        # Se as credenciais estiverem incorretas, exibe uma mensagem de erro
+        error_message = 'Credenciais de login inválidas. Por favor, tente novamente.'
+        return render_template('client_login.html', error_message=error_message)
 
     return render_template('client_login.html')
 
@@ -238,6 +249,8 @@ def logout():
 
 
 # Rota para a página de registro do cliente
+
+
 @app.route('/register_client', methods=['GET', 'POST'])
 def register_client():
     if request.method == 'POST':
