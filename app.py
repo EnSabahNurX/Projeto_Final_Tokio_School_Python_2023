@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate  # Importar o Flask-Migrate
+from flask_migrate import Migrate
 import pytz
 import datetime
 import enum
@@ -21,6 +21,12 @@ db_path = os.path.join(db_folder, 'database.db')
 # Configurações do SQLite - banco de dados ficará dentro da pasta 'database'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configuração do Bootstrap 5 com Font Awesome
+app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'yeti'
+app.config['BOOTSTRAP_USE_MINIFIED'] = True
+app.config['BOOTSTRAP_USE_CDN'] = True
+app.config['BOOTSTRAP_FONTAWESOME'] = True
 
 # Inicializar a extensão SQLAlchemy
 db = SQLAlchemy(app)
