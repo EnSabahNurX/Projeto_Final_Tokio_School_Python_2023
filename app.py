@@ -197,6 +197,8 @@ def delete_vehicle(id):
 # Rota para a página de login do cliente
 @app.route('/client_login', methods=['GET', 'POST'])
 def client_login():
+    if 'client' in session:
+        return redirect(url_for('index'))
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -247,6 +249,8 @@ def logout():
 
 @app.route('/register_client', methods=['GET', 'POST'])
 def register_client():
+    if 'client' in session:
+        return redirect(url_for('index'))
     if request.method == 'POST':
         # Obter os dados do formulário
         nome = request.form['nome']
