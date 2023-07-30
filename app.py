@@ -251,8 +251,6 @@ def logout():
 
 
 # Rota para a página de registro do cliente
-
-
 @app.route('/register_client', methods=['GET', 'POST'])
 def register_client():
     if request.method == 'POST':
@@ -280,8 +278,12 @@ def register_client():
         # Cria um novo objeto Cliente e adiciona ao banco de dados
         novo_cliente = Cliente(nome=nome, apelido=apelido, email=email, telefone=telefone,
                                data_nascimento=data_nascimento, morada=morada, nif=nif, password=password)
+        # Imprime os atributos do novo cliente
+        print(f'Novo cliente: {novo_cliente.__dict__}')
         db.session.add(novo_cliente)
-        db.session.commit()
+        db.session.commit()  # Salva o novo cliente no banco de dados
+        # Imprime os atributos do cliente após o commit
+        print(f'Cliente adicionado ao banco de dados: {novo_cliente.__dict__}')
 
         # Redireciona para a página de login do cliente
         return redirect(url_for('client_login'))

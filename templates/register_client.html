@@ -9,7 +9,7 @@
     {% include 'client_header.html' %}
 
     <h1>Registro do Cliente</h1>
-    <form method="POST" action="/register_client">
+    <form method="post" action="{{ url_for('register_client') }}">
         <label for="nome">Nome:</label>
         <input type="text" name="nome" id="nome" required>
         <br>
