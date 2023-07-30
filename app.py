@@ -53,13 +53,14 @@ class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
     apelido = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     data_nascimento = db.Column(db.Date, nullable=False)
     morada = db.Column(db.String(200), nullable=False)
-    nif = db.Column(db.String(9), unique=True, nullable=False)
+    nif = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, nome, apelido, email, telefone, data_nascimento, morada, nif):
+    def __init__(self, nome, apelido, email, telefone, data_nascimento, morada, nif, password):
         self.nome = nome
         self.apelido = apelido
         self.email = email
@@ -67,6 +68,7 @@ class Cliente(db.Model):
         self.data_nascimento = data_nascimento
         self.morada = morada
         self.nif = nif
+        self.password = password
 
     def __repr__(self):
         return f'<Cliente {self.nome} {self.apelido}>'
@@ -258,13 +260,26 @@ def register_client():
         apelido = request.form['apelido']
         email = request.form['email']
         telefone = request.form['telefone']
-        data_nascimento = request.form['data_nascimento']
+        data_nascimento = datetime.datetime.strptime(
+            request.form['data_nascimento'], '%Y-%m-%d').date()
         morada = request.form['morada']
         nif = request.form['nif']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # Verifica se as senhas coincidem
+        if password != confirm_password:
+            error_message = 'As senhas não coincidem. Por favor, tente novamente.'
+            return render_template('register_client.html', error_message=error_message)
+
+        # Verifica se a senha atende aos requisitos mínimos (8 caracteres entre letras e/ou números)
+        if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
+            error_message = 'A senha deve conter no mínimo 8 caracteres, entre letras e/ou números. Por favor, tente novamente.'
+            return render_template('register_client.html', error_message=error_message)
 
         # Cria um novo objeto Cliente e adiciona ao banco de dados
-        novo_cliente = Cliente(nome, apelido, email,
-                               telefone, data_nascimento, morada, nif)
+        novo_cliente = Cliente(nome=nome, apelido=apelido, email=email, telefone=telefone,
+                               data_nascimento=data_nascimento, morada=morada, nif=nif, password=password)
         db.session.add(novo_cliente)
         db.session.commit()
 
