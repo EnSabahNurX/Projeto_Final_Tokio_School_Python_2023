@@ -112,6 +112,10 @@ def check_admin_session():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Verifica se já há uma sessão de admin ativa
+    if 'admin' in session:
+        return redirect(url_for('admin_panel'))
+
     # Administradores temporários (em um projeto real, deve ser armazenado de forma segura)
     admins = {'admin': 'password'}
 
