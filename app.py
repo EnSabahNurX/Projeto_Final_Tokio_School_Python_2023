@@ -173,6 +173,31 @@ def delete_vehicle(id):
 # Rota para logout
 
 
+# Rota para a página de login do cliente
+@app.route('/client_login', methods=['GET', 'POST'])
+def client_login():
+    # Clientes temporários (em um projeto real, deve ser armazenado de forma segura)
+    clients = {'cliente1': 'senha123', 'cliente2': 'senha456'}
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if username in clients and clients[username] == password:
+            # Definir a sessão do cliente como ativa
+            session['client'] = username
+            return redirect(url_for('index'))
+
+    return render_template('client_login.html')
+
+# Rota para logout do cliente
+@app.route('/client_logout')
+def client_logout():
+    # Remover a sessão do cliente
+    session.pop('client', None)
+    return redirect(url_for('index'))
+
+
 @app.route('/logout')
 def logout():
     # Remover a sessão de administrador
