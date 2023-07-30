@@ -4,7 +4,7 @@
 
 <div class="container mt-4">
     <h1>Admin Panel</h1>
-    <h2 class="mb-4">Adicionar Novo Veículo</h2>
+    <h3 class="mb-4">Adicionar Novo Veículo</h3>
     <form method="POST">
         <div class="mb-3">
             <label for="type" class="form-label">Tipo de Veículo</label>
@@ -58,8 +58,6 @@
                 <th scope="col">Model</th>
                 <th scope="col">Year</th>
                 <th scope="col">Price per Day</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Status</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -72,9 +70,6 @@
                 <td>{{ vehicle.model }}</td>
                 <td>{{ vehicle.year }}</td>
                 <td>{{ vehicle.price_per_day }}</td>
-                <td>{{ vehicle.categoria }}</td>
-                <td>{% if vehicle.status %}Disponível{% else %}Indisponível{%
-                    endif %}</td>
                 <td>
                     <a href="{{ url_for('edit_vehicle', id=vehicle.id) }}"
                         class="btn btn-sm btn-primary">Edit</a>
@@ -88,9 +83,9 @@
         </tbody>
     </table>
 </div>
-{% endblock %}
+
+<!-- Lógica para preencher a categoria automaticamente -->
 <script>
-    // Lógica para preencher a categoria automaticamente
     document.getElementById("price_per_day").addEventListener("input", function() {
         const diaria = parseFloat(this.value);
         let categoria = "";
@@ -104,4 +99,5 @@
         document.getElementById("categoria").value = categoria;
     });
 </script>
+
 {% endblock %}
