@@ -134,21 +134,10 @@ def admin_panel():
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
 
-        # Verificar se é uma adição ou edição de veículo
-        if vehicle_id:
-            # Edição de veículo existente
-            vehicle = Vehicle.query.get(vehicle_id)
-            # Converter o valor para VehicleType
-            vehicle.type = VehicleType[type.upper()]
-            vehicle.brand = brand
-            vehicle.model = model
-            vehicle.year = year
-            vehicle.price_per_day = price_per_day
-        else:
-            # Adição de novo veículo
-            vehicle = Vehicle(type=VehicleType[type.upper(
-            )], brand=brand, model=model, year=year, price_per_day=price_per_day)
-            db.session.add(vehicle)
+        # Adição de novo veículo
+        vehicle = Vehicle(type=VehicleType[type.upper(
+        )], brand=brand, model=model, year=year, price_per_day=price_per_day)
+        db.session.add(vehicle)
 
         # Salvar as alterações no banco de dados
         db.session.commit()
@@ -224,6 +213,9 @@ def client_login():
                     'nome': cliente.nome,
                     'email': cliente.email
                 }
+
+                # Exibe a mensagem de sucesso na página de login do cliente
+                success_message = 'Cliente logado com sucesso!'
                 return redirect(url_for('index'))
 
         # Se as credenciais estiverem incorretas, exibe uma mensagem de erro
@@ -251,9 +243,12 @@ def logout():
 
 
 # Rota para a página de registro do cliente
+
+
 @app.route('/register_client', methods=['GET', 'POST'])
 def register_client():
     if request.method == 'POST':
+        # Obter os dados do formulário
         nome = request.form['nome']
         apelido = request.form['apelido']
         email = request.form['email']
@@ -271,19 +266,20 @@ def register_client():
             return render_template('register_client.html', error_message=error_message)
 
         # Verifica se a senha atende aos requisitos mínimos (8 caracteres entre letras e/ou números)
-        if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
+        if len(password) < 8 or not any(char.isdigit() for char in password) and not any(char.isalpha() for char in password):
             error_message = 'A senha deve conter no mínimo 8 caracteres, entre letras e/ou números. Por favor, tente novamente.'
+            return render_template('register_client.html', error_message=error_message)
+
+        # Verifica se já existe um cliente com o mesmo email no banco de dados
+        if Cliente.query.filter_by(email=email).first():
+            error_message = 'Já existe um cliente com este email. Por favor, tente novamente com um email diferente.'
             return render_template('register_client.html', error_message=error_message)
 
         # Cria um novo objeto Cliente e adiciona ao banco de dados
         novo_cliente = Cliente(nome=nome, apelido=apelido, email=email, telefone=telefone,
                                data_nascimento=data_nascimento, morada=morada, nif=nif, password=password)
-        # Imprime os atributos do novo cliente
-        print(f'Novo cliente: {novo_cliente.__dict__}')
         db.session.add(novo_cliente)
         db.session.commit()  # Salva o novo cliente no banco de dados
-        # Imprime os atributos do cliente após o commit
-        print(f'Cliente adicionado ao banco de dados: {novo_cliente.__dict__}')
 
         # Redireciona para a página de login do cliente
         return redirect(url_for('client_login'))
