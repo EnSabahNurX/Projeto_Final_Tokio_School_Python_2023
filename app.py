@@ -46,6 +46,30 @@ class Vehicle(db.Model):
     def __repr__(self):
         return f"{self.brand} {self.model} ({self.year})"
 
+
+# Modelo de classe para clientes
+class Cliente(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    apelido = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    telefone = db.Column(db.String(20), nullable=False)
+    data_nascimento = db.Column(db.Date, nullable=False)
+    morada = db.Column(db.String(200), nullable=False)
+    nif = db.Column(db.String(9), unique=True, nullable=False)
+
+    def __init__(self, nome, apelido, email, telefone, data_nascimento, morada, nif):
+        self.nome = nome
+        self.apelido = apelido
+        self.email = email
+        self.telefone = telefone
+        self.data_nascimento = data_nascimento
+        self.morada = morada
+        self.nif = nif
+
+    def __repr__(self):
+        return f'<Cliente {self.nome} {self.apelido}>'
+
 # Rota inicial
 
 
@@ -204,6 +228,28 @@ def logout():
     # Remover a sessão de administrador
     session.pop('admin', None)
     return redirect(url_for('login'))
+
+
+# Rota para a página de registro do cliente
+@app.route('/register_client', methods=['GET', 'POST'])
+def register_client():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        apelido = request.form['apelido']
+        email = request.form['email']
+        telefone = request.form['telefone']
+        data_nascimento = request.form['data_nascimento']
+        morada = request.form['morada']
+        nif = request.form['nif']
+
+        # Cria um novo objeto Cliente e adiciona ao banco de dados
+        novo_cliente = Cliente(nome, apelido, email, telefone, data_nascimento, morada, nif)
+        db.session.add(novo_cliente)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+    return render_template('register_client.html')
 
 
 # Verificar e criar o diretório "database" se não existir
