@@ -65,8 +65,9 @@ class Cliente(db.Model):
     morada = db.Column(db.String(200), nullable=False)
     nif = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    categoria = db.Column(db.String(20), nullable=False, default='Económico')
 
-    def __init__(self, nome, apelido, email, telefone, data_nascimento, morada, nif, password):
+    def __init__(self, nome, apelido, email, telefone, data_nascimento, morada, nif, password, categoria):
         self.nome = nome
         self.apelido = apelido
         self.email = email
@@ -75,6 +76,7 @@ class Cliente(db.Model):
         self.morada = morada
         self.nif = nif
         self.password = password
+        self.categoria = categoria
 
     def __repr__(self):
         return f'<Cliente {self.nome} {self.apelido}>'
@@ -261,8 +263,8 @@ def logout():
 def register_client():
     if 'client' in session:
         return redirect(url_for('index'))
+
     if request.method == 'POST':
-        # Obter os dados do formulário
         nome = request.form['nome']
         apelido = request.form['apelido']
         email = request.form['email']
@@ -273,25 +275,29 @@ def register_client():
         nif = request.form['nif']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
+        price_per_day = float(request.form['price_per_day'])
 
         # Verifica se as senhas coincidem
         if password != confirm_password:
             error_message = 'As senhas não coincidem. Por favor, tente novamente.'
             return render_template('register_client.html', error_message=error_message)
 
-        # Verifica se a senha atende aos requisitos mínimos (8 caracteres entre letras e/ou números)
+        # Verifica se a senha atende aos requisitos mínimos (8 caracteres entre letras e números)
         if len(password) < 8 or not any(char.isdigit() for char in password) and not any(char.isalpha() for char in password):
-            error_message = 'A senha deve conter no mínimo 8 caracteres, entre letras e/ou números. Por favor, tente novamente.'
+            error_message = 'A senha deve conter no mínimo 8 caracteres, entre letras e números. Por favor, tente novamente.'
             return render_template('register_client.html', error_message=error_message)
 
-        # Verifica se já existe um cliente com o mesmo email no banco de dados
-        if Cliente.query.filter_by(email=email).first():
-            error_message = 'Já existe um cliente com este email. Por favor, tente novamente com um email diferente.'
-            return render_template('register_client.html', error_message=error_message)
+        # Define a categoria do cliente com base na diária escolhida
+        if price_per_day >= 250:
+            categoria = 'Gold'
+        elif price_per_day >= 50:
+            categoria = 'Silver'
+        else:
+            categoria = 'Económico'
 
         # Cria um novo objeto Cliente e adiciona ao banco de dados
         novo_cliente = Cliente(nome=nome, apelido=apelido, email=email, telefone=telefone,
-                               data_nascimento=data_nascimento, morada=morada, nif=nif, password=password)
+                               data_nascimento=data_nascimento, morada=morada, nif=nif, password=password, categoria=categoria)
         db.session.add(novo_cliente)
         db.session.commit()  # Salva o novo cliente no banco de dados
 

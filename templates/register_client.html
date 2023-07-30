@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Client - {{ title }}</title>
+    <title>Registo de Cliente</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 </head>
+
 <body>
     {% include 'client_header.html' %}
-
-    <div class="container mt-4">
-        <h1>Registar Cliente</h1>
+    <div class="container">
+        <h1 class="mt-5">Registo de Cliente</h1>
         {% if error_message %}
-            <div class="alert alert-danger mt-4" role="alert">
-                {{ error_message }}
-            </div>
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
         {% endif %}
-        <form method="post" class="mt-4">
+        <form method="post">
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
                 <input type="text" class="form-control" id="nome" name="nome" required>
@@ -34,7 +36,7 @@
             </div>
             <div class="mb-3">
                 <label for="telefone" class="form-label">Telefone</label>
-                <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                <input type="text" class="form-control" id="telefone" name="telefone" required>
             </div>
             <div class="mb-3">
                 <label for="data_nascimento" class="form-label">Data de Nascimento</label>
@@ -45,22 +47,28 @@
                 <input type="text" class="form-control" id="morada" name="morada" required>
             </div>
             <div class="mb-3">
-                <label for="nif" class="form-label">NIF (Contribuinte Fiscal)</label>
+                <label for="nif" class="form-label">NIF</label>
                 <input type="text" class="form-control" id="nif" name="nif" required>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">Senha</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <div class="mb-3">
-                <label for="confirm_password" class="form-label">Confirmar Password</label>
+                <label for="confirm_password" class="form-label">Confirmar Senha</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
             </div>
+            <div class="mb-3">
+                <label for="price_per_day" class="form-label">Diária desejada (aproximada) até:</label>
+                <input type="number" class="form-control" id="price_per_day" name="price_per_day" min="0" step="any"
+                    required>
+            </div>
             <button type="submit" class="btn btn-primary">Registar</button>
+            <a href="{{ url_for('client_login') }}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
-
     <!-- Bootstrap JavaScript -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
+
 </html>
