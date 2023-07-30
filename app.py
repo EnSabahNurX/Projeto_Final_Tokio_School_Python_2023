@@ -75,9 +75,16 @@ class Cliente(db.Model):
 
 @app.route('/')
 def index():
-    # Consultar todos os veículos no banco de dados
-    vehicles = Vehicle.query.all()
-    return render_template('index.html', vehicles=vehicles)
+    # Carrega todos os veículos do banco de dados
+    veiculos = Vehicle.query.all()
+
+    # Verifica se há uma sessão ativa de cliente
+    if 'client' in session:
+        cliente = session['client']
+    else:
+        cliente = None
+
+    return render_template('index.html', veiculos=veiculos, cliente=cliente)
 
 # Função de middleware para verificar a sessão de administrador
 
@@ -218,7 +225,8 @@ def client_login():
 @app.route('/client_logout')
 def client_logout():
     session.pop('client', None)  # Remove a chave 'client' da sessão
-    return redirect(url_for('client_login'))  # Redireciona para a página de login do cliente
+    # Redireciona para a página de login do cliente
+    return redirect(url_for('client_login'))
 
 
 # Rota para logout
@@ -242,11 +250,13 @@ def register_client():
         nif = request.form['nif']
 
         # Cria um novo objeto Cliente e adiciona ao banco de dados
-        novo_cliente = Cliente(nome, apelido, email, telefone, data_nascimento, morada, nif)
+        novo_cliente = Cliente(nome, apelido, email,
+                               telefone, data_nascimento, morada, nif)
         db.session.add(novo_cliente)
         db.session.commit()
 
-        return redirect(url_for('client_login'))  # Redireciona para a página de login do cliente
+        # Redireciona para a página de login do cliente
+        return redirect(url_for('client_login'))
 
     return render_template('register_client.html')
 

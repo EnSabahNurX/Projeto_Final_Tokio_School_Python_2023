@@ -18,8 +18,8 @@
     <h1>Bem-vindo ao nosso website de aluguel de veículos!</h1>
     <h2>Veículos Disponíveis:</h2>
     <ul>
-        {% for vehicle in vehicles %}
-            <li>Marca: {{ vehicle.brand }}, Modelo: {{ vehicle.model }}, Ano: {{ vehicle.year }}, Tipo: {{ vehicle.type }}, Preço por Dia: € {{ vehicle.price_per_day }}</li>
+        {% for veiculo in veiculos %}
+            <li>Marca: {{ veiculo.brand }}, Modelo: {{ veiculo.model }}, Ano: {{ veiculo.year }}, Tipo: {{ veiculo.type }}, Preço por Dia: € {{ veiculo.price_per_day }}</li>
         {% endfor %}
     </ul>
     <h2>Reservar Veículo:</h2>
