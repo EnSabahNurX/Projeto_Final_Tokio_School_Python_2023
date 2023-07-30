@@ -49,9 +49,8 @@ class Vehicle(db.Model):
     model = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     price_per_day = db.Column(db.Float, nullable=False)
-    category = db.Column(db.String(20), nullable=False)
-    daily_value = db.Column(db.Float, nullable=False)
-    is_available = db.Column(db.Boolean, default=True)
+    categoria = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return f"{self.brand} {self.model} ({self.year})"
@@ -138,16 +137,17 @@ def login():
 def admin_panel():
     if request.method == 'POST':
         # Obter dados do formulário
-        vehicle_id = request.form.get('id')
         type = request.form['type']
         brand = request.form['brand']
         model = request.form['model']
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
+        status = int(request.form['status'])
+        categoria = request.form['categoria']
 
         # Adição de novo veículo
         vehicle = Vehicle(type=VehicleType[type.upper(
-        )], brand=brand, model=model, year=year, price_per_day=price_per_day)
+        )], brand=brand, model=model, year=year, price_per_day=price_per_day, status=status, categoria=categoria)
         db.session.add(vehicle)
 
         # Salvar as alterações no banco de dados
