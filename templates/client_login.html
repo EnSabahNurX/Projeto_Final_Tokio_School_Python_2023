@@ -1,0 +1,22 @@
+<!-- client_login.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login do Cliente</title>
+</head>
+<body>
+    <!-- Incluir o template do cabeçalho -->
+    {% include 'header.html' %}
+
+    <h1>Login do Cliente</h1>
+    <form method="POST" action="/client_login">
+        <label for="username">Usuário:</label>
+        <input type="text" name="username" id="username" required>
+        <br>
+        <label for="password">Senha:</label>
+        <input type="password" name="password" id="password" required>
+        <br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
