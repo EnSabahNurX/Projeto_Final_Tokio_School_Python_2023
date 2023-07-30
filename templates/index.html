@@ -1,19 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-PT">
 <head>
     <title>Aluguel de Veículos</title>
 </head>
 <body>
-    <!-- Botões de login/logout do cliente -->
-    {% if 'client' in session %}
-        <div style="text-align: right;">
-            <a href="{{ url_for('client_logout') }}">Logout</a>
-        </div>
-    {% else %}
-        <div style="text-align: right;">
-            <a href="{{ url_for('client_login') }}">Login do Cliente</a>
-        </div>
-    {% endif %}
+    {% include 'client_header.html' %}
 
     <h1>Bem-vindo ao nosso website de aluguel de veículos!</h1>
     <h2>Veículos Disponíveis:</h2>

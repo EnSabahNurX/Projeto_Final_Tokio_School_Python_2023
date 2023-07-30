@@ -1,20 +1,25 @@
-<!-- client_header.html -->
-<div>
-    <a href="{{ url_for('index') }}">Início</a>
-</div>
-
-<div>
-    {% if cliente %}
-        <span>Bem-vindo(a), {{ cliente['nome'] }}!</span>
-    {% else %}
-        <a href="{{ url_for('register_client') }}">Registrar-se</a>
-    {% endif %}
-</div>
-
-<div style="text-align: right;">
-    {% if cliente %}
-        <a href="{{ url_for('client_logout') }}">Logout</a>
-    {% else %}
-        <a href="{{ url_for('client_login') }}">Login do Cliente</a>
-    {% endif %}
-</div>
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nome do Site - Cliente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Outros links de CSS e scripts podem ser incluídos aqui -->
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                {% if not cliente %}
+                    <li><a href="{{ url_for('client_login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register_client') }}">Registar</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('client_logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+</body>
+</html>
