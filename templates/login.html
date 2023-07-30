@@ -1,19 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
-    <title>Login do Administrador</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - {{ title }}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 </head>
 <body>
-    
-    <h1>Login do Administrador</h1>
-    <form action="/login" method="POST">
-        <label for="username">Usuário:</label>
-        <input type="text" id="username" name="username" required><br>
-        
-        <label for="password">Senha:</label>
-        <input type="password" id="password" name="password" required><br>
-        
-        <input type="submit" value="Login">
-    </form>
+    <div class="container mt-4">
+        <h1>Login Administrador</h1>
+        <form method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

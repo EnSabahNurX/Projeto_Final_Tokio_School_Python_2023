@@ -1,38 +1,49 @@
-<!-- edit_vehicle.html -->
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
-    <title>Editar Veículo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Vehicle - {{ title }}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 </head>
 <body>
-    <!-- Incluir o template do cabeçalho -->
-    {% include 'header.html' %}
+    {% include 'admin_header.html' %}
 
-    <h1>Editar Veículo</h1>
-    <form method="POST" action="/edit_vehicle/{{ vehicle.id }}">
-        <input type="hidden" name="id" value="{{ vehicle.id }}">
-        <label for="type">Tipo:</label>
-        <select name="type" id="type">
-            <option value="Carro" {% if vehicle.type == 'Carro' %}selected{% endif %}>Carro</option>
-            <option value="Mota" {% if vehicle.type == 'Mota' %}selected{% endif %}>Mota</option>
-        </select>
-        <br>
-        <label for="brand">Marca:</label>
-        <input type="text" name="brand" id="brand" value="{{ vehicle.brand }}" required>
-        <br>
-        <label for="model">Modelo:</label>
-        <input type="text" name="model" id="model" value="{{ vehicle.model }}" required>
-        <br>
-        <label for="year">Ano:</label>
-        <input type="number" name="year" id="year" min="1900" max="2099" value="{{ vehicle.year }}" required>
-        <br>
-        <label for="price_per_day">Preço por Dia (€):</label>
-        <input type="number" name="price_per_day" id="price_per_day" step="0.01" value="{{ vehicle.price_per_day }}" required>
-        <br>
-        <input type="submit" value="Salvar">
-    </form>
+    <div class="container mt-4">
+        <h1>Edit Vehicle</h1>
+        <form method="post" class="mt-4">
+            <input type="hidden" name="id" value="{{ vehicle.id }}">
+            <div class="mb-3">
+                <label for="type" class="form-label">Type</label>
+                <select class="form-select" id="type" name="type" required>
+                    <option value="Carro" {% if vehicle.type == 'Carro' %}selected{% endif %}>Carro</option>
+                    <option value="Mota" {% if vehicle.type == 'Mota' %}selected{% endif %}>Mota</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="brand" class="form-label">Brand</label>
+                <input type="text" class="form-control" id="brand" name="brand" value="{{ vehicle.brand }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="model" class="form-label">Model</label>
+                <input type="text" class="form-control" id="model" name="model" value="{{ vehicle.model }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="year" class="form-label">Year</label>
+                <input type="number" class="form-control" id="year" name="year" value="{{ vehicle.year }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="price_per_day" class="form-label">Price per Day</label>
+                <input type="number" class="form-control" id="price_per_day" name="price_per_day" value="{{ vehicle.price_per_day }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
 
-    <!-- Botão "Voltar" que redireciona para a página de administração -->
-    <a href="{{ url_for('admin_panel') }}">Voltar</a>
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

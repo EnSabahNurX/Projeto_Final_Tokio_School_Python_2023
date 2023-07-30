@@ -1,8 +1,0 @@
-<!-- header.html -->
-<div style="text-align: right;">
-    {% if 'admin' in session %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-        <a href="{{ url_for('login') }}">Login</a>
-    {% endif %}
-</div>
