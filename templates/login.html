@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - {{ title }}</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
-</head>
-<body>
+{% extends 'base_admin.html' %}
+
+{% block content %}
     <div class="container mt-4">
         <h1>Login Administrador</h1>
         <form method="post" class="mt-4">
@@ -24,8 +15,4 @@
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
-
-    <!-- Bootstrap JavaScript -->
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+{% endblock %}
