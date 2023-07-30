@@ -1,4 +1,8 @@
 <!-- client_header.html -->
+<div>
+    <a href="{{ url_for('index') }}">Início</a>
+</div>
+
 <div style="text-align: right;">
     {% if 'client' in session %}
         <a href="{{ url_for('client_logout') }}">Logout</a>

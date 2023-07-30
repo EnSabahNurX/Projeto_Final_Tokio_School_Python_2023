@@ -1,0 +1,37 @@
+<!-- register_client.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro do Cliente</title>
+</head>
+<body>
+    <!-- Incluir o template do cabeçalho específico para o login do cliente -->
+    {% include 'client_header.html' %}
+
+    <h1>Registro do Cliente</h1>
+    <form method="POST" action="/register_client">
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" id="nome" required>
+        <br>
+        <label for="apelido">Apelido:</label>
+        <input type="text" name="apelido" id="apelido" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <br>
+        <label for="telefone">Telefone:</label>
+        <input type="tel" name="telefone" id="telefone" required>
+        <br>
+        <label for="data_nascimento">Data de Nascimento:</label>
+        <input type="date" name="data_nascimento" id="data_nascimento" required>
+        <br>
+        <label for="morada">Morada:</label>
+        <input type="text" name="morada" id="morada" required>
+        <br>
+        <label for="nif">NIF:</label>
+        <input type="text" name="nif" id="nif" required>
+        <br>
+        <input type="submit" value="Registrar">
+    </form>
+</body>
+</html>

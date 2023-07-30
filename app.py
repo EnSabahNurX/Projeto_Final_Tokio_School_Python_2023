@@ -247,7 +247,7 @@ def register_client():
         db.session.add(novo_cliente)
         db.session.commit()
 
-        return redirect(url_for('index'))
+        return redirect(url_for('client_login'))  # Redireciona para a página de login do cliente
 
     return render_template('register_client.html')
 
