@@ -4,52 +4,8 @@
 
 <div class="container mt-4">
     <h1>Admin Panel</h1>
-    <h3 class="mb-4">Adicionar Novo Veículo</h3>
-    <form method="POST">
-        <div class="mb-3">
-            <label for="type" class="form-label">Tipo de Veículo</label>
-            <select class="form-select" id="type" name="type" required>
-                <option value="CARRO">Carro</option>
-                <option value="MOTA">Mota</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="brand" class="form-label">Marca</label>
-            <input type="text" class="form-control" id="brand" name="brand"
-                required>
-        </div>
-        <div class="mb-3">
-            <label for="model" class="form-label">Modelo</label>
-            <input type="text" class="form-control" id="model" name="model"
-                required>
-        </div>
-        <div class="mb-3">
-            <label for="year" class="form-label">Ano</label>
-            <input type="number" class="form-control" id="year" name="year"
-                required>
-        </div>
-        <div class="mb-3">
-            <label for="price_per_day" class="form-label">Diária (em €)</label>
-            <input type="number" step="0.01" class="form-control"
-                id="price_per_day" name="price_per_day" required>
-        </div>
-        <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select class="form-select" id="status" name="status" required>
-                <option value="1">Disponível</option>
-                <option value="0">Indisponível</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="categoria" class="form-label">Categoria</label>
-            <input type="text" class="form-control" id="categoria"
-                name="categoria" readonly required>
-        </div>
-        <button type="submit" class="btn btn-primary">Adicionar</button>
-    </form>
-
-    <h2 class="mt-4">Lista de veículos</h2>
-    <table class="table mt-2">
+    <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar Novo Veículo</a>
+    <table class="table mt-4">
         <thead>
             <tr>
                 <th scope="col">ID</th>
@@ -57,45 +13,30 @@
                 <th scope="col">Marca</th>
                 <th scope="col">Modelo</th>
                 <th scope="col">Ano</th>
-                <th scope="col">Diária</th>
+                <th scope="col">Diária (€)</th>
                 <th scope="col">Status</th>
-                <th scope="col">Próxima Manutenção</th>
                 <th scope="col">Categoria</th>
-                <th scope="col">Ação</th>
+                <th scope="col">Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for vehicle in vehicles %}
             <tr>
-                <td>{{ vehicle.id }}</td>
+                <th scope="row">{{ vehicle.id }}</th>
                 <td>{{ vehicle.type.value }}</td>
                 <td>{{ vehicle.brand }}</td>
                 <td>{{ vehicle.model }}</td>
                 <td>{{ vehicle.year }}</td>
                 <td>{{ vehicle.price_per_day }}</td>
-                <td>{% if vehicle.status %}Disponível{% else %}Não Disponível{%
-                    endif %}</td>
-                <td>
-                    {% if vehicle.next_maintenance_date %}
-                    {% if vehicle.next_maintenance_date <= today %}
-                    <span class="badge bg-danger">Manutenção Necessária</span>
-                    {% else %}
-                    {{ vehicle.next_maintenance_date.strftime('%d/%m/%Y') }}
-                    {% endif %}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
+                <td>{% if vehicle.status %}Disponível{% else %}Indisponível{% endif %}</td>
                 <td>{{ vehicle.categoria }}</td>
                 <td>
-                    <a href="{{ url_for('edit_vehicle', id=vehicle.id) }}"
-                        class="btn btn-sm btn-primary">Editar</a>
+                    <a href="{{ url_for('edit_vehicle', id=vehicle.id) }}" class="btn btn-sm btn-primary">Editar</a>
                     <form method="post" class="d-inline-block">
                         <button type="submit" class="btn btn-sm btn-danger"
                             onclick="return confirm('Tens certeza que deseja excluir este veículo?')">Excluir</button>
                     </form>
-                    <form method="post"
-                        action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
+                    <form method="post" action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
                         <button type="submit" class="btn btn-sm btn-warning"
                             onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
                     </form>
@@ -105,21 +46,5 @@
         </tbody>
     </table>
 </div>
-
-<!-- Lógica para preencher a categoria automaticamente -->
-<script>
-    document.getElementById("price_per_day").addEventListener("input", function() {
-        const diaria = parseFloat(this.value);
-        let categoria = "";
-        if (diaria <= 50) {
-            categoria = "Económico";
-        } else if (diaria <= 250) {
-            categoria = "Silver";
-        } else {
-            categoria = "Gold";
-        }
-        document.getElementById("categoria").value = categoria;
-    });
-</script>
 
 {% endblock %}

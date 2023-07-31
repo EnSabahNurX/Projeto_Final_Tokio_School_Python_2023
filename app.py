@@ -51,17 +51,49 @@ class Vehicle(db.Model):
     model = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     price_per_day = db.Column(db.Float, nullable=False)
-    categoria = db.Column(db.String(20), nullable=False)
     status = db.Column(db.Boolean, default=True)
-    maintenance = db.Column(db.Boolean, default=False)
-    maintenance_date = db.Column(db.Date, nullable=True)
-    next_maintenance_date = db.Column(db.Date, nullable=True)
+    categoria = db.Column(db.String(50), nullable=False, default='')
 
-    def __repr__(self):
-        return f"{self.brand} {self.model} ({self.year})"
+    # Campos para manutenção
+    in_maintenance = db.Column(db.Boolean, default=False)
+    last_maintenance_date = db.Column(db.Date)
+    next_maintenance_date = db.Column(db.Date)
 
+    def __init__(self, type, brand, model, year, price_per_day, categoria=''):
+        self.type = type
+        self.brand = brand
+        self.model = model
+        self.year = year
+        self.price_per_day = price_per_day
+        self.categoria = categoria
+
+    # Método para atualizar a categoria do veículo com base no preço por dia
+    def update_categoria(self):
+        if self.price_per_day <= 50:
+            self.categoria = 'Económico'
+        elif self.price_per_day <= 250:
+            self.categoria = 'Silver'
+        else:
+            self.categoria = 'Gold'
+
+    # Método para colocar o veículo em manutenção
+    def start_maintenance(self):
+        self.in_maintenance = True
+        self.status = False  # Altera o status para indisponível durante a manutenção
+        self.last_maintenance_date = datetime.now().date()
+        self.next_maintenance_date = self.last_maintenance_date + \
+            datetime.timedelta(days=30)
+
+    # Método para finalizar a manutenção
+    def end_maintenance(self):
+        self.in_maintenance = False
+        self.status = True  # Retorna o status para disponível após a manutenção
+        self.next_maintenance_date = self.last_maintenance_date + \
+            datetime.timedelta(days=180)  # Próxima manutenção em 6 meses
 
 # Modelo de classe para clientes
+
+
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -88,8 +120,9 @@ class Cliente(db.Model):
     def __repr__(self):
         return f'<Cliente {self.nome} {self.apelido}>'
 
-
 # Rota inicial
+
+
 @app.route('/')
 def index():
     # Carrega todos os veículos do banco de dados
@@ -103,8 +136,9 @@ def index():
 
     return render_template('index.html', veiculos=veiculos, cliente=cliente)
 
-
 # Função de middleware para verificar a sessão de administrador
+
+
 @app.before_request
 def check_admin_session():
     # Lista de rotas que requerem autenticação de administrador
@@ -114,8 +148,9 @@ def check_admin_session():
         if 'admin' not in session:
             return redirect(url_for('login'))
 
-
 # Rota para a página de login do administrador
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Verifica se já há uma sessão de admin ativa
@@ -136,8 +171,9 @@ def login():
 
     return render_template('login.html')
 
-
 # Rota para o painel de administração
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_panel():
     if request.method == 'POST':
@@ -148,14 +184,13 @@ def admin_panel():
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
         status = int(request.form['status'])
-        categoria = request.form['categoria']
 
         # Adição de novo veículo
         vehicle = Vehicle(type=VehicleType[type.upper(
-        )], brand=brand, model=model, year=year, price_per_day=price_per_day, status=status, categoria=categoria)
-        db.session.add(vehicle)
+        )], brand=brand, model=model, year=year, price_per_day=price_per_day, status=status)
 
         # Salvar as alterações no banco de dados
+        db.session.add(vehicle)
         db.session.commit()
 
     # Consultar todos os veículos no banco de dados
@@ -163,7 +198,36 @@ def admin_panel():
     return render_template('admin.html', vehicles=vehicles)
 
 
+# Rota para a página de adicionar veículos
+
+
+@app.route('/add_vehicle', methods=['GET', 'POST'])
+def add_vehicle():
+    if request.method == 'POST':
+        # Obter dados do formulário
+        type = request.form['type']
+        brand = request.form['brand']
+        model = request.form['model']
+        year = int(request.form['year'])
+        price_per_day = float(request.form['price_per_day'])
+
+        # Adição de novo veículo
+        vehicle = Vehicle(type=VehicleType[type.upper(
+        )], brand=brand, model=model, year=year, price_per_day=price_per_day)
+
+        # Salvar as alterações no banco de dados
+        db.session.add(vehicle)
+        db.session.commit()
+
+        # Redirecionar de volta para o painel de administração
+        return redirect(url_for('admin_panel'))
+
+    return render_template('add_vehicle.html')
+
+
 # Rota para a página de edição de veículo
+
+
 @app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
 def edit_vehicle(id):
     # Obter o veículo pelo ID
@@ -187,7 +251,6 @@ def edit_vehicle(id):
             next_maintenance_date_str, '%Y-%m-%d').date()
 
         # Atualizar os dados do veículo
-        # Converter o valor para VehicleType
         vehicle.type = VehicleType[type.upper()]
         vehicle.brand = brand
         vehicle.model = model
@@ -228,8 +291,9 @@ def delete_vehicle(id):
 
     return redirect(url_for('admin_panel'))
 
-
 # Rota para a página de login do cliente
+
+
 @app.route('/client_login', methods=['GET', 'POST'])
 def client_login():
     if 'client' in session:
@@ -270,14 +334,14 @@ def client_logout():
     # Redireciona para a página de login do cliente
     return redirect(url_for('client_login'))
 
-
 # Rota para logout
+
+
 @app.route('/logout')
 def logout():
     # Remover a sessão de administrador
     session.pop('admin', None)
     return redirect(url_for('login'))
-
 
 # Rota para a página de registro do cliente
 
@@ -339,10 +403,10 @@ def maintenance_vehicle(id):
     if request.method == 'POST':
         # Atualizar o status do veículo para indisponível, definir a data de manutenção e a próxima manutenção
         vehicle.status = False
-        vehicle.maintenance = True
-        vehicle.maintenance_date = datetime.date.today()
+        vehicle.in_maintenance = True
+        vehicle.last_maintenance_date = datetime.date.today()
         vehicle.next_maintenance_date = datetime.date.today(
-        ) + datetime.timedelta(days=6*30)  # Próxima manutenção em 6 meses
+        ) + datetime.timedelta(days=180)  # Próxima manutenção em 6 meses
 
         db.session.commit()
         return redirect(url_for('admin_panel'))
@@ -357,15 +421,16 @@ scheduler.start()
 
 def check_maintenance_status():
     # Obter todos os veículos em manutenção
-    vehicles_in_maintenance = Vehicle.query.filter_by(maintenance=True).all()
+    vehicles_in_maintenance = Vehicle.query.filter_by(
+        in_maintenance=True).all()
 
     # Verificar se a data atual é igual ou superior à data de próxima manutenção
     today = datetime.date.today()
     for vehicle in vehicles_in_maintenance:
-        if vehicle.next_maintenance_date <= today:
-            # Definir o veículo como disponível e definir maintenance como False
+        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
+            # Definir o veículo como disponível e definir in_maintenance como False
             vehicle.status = True
-            vehicle.maintenance = False
+            vehicle.in_maintenance = False
             vehicle.next_maintenance_date = None  # Limpar a data de próxima manutenção
             db.session.commit()
 

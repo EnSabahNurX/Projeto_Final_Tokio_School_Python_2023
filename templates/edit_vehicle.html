@@ -1,93 +1,52 @@
 {% extends 'base_admin.html' %}
 
-{% block content %}
+{% block title %}Editar Veículo{% endblock %}
 
-<div class="container mt-4">
-    <h1>Editar Veículo</h1>
-    <form method="POST">
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Editar Veículo</h1>
+
+    <!-- Formulário para editar veículo -->
+    <form method="POST" action="/edit_vehicle/{{ vehicle.id }}">
         <div class="mb-3">
-            <label for="type" class="form-label">Tipo de Veículo</label>
-            <select class="form-select" id="type" name="type" required>
-                <option value="CARRO" {% if vehicle.type == 'CARRO' %}selected{%
-                    endif %}>Carro</option>
-                <option value="MOTA" {% if vehicle.type == 'MOTA' %}selected{%
-                    endif %}>Mota</option>
+            <label for="type" class="form-label">Tipo</label>
+            <select id="type" name="type" class="form-select" required>
+                <option value="CARRO" {% if vehicle.type == 'Carro' %}selected{% endif %}>Carro</option>
+                <option value="MOTA" {% if vehicle.type == 'Mota' %}selected{% endif %}>Mota</option>
             </select>
         </div>
         <div class="mb-3">
             <label for="brand" class="form-label">Marca</label>
-            <input type="text" class="form-control" id="brand" name="brand"
-                value="{{ vehicle.brand }}" required>
+            <input type="text" class="form-control" id="brand" name="brand" value="{{ vehicle.brand }}" required>
         </div>
         <div class="mb-3">
             <label for="model" class="form-label">Modelo</label>
-            <input type="text" class="form-control" id="model" name="model"
-                value="{{ vehicle.model }}" required>
+            <input type="text" class="form-control" id="model" name="model" value="{{ vehicle.model }}" required>
         </div>
         <div class="mb-3">
             <label for="year" class="form-label">Ano</label>
-            <input type="number" class="form-control" id="year" name="year"
-                value="{{ vehicle.year }}" required>
+            <input type="number" class="form-control" id="year" name="year" value="{{ vehicle.year }}" required>
         </div>
         <div class="mb-3">
-            <label for="price_per_day" class="form-label">Diária (em €)</label>
-            <input type="number" step="0.01" class="form-control"
-                id="price_per_day" name="price_per_day"
-                value="{{ vehicle.price_per_day }}" required>
+            <label for="price_per_day" class="form-label">Preço por dia</label>
+            <input type="number" step="0.01" class="form-control" id="price_per_day" name="price_per_day" value="{{ vehicle.price_per_day }}" required>
         </div>
         <div class="mb-3">
             <label for="status" class="form-label">Status</label>
-            <select class="form-select" id="status" name="status" required>
-                <option value="1" {% if vehicle.status == 1 %}selected{% endif
-                    %}>Disponível</option>
-                <option value="0" {% if vehicle.status == 0 %}selected{% endif
-                    %}>Indisponível</option>
+            <select id="status" name="status" class="form-select" required>
+                <option value="1" {% if vehicle.status %}selected{% endif %}>Disponível</option>
+                <option value="0" {% if not vehicle.status %}selected{% endif %}>Indisponível</option>
             </select>
         </div>
         <div class="mb-3">
-            <label for="categoria" class="form-label">Categoria</label>
-            <input type="text" class="form-control" id="categoria"
-                name="categoria" value="{{ vehicle.categoria }}"
-                readonly required>
+            <label for="last_maintenance_date" class="form-label">Data da última manutenção</label>
+            <input type="date" class="form-control" id="last_maintenance_date" name="last_maintenance_date" value="{{ vehicle.last_maintenance_date.strftime('%Y-%m-%d') if vehicle.last_maintenance_date else '' }}">
         </div>
         <div class="mb-3">
-            <label for="last_maintenance_date" class="form-label">Data da última
-                manutenção</label>
-            <input type="date" class="form-control" id="last_maintenance_date"
-                name="last_maintenance_date"
-                value="{{ vehicle.last_maintenance_date }}">
+            <label for="next_maintenance_date" class="form-label">Data da próxima manutenção</label>
+            <input type="date" class="form-control" id="next_maintenance_date" name="next_maintenance_date" value="{{ vehicle.next_maintenance_date.strftime('%Y-%m-%d') if vehicle.next_maintenance_date else '' }}">
         </div>
-        <div class="mb-3">
-            <label for="next_maintenance_date" class="form-label">Data da
-                próxima manutenção</label>
-            <input type="date" class="form-control" id="next_maintenance_date"
-                name="next_maintenance_date"
-                value="{{ vehicle.next_maintenance_date }}">
-        </div>
-        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-        <form method="post"
-            action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
-            <button type="submit" class="btn btn-sm btn-warning"
-                onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
-        </form>
-        <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Salvar</button>
     </form>
 </div>
-
-<!-- Lógica para preencher a categoria automaticamente -->
-<script>
-    document.getElementById("price_per_day").addEventListener("input", function() {
-        const diaria = parseFloat(this.value);
-        let categoria = "";
-        if (diaria <= 50) {
-            categoria = "Económico";
-        } else if (diaria <= 250) {
-            categoria = "Silver";
-        } else {
-            categoria = "Gold";
-        }
-        document.getElementById("categoria").value = categoria;
-    });
-</script>
-
 {% endblock %}
