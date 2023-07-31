@@ -479,7 +479,7 @@ def legalize_vehicle(id):
         timedelta(days=365)
 
     # Salvar o histórico de legalizações
-    vehicle.legalization_history += f'{vehicle.last_legalization_date.strftime("%Y-%m-%d")};'
+    vehicle.legalization_history += f'Legalização realizada {vehicle.last_legalization_date.strftime("%Y-%m-%d")};'
 
     # Salvar as alterações no banco de dados
     db.session.commit()
