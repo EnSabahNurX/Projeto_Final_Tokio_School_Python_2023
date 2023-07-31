@@ -91,7 +91,6 @@ class Vehicle(db.Model):
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
         self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
-        db.session.commit()
 
     def end_maintenance(self):
         self.in_maintenance = False
@@ -104,7 +103,7 @@ class Vehicle(db.Model):
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
         self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
-        db.session.commit()
+
 
 # Modelo de classe para clientes
 
@@ -254,8 +253,8 @@ def add_vehicle():
         six_months_later = date.today() + timedelta(days=6*30)
         vehicle.next_maintenance_date = six_months_later
 
-        # Atualizar categoria
-        vehicle.update_categoria()
+        # Iniciar o processo de legalização
+        vehicle.start_maintenance()
 
         # Salvar as alterações no banco de dados
         db.session.add(vehicle)
@@ -319,6 +318,7 @@ def edit_vehicle(id):
 
     # Renderizar a página de edição de veículo com o formulário preenchido
     return render_template('edit_vehicle.html', vehicle=vehicle)
+
 
 # Rota para exclusão de veículo
 
@@ -436,22 +436,29 @@ def register_client():
 
     return render_template('register_client.html')
 
-# Rota para legalização do veículo
+# Rota para confirmar a legalização do veículo
 
 
-@app.route('/admin/legalization_vehicle/<int:id>', methods=['POST'])
-def legalization_vehicle(id):
+@app.route('/legalize_vehicle/<int:id>', methods=['POST'])
+def legalize_vehicle(id):
+    # Obter o veículo pelo ID
     vehicle = Vehicle.query.get_or_404(id)
 
-    # Verificar se o botão de confirmação de legalização foi pressionado
-    if 'confirm_legalization' in request.form:
-        # Atualizar a próxima data de legalização (365 dias após a última legalização)
-        vehicle.next_legalization_date = vehicle.next_legalization_date + \
-            timedelta(days=365)
-        db.session.commit()
+    # Atualizar a data da última legalização
+    vehicle.last_legalization_date = date.today()
 
-        # Adicionar mensagem flash para informar sobre a confirmação de legalização
-        flash('Veículo legalizado com sucesso!', 'info')
+    # Atualizar a data da próxima legalização (1 ano após a última legalização)
+    vehicle.next_legalization_date = vehicle.last_legalization_date + \
+        timedelta(days=365)
+
+    # Salvar o histórico de legalizações
+    vehicle.legalization_history += f'{vehicle.last_legalization_date.strftime("%Y-%m-%d")};'
+
+    # Salvar as alterações no banco de dados
+    db.session.commit()
+
+    # Exibir mensagem flash informando que o veículo foi legalizado
+    flash('Veículo legalizado com sucesso!', 'info')
 
     return redirect(url_for('admin_panel'))
 

@@ -32,6 +32,8 @@
                 <th scope="col">Status</th>
                 <th scope="col">Em Manutenção</th>
                 <th scope="col">Categoria</th>
+                <th scope="col">Próx. Manutenção</th>
+                <th scope="col">Próx. Legalização</th>
                 <th scope="col">Ações</th>
             </tr>
         </thead>
@@ -48,6 +50,24 @@
                     endif %}</td>
                 <td>{% if vehicle.in_maintenance %}Sim{% else %}Não{% endif %}</td>
                 <td>{{ vehicle.categoria }}</td>
+                <td>{{ vehicle.next_maintenance_date.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    {% set days_to_legalization =
+                    (vehicle.next_legalization_date - date.today()).days %}
+                    {% if days_to_legalization <= 30 %}
+                    {% if days_to_legalization > 0 %}
+                    <div class="alert alert-warning">
+                        Legalização em {{
+                        vehicle.next_legalization_date.strftime('%d/%m/%Y') }}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger">
+                        Legalização vencida em {{
+                        vehicle.next_legalization_date.strftime('%d/%m/%Y') }}!
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ url_for('edit_vehicle', id=vehicle.id) }}"
                         class="btn btn-sm btn-primary">Editar</a>
@@ -71,27 +91,16 @@
                             name="maintenance"
                             onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
                     </form>
+                    <!-- Formulário para concluir a manutenção do veículo -->
                     {% endif %}
-                </td>
-                <!-- Coluna do botão de Legalização -->
-                <td>
-                    {% if vehicle.in_maintenance %}
-                    <!-- Não exibir o botão de legalização se o veículo estiver em manutenção -->
-                    {% else %}
-                    {% if vehicle.next_legalization_date %}
-                    {% set days_to_legalization =
-                    (vehicle.next_legalization_date - date.today()).days %}
-                    {% if days_to_legalization <= 30 %}
-                    <!-- Formulário para confirmar legalização -->
+                    <!-- Formulário para confirmar a legalização do veículo -->
                     <form method="post"
-                        action="{{ url_for('legalization_vehicle', id=vehicle.id) }}">
+                        action="{{ url_for('legalize_vehicle', id=vehicle.id) }}">
                         <button type="submit" class="btn btn-sm btn-info"
-                            name="confirm_legalization"
-                            onclick="return confirm('Tens certeza que quer confirmar a legalização deste veículo?')">Legalização</button>
+                            name="legalization"
+                            onclick="return confirm('Confirma que o veículo foi legalizado?')">Confirmar
+                            Legalização</button>
                     </form>
-                    {% endif %}
-                    {% endif %}
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
