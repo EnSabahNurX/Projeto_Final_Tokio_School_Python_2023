@@ -13,7 +13,7 @@
     <div class="container mt-4">
         {% for message in messages %}
         <div class="alert alert-{{ message[0] }}">
-            {{ message[1] }}
+            {{ message }}
         </div>
         {% endfor %}
     </div>
@@ -71,6 +71,26 @@
                             name="maintenance"
                             onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
                     </form>
+                    {% endif %}
+                </td>
+                <!-- Coluna do botão de Legalização -->
+                <td>
+                    {% if vehicle.in_maintenance %}
+                    <!-- Não exibir o botão de legalização se o veículo estiver em manutenção -->
+                    {% else %}
+                    {% if vehicle.next_legalization_date %}
+                    {% set days_to_legalization =
+                    (vehicle.next_legalization_date - date.today()).days %}
+                    {% if days_to_legalization <= 30 %}
+                    <!-- Formulário para confirmar legalização -->
+                    <form method="post"
+                        action="{{ url_for('legalization_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-info"
+                            name="confirm_legalization"
+                            onclick="return confirm('Tens certeza que quer confirmar a legalização deste veículo?')">Legalização</button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
                     {% endif %}
                 </td>
             </tr>

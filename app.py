@@ -436,6 +436,26 @@ def register_client():
 
     return render_template('register_client.html')
 
+# Rota para legalização do veículo
+
+
+@app.route('/admin/legalization_vehicle/<int:id>', methods=['POST'])
+def legalization_vehicle(id):
+    vehicle = Vehicle.query.get_or_404(id)
+
+    # Verificar se o botão de confirmação de legalização foi pressionado
+    if 'confirm_legalization' in request.form:
+        # Atualizar a próxima data de legalização (365 dias após a última legalização)
+        vehicle.next_legalization_date = vehicle.next_legalization_date + \
+            timedelta(days=365)
+        db.session.commit()
+
+        # Adicionar mensagem flash para informar sobre a confirmação de legalização
+        flash('Veículo legalizado com sucesso!', 'info')
+
+    return redirect(url_for('admin_panel'))
+
+
 # Rota para manutenção do veículo
 
 
