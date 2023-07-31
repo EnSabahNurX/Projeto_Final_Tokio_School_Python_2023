@@ -58,6 +58,7 @@ class Vehicle(db.Model):
     in_maintenance = db.Column(db.Boolean, default=False)
     last_maintenance_date = db.Column(db.Date)
     next_maintenance_date = db.Column(db.Date)
+    maintenance_history = db.Column(db.String(1000), default='')
     last_legalization_date = db.Column(db.Date)
     next_legalization_date = db.Column(db.Date)
     legalization_history = db.Column(db.String(1000), default='')
@@ -90,17 +91,20 @@ class Vehicle(db.Model):
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
         self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
+        db.session.commit()
 
     def end_maintenance(self):
         self.in_maintenance = False
         self.status = True
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=180)
+        self.maintenance_history += f'{self.last_maintenance_date.strftime("%Y-%m-%d")};'
 
         # Concluir o processo de legalização
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
         self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
+        db.session.commit()
 
 # Modelo de classe para clientes
 
