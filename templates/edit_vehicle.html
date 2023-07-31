@@ -65,9 +65,11 @@
                 value="{{ vehicle.next_maintenance_date }}">
         </div>
         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-        <a href="{{ url_for('maintenance_vehicle', id=vehicle.id) }}"
-            class="btn btn-danger"
-            onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</a>
+        <form method="post"
+            action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
+            <button type="submit" class="btn btn-sm btn-warning"
+                onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
+        </form>
         <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
