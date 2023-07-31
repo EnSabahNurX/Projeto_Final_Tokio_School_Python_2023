@@ -303,13 +303,20 @@ def edit_vehicle(id):
         price_per_day = float(request.form['price_per_day'])
         status = int(request.form['status'])
 
-        # Obter as datas de manutenção do formulário e convertê-las em objetos date
+        # Obter as datas de manutenção e legalização do formulário e convertê-las em objetos date
         last_maintenance_date_str = request.form['last_maintenance_date']
         next_maintenance_date_str = request.form['next_maintenance_date']
+        last_legalization_date_str = request.form['last_legalization_date']
+        next_legalization_date_str = request.form['next_legalization_date']
+
         last_maintenance_date = datetime.strptime(
             last_maintenance_date_str, '%Y-%m-%d').date()
         next_maintenance_date = datetime.strptime(
             next_maintenance_date_str, '%Y-%m-%d').date()
+        last_legalization_date = datetime.strptime(
+            last_legalization_date_str, '%Y-%m-%d').date()
+        next_legalization_date = datetime.strptime(
+            next_legalization_date_str, '%Y-%m-%d').date()
 
         # Atualizar os dados do veículo
         vehicle.type = VehicleType[type.upper()]
@@ -320,6 +327,8 @@ def edit_vehicle(id):
         vehicle.status = status
         vehicle.last_maintenance_date = last_maintenance_date
         vehicle.next_maintenance_date = next_maintenance_date
+        vehicle.last_legalization_date = last_legalization_date
+        vehicle.next_legalization_date = next_legalization_date
 
         # Atualizar a categoria do veículo com base no novo preço por dia
         if price_per_day <= 50:
@@ -329,7 +338,6 @@ def edit_vehicle(id):
         else:
             vehicle.categoria = 'Gold'
 
-        # Salvar as alterações no banco de dados
         db.session.commit()
 
         # Redirecionar de volta para o painel de administração
