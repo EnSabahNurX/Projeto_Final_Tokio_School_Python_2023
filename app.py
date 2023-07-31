@@ -91,7 +91,7 @@ class Vehicle(db.Model):
             timedelta(days=30)
 
         # Iniciar o processo de legalização
-        self.last_legalization_date = datetime.now().date()
+        self.last_legalization_date = date.today()
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
         if not self.legalization_history:  # Verificar se legalization_history é None ou vazio
@@ -498,6 +498,8 @@ def maintenance_vehicle(id):
             vehicle.last_maintenance_date = date.today()
             vehicle.next_maintenance_date = date.today() + timedelta(days=6 *
                                                                      30)  # Próxima manutenção em 6 meses
+            # Atualizar histórico de manutenção
+            vehicle.maintenance_history += f'Manutenção iniciada {vehicle.last_maintenance_date.strftime("%Y-%m-%d")};'
 
             db.session.commit()
 
@@ -513,6 +515,8 @@ def maintenance_vehicle(id):
             # Atualizar a próxima data de manutenção (180 dias após a última manutenção)
             vehicle.next_maintenance_date = vehicle.last_maintenance_date + \
                 timedelta(days=180)
+            # Atualizar histórico de manutenção
+            vehicle.maintenance_history += f'Manutenção concluída {vehicle.last_maintenance_date.strftime("%Y-%m-%d")};'
 
             db.session.commit()
 
