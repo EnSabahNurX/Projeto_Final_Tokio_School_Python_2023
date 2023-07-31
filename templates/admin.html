@@ -31,9 +31,8 @@
                 <th scope="col">Diária (€)</th>
                 <th scope="col">Status</th>
                 <th scope="col">Em Manutenção</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Próx. Manutenção</th>
-                <th scope="col">Próx. Legalização</th>
+                <th scope="col">Próxima Manutenção</th>
+                <th scope="col">Próxima Legalização</th>
                 <th scope="col">Ações</th>
             </tr>
         </thead>
@@ -49,23 +48,26 @@
                 <td>{% if vehicle.status %}Disponível{% else %}Indisponível{%
                     endif %}</td>
                 <td>{% if vehicle.in_maintenance %}Sim{% else %}Não{% endif %}</td>
-                <td>{{ vehicle.categoria }}</td>
-                <td>{{ vehicle.next_maintenance_date.strftime('%d/%m/%Y') }}</td>
+                <td>{% if vehicle.next_maintenance_date %}{{
+                    vehicle.next_maintenance_date.strftime('%d/%m/%Y') }}{%
+                    endif %}</td>
                 <td>
                     {% set days_to_legalization =
                     (vehicle.next_legalization_date - date.today()).days %}
-                    {% if days_to_legalization <= 30 %}
-                    {% if days_to_legalization > 0 %}
-                    <div class="alert alert-warning">
-                        Legalização em {{
-                        vehicle.next_legalization_date.strftime('%d/%m/%Y') }}
+                    {% if days_to_legalization > 30 %}
+                    {% if vehicle.next_legalization_date %}{{
+                    vehicle.next_legalization_date.strftime('%d/%m/%Y') }}{%
+                    endif %}
+                    {% elif days_to_legalization >= 0 %}
+                    <div class="alert alert-warning" role="alert">
+                        A legalização está próxima! Faltam {{
+                        days_to_legalization }} dias.
                     </div>
                     {% else %}
-                    <div class="alert alert-danger">
-                        Legalização vencida em {{
-                        vehicle.next_legalization_date.strftime('%d/%m/%Y') }}!
+                    <div class="alert alert-danger" role="alert">
+                        A legalização está atrasada! Faltam {{
+                        -days_to_legalization }} dias.
                     </div>
-                    {% endif %}
                     {% endif %}
                 </td>
                 <td>
@@ -93,13 +95,12 @@
                     </form>
                     <!-- Formulário para concluir a manutenção do veículo -->
                     {% endif %}
-                    <!-- Formulário para confirmar a legalização do veículo -->
+                    <!-- Formulário para concluir a legalização do veículo -->
                     <form method="post"
                         action="{{ url_for('legalize_vehicle', id=vehicle.id) }}">
                         <button type="submit" class="btn btn-sm btn-info"
-                            name="legalization"
-                            onclick="return confirm('Confirma que o veículo foi legalizado?')">Confirmar
-                            Legalização</button>
+                            name="legalize"
+                            onclick="return confirm('Confirmar que o veículo foi legalizado?')">Legalizado</button>
                     </form>
                 </td>
             </tr>

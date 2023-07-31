@@ -70,6 +70,10 @@ class Vehicle(db.Model):
         self.year = year
         self.price_per_day = price_per_day
         self.categoria = categoria
+        self.maintenance_history = ''  # Inicializar como uma string vazia
+        self.last_legalization_date = None  # Inicializar como None
+        self.next_legalization_date = None  # Inicializar como None
+        self.legalization_history = ''  # Inicializar como uma string vazia
 
     def update_categoria(self):
         if self.price_per_day <= 50:
@@ -90,20 +94,28 @@ class Vehicle(db.Model):
         self.last_legalization_date = datetime.now().date()
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
-        self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
+        if not self.legalization_history:  # Verificar se legalization_history é None ou vazio
+            self.legalization_history = f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
+        else:
+            self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
 
     def end_maintenance(self):
         self.in_maintenance = False
         self.status = True
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=180)
-        self.maintenance_history += f'{self.last_maintenance_date.strftime("%Y-%m-%d")};'
+        if not self.maintenance_history:  # Verificar se maintenance_history é None ou vazio
+            self.maintenance_history = f'{self.last_maintenance_date.strftime("%Y-%m-%d")};'
+        else:
+            self.maintenance_history += f'{self.last_maintenance_date.strftime("%Y-%m-%d")};'
 
         # Concluir o processo de legalização
         self.next_legalization_date = self.last_legalization_date + \
             timedelta(days=365)
-        self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
-
+        if not self.legalization_history:  # Verificar se legalization_history é None ou vazio
+            self.legalization_history = f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
+        else:
+            self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
 
 # Modelo de classe para clientes
 
@@ -227,7 +239,14 @@ def admin_panel():
 
         # Enviar a mensagem de alerta para a página usando a função flash
         flash(alert_message, 'warning')
-    return render_template('admin.html', vehicles=vehicles)
+
+    # Verificar se a data de próxima legalização é None e, se for, atribuir uma data futura
+    for vehicle in vehicles:
+        if not vehicle.next_legalization_date:
+            vehicle.next_legalization_date = date.today() + timedelta(days=365)
+
+    # Passar a variável 'date' para o template 'admin.html'
+    return render_template('admin.html', vehicles=vehicles, date=date.today())
 
 # Rota para a página de adicionar veículos
 
