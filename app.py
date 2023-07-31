@@ -51,6 +51,8 @@ class Vehicle(db.Model):
     price_per_day = db.Column(db.Float, nullable=False)
     categoria = db.Column(db.String(20), nullable=False)
     status = db.Column(db.Boolean, default=True)
+    last_maintenance_date = db.Column(db.Date)
+    next_maintenance_date = db.Column(db.Date)
 
     def __repr__(self):
         return f"{self.brand} {self.model} ({self.year})"
@@ -313,6 +315,28 @@ def register_client():
         return redirect(url_for('client_login'))
 
     return render_template('register_client.html')
+
+# Rota para manutenção do veículo
+
+
+@app.route('/maintenance_vehicle/<int:id>', methods=['POST'])
+def maintenance_vehicle(id):
+    vehicle = Vehicle.query.get_or_404(id)
+
+    # Atualizar a data de última revisão para a data atual
+    vehicle.last_maintenance_date = datetime.date.today()
+
+    # Calcular a data de próxima revisão, que será daqui a 30 dias da data atual
+    next_maintenance = datetime.date.today() + datetime.timedelta(days=30)
+    vehicle.next_maintenance_date = next_maintenance
+
+    # Definir o veículo como indisponível para aluguel durante a manutenção
+    vehicle.status = False
+
+    # Salvar as alterações no banco de dados
+    db.session.commit()
+
+    return redirect(url_for('admin_panel'))
 
 
 # Verificar e criar o diretório "database" se não existir
