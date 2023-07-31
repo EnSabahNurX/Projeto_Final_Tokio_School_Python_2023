@@ -437,7 +437,8 @@ def check_maintenance_status():
             # Definir o veículo como disponível e definir in_maintenance como False
             vehicle.status = True
             vehicle.in_maintenance = False
-            vehicle.next_maintenance_date = None  # Limpar a data de próxima manutenção
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + \
+                timedelta(days=180)
             db.session.commit()
 
 
