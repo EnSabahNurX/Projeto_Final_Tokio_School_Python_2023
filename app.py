@@ -58,6 +58,9 @@ class Vehicle(db.Model):
     in_maintenance = db.Column(db.Boolean, default=False)
     last_maintenance_date = db.Column(db.Date)
     next_maintenance_date = db.Column(db.Date)
+    last_legalization_date = db.Column(db.Date)
+    next_legalization_date = db.Column(db.Date)
+    legalization_history = db.Column(db.String(1000), default='')
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=''):
         self.type = type
@@ -82,11 +85,22 @@ class Vehicle(db.Model):
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=30)
 
+        # Iniciar o processo de legalização
+        self.last_legalization_date = datetime.now().date()
+        self.next_legalization_date = self.last_legalization_date + \
+            timedelta(days=365)
+        self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
+
     def end_maintenance(self):
         self.in_maintenance = False
         self.status = True
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=180)
+
+        # Concluir o processo de legalização
+        self.next_legalization_date = self.last_legalization_date + \
+            timedelta(days=365)
+        self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
 
 # Modelo de classe para clientes
 
@@ -198,6 +212,18 @@ def admin_panel():
         # Enviar a mensagem de alerta para a página usando a função flash
         flash(alert_message, 'warning')
 
+    # Lógica para verificar veículos que precisam de legalização
+    vehicles_needing_legalization = [
+        vehicle for vehicle in vehicles if vehicle.next_legalization_date and (vehicle.next_legalization_date - today).days <= 30 and not vehicle.in_maintenance
+    ]
+    if vehicles_needing_legalization:
+        # Montar a mensagem de alerta
+        alert_message = 'Atenção: Os seguintes veículos precisam de legalização:\n'
+        for vehicle in vehicles_needing_legalization:
+            alert_message += f'{vehicle.brand} {vehicle.model} ({vehicle.type.value}) - Próxima Legalização: {vehicle.next_legalization_date.strftime("%d/%m/%Y")}\n'
+
+        # Enviar a mensagem de alerta para a página usando a função flash
+        flash(alert_message, 'warning')
     return render_template('admin.html', vehicles=vehicles)
 
 # Rota para a página de adicionar veículos
