@@ -82,6 +82,13 @@
                         <button type="submit" class="btn btn-sm btn-danger"
                             onclick="return confirm('Tens certeza que deseja excluir este veículo?')">Excluir</button>
                     </form>
+                    {% if not vehicle.status %}
+                    <form method="post"
+                        action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-warning"
+                            onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
+                    </form>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

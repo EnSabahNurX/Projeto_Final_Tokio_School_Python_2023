@@ -175,6 +175,14 @@ def edit_vehicle(id):
         price_per_day = float(request.form['price_per_day'])
         status = int(request.form['status'])
 
+        # Obter as datas de manutenção do formulário e convertê-las em objetos datetime.date
+        last_maintenance_date_str = request.form['last_maintenance_date']
+        next_maintenance_date_str = request.form['next_maintenance_date']
+        last_maintenance_date = datetime.datetime.strptime(
+            last_maintenance_date_str, '%Y-%m-%d').date()
+        next_maintenance_date = datetime.datetime.strptime(
+            next_maintenance_date_str, '%Y-%m-%d').date()
+
         # Atualizar os dados do veículo
         # Converter o valor para VehicleType
         vehicle.type = VehicleType[type.upper()]
@@ -183,6 +191,8 @@ def edit_vehicle(id):
         vehicle.year = year
         vehicle.price_per_day = price_per_day
         vehicle.status = status
+        vehicle.last_maintenance_date = last_maintenance_date
+        vehicle.next_maintenance_date = next_maintenance_date
 
         # Atualizar a categoria do veículo com base no novo preço por dia
         if price_per_day <= 50:
@@ -321,21 +331,21 @@ def register_client():
 
 @app.route('/maintenance_vehicle/<int:id>', methods=['POST'])
 def maintenance_vehicle(id):
+    # Obter o veículo pelo ID
     vehicle = Vehicle.query.get_or_404(id)
 
-    # Atualizar a data de última revisão para a data atual
-    vehicle.last_maintenance_date = datetime.date.today()
+    # Definir a data de manutenção para daqui a 30 dias
+    today = datetime.date.today()
+    next_maintenance_date = today + datetime.timedelta(days=30)
+    vehicle.next_maintenance_date = next_maintenance_date
 
-    # Calcular a data de próxima revisão, que será daqui a 30 dias da data atual
-    next_maintenance = datetime.date.today() + datetime.timedelta(days=30)
-    vehicle.next_maintenance_date = next_maintenance
-
-    # Definir o veículo como indisponível para aluguel durante a manutenção
+    # Definir o veículo como indisponível para locação
     vehicle.status = False
 
     # Salvar as alterações no banco de dados
     db.session.commit()
 
+    # Redirecionar de volta para o painel de administração
     return redirect(url_for('admin_panel'))
 
 
