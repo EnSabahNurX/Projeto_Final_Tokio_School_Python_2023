@@ -427,7 +427,7 @@ def maintenance_vehicle(id):
         vehicle.in_maintenance = True
         vehicle.last_maintenance_date = date.today()
         vehicle.next_maintenance_date = date.today(
-        ) + datetime.timedelta(days=6*30)  # Próxima manutenção em 6 meses
+        ) + timedelta(days=6*30)  # Próxima manutenção em 6 meses
 
         db.session.commit()
         return redirect(url_for('admin_panel'))
