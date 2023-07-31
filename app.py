@@ -5,6 +5,8 @@ from flask_migrate import Migrate
 import pytz
 import datetime
 import enum
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 app = Flask(__name__)
 
@@ -51,8 +53,9 @@ class Vehicle(db.Model):
     price_per_day = db.Column(db.Float, nullable=False)
     categoria = db.Column(db.String(20), nullable=False)
     status = db.Column(db.Boolean, default=True)
-    last_maintenance_date = db.Column(db.Date)
-    next_maintenance_date = db.Column(db.Date)
+    maintenance = db.Column(db.Boolean, default=False)
+    maintenance_date = db.Column(db.Date, nullable=True)
+    next_maintenance_date = db.Column(db.Date, nullable=True)
 
     def __repr__(self):
         return f"{self.brand} {self.model} ({self.year})"
@@ -329,25 +332,50 @@ def register_client():
 # Rota para manutenção do veículo
 
 
-@app.route('/maintenance_vehicle/<int:id>', methods=['POST'])
+@app.route('/admin/maintenance_vehicle/<int:id>', methods=['GET', 'POST'])
 def maintenance_vehicle(id):
-    # Obter o veículo pelo ID
     vehicle = Vehicle.query.get_or_404(id)
 
-    # Definir a data de manutenção para daqui a 30 dias
+    if request.method == 'POST':
+        # Atualizar o status do veículo para indisponível, definir a data de manutenção e a próxima manutenção
+        vehicle.status = False
+        vehicle.maintenance = True
+        vehicle.maintenance_date = datetime.date.today()
+        vehicle.next_maintenance_date = datetime.date.today(
+        ) + datetime.timedelta(days=6*30)  # Próxima manutenção em 6 meses
+
+        db.session.commit()
+        return redirect(url_for('admin_panel'))
+
+    return render_template('maintenance_vehicle.html', vehicle=vehicle)
+
+
+# Criar um scheduler para executar tarefas em segundo plano
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+
+def check_maintenance_status():
+    # Obter todos os veículos em manutenção
+    vehicles_in_maintenance = Vehicle.query.filter_by(maintenance=True).all()
+
+    # Verificar se a data atual é igual ou superior à data de próxima manutenção
     today = datetime.date.today()
-    next_maintenance_date = today + datetime.timedelta(days=30)
-    vehicle.next_maintenance_date = next_maintenance_date
+    for vehicle in vehicles_in_maintenance:
+        if vehicle.next_maintenance_date <= today:
+            # Definir o veículo como disponível e definir maintenance como False
+            vehicle.status = True
+            vehicle.maintenance = False
+            vehicle.next_maintenance_date = None  # Limpar a data de próxima manutenção
+            db.session.commit()
 
-    # Definir o veículo como indisponível para locação
-    vehicle.status = False
 
-    # Salvar as alterações no banco de dados
-    db.session.commit()
+# Agendar a função para ser executada diariamente à meia-noite (00:00)
+scheduler.add_job(check_maintenance_status, 'interval',
+                  days=1, start_date='2023-07-27 00:00:00')
 
-    # Redirecionar de volta para o painel de administração
-    return redirect(url_for('admin_panel'))
-
+# Ao sair da aplicação, finalizar o scheduler
+atexit.register(lambda: scheduler.shutdown())
 
 # Verificar e criar o diretório "database" se não existir
 if not os.path.exists(db_folder):
