@@ -7,6 +7,19 @@
     <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar
         Novo Veículo</a>
     <h2 class="mt-4">Lista de Veículos</h2>
+    <!-- Adicionar a exibição de mensagens flash -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message[0] }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <table class="table mt-2">
         <thead>
             <tr>
@@ -43,13 +56,24 @@
                         <button type="submit" class="btn btn-sm btn-danger"
                             onclick="return confirm('Tens certeza que deseja excluir este veículo?')">Excluir</button>
                     </form>
+                    {% if vehicle.in_maintenance %}
+                    <form method="post"
+                        action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-success"
+                            name="complete_maintenance" value="1">Concluir
+                            Manutenção</button>
+                    </form>
+                    {% else %}
+                    <!-- Formulário para enviar o veículo para manutenção -->
                     <form method="post"
                         action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
                         <button type="submit" class="btn btn-sm btn-warning"
+                            name="maintenance"
                             onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
                     </form>
+                    <!-- Formulário para concluir a manutenção do veículo -->
+                    {% endif %}
                 </td>
-
             </tr>
             {% endfor %}
         </tbody>

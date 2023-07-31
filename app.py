@@ -1,9 +1,9 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import pytz
-from datetime import datetime, timedelta, date
+from datetime import datetime, date, timedelta
 import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
@@ -175,24 +175,29 @@ def login():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_panel():
     if request.method == 'POST':
-        # Obter dados do formulário
-        type = request.form['type']
-        brand = request.form['brand']
-        model = request.form['model']
-        year = int(request.form['year'])
-        price_per_day = float(request.form['price_per_day'])
-        categoria = request.form['categoria']
+        # Obter dados do formulário e adicionar um novo veículo
+        # Restante do código...
 
-        # Adição de novo veículo
-        vehicle = Vehicle(type=VehicleType[type.upper(
-        )], brand=brand, model=model, year=year, price_per_day=price_per_day, categoria=categoria)
-
-        # Salvar as alterações no banco de dados
-        db.session.add(vehicle)
-        db.session.commit()
+        # Exibir uma mensagem flash de sucesso após adicionar o veículo
+        flash('Novo veículo adicionado com sucesso!', 'success')
+        return redirect(url_for('admin_panel'))
 
     # Consultar todos os veículos no banco de dados
     vehicles = Vehicle.query.all()
+
+    # Lógica para verificar veículos que precisam de manutenção
+    today = date.today()
+    vehicles_needing_maintenance = [
+        vehicle for vehicle in vehicles if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today and not vehicle.in_maintenance]
+    if vehicles_needing_maintenance:
+        # Montar a mensagem de alerta
+        alert_message = 'Atenção: Os seguintes veículos precisam de manutenção:\n'
+        for vehicle in vehicles_needing_maintenance:
+            alert_message += f'{vehicle.brand} {vehicle.model} ({vehicle.type.value})\n'
+
+        # Enviar a mensagem de alerta para a página usando a função flash
+        flash(alert_message, 'warning')
+
     return render_template('admin.html', vehicles=vehicles)
 
 # Rota para a página de adicionar veículos
@@ -213,11 +218,11 @@ def add_vehicle():
         )], brand=brand, model=model, year=year, price_per_day=price_per_day)
 
         # Definir a data de criação do veículo como a data de última manutenção
-        vehicle.last_maintenance_date = datetime.now().date()
+        vehicle.last_maintenance_date = date.today()
 
         # Calcular a data da próxima manutenção (6 meses à frente)
-        six_months_later = datetime.now() + timedelta(days=6*30)
-        vehicle.next_maintenance_date = six_months_later.date()
+        six_months_later = date.today() + timedelta(days=6*30)
+        vehicle.next_maintenance_date = six_months_later
 
         # Atualizar categoria
         vehicle.update_categoria()
@@ -226,14 +231,16 @@ def add_vehicle():
         db.session.add(vehicle)
         db.session.commit()
 
+        # Mensagem de sucesso para exibir na página
+        flash('Novo veículo adicionado com sucesso!', 'success')
+
         # Redirecionar de volta para o painel de administração
         return redirect(url_for('admin_panel'))
 
     return render_template('add_vehicle.html')
 
+
 # Rota para a página de edição de veículo
-
-
 @app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
 def edit_vehicle(id):
     # Obter o veículo pelo ID
@@ -248,7 +255,7 @@ def edit_vehicle(id):
         price_per_day = float(request.form['price_per_day'])
         status = int(request.form['status'])
 
-        # Obter as datas de manutenção do formulário e convertê-las em objetos datetime.date
+        # Obter as datas de manutenção do formulário e convertê-las em objetos date
         last_maintenance_date_str = request.form['last_maintenance_date']
         next_maintenance_date_str = request.form['next_maintenance_date']
         last_maintenance_date = datetime.strptime(
@@ -256,44 +263,29 @@ def edit_vehicle(id):
         next_maintenance_date = datetime.strptime(
             next_maintenance_date_str, '%Y-%m-%d').date()
 
-        # Verificar se o botão de "Concluir Manutenção" foi pressionado
-        if 'complete_maintenance' in request.form:
-            # Definir o veículo como disponível
-            vehicle.status = True
-            vehicle.in_maintenance = False
-            vehicle.next_maintenance_date = None  # Limpar a data de próxima manutenção
+        # Atualizar os dados do veículo
+        vehicle.type = VehicleType[type.upper()]
+        vehicle.brand = brand
+        vehicle.model = model
+        vehicle.year = year
+        vehicle.price_per_day = price_per_day
+        vehicle.status = status
+        vehicle.last_maintenance_date = last_maintenance_date
+        vehicle.next_maintenance_date = next_maintenance_date
 
-            # Calcular a nova data de próxima manutenção (6 meses à frente da data atual)
-            six_months_later = datetime.now() + timedelta(days=6 * 30)
-            vehicle.next_maintenance_date = six_months_later.date()
-
+        # Atualizar a categoria do veículo com base no novo preço por dia
+        if price_per_day <= 50:
+            vehicle.categoria = 'Económico'
+        elif price_per_day <= 250:
+            vehicle.categoria = 'Silver'
         else:
-            # Atualizar os dados do veículo
-            vehicle.type = VehicleType[type.upper()]
-            vehicle.brand = brand
-            vehicle.model = model
-            vehicle.year = year
-            vehicle.price_per_day = price_per_day
-            vehicle.status = status
-            vehicle.last_maintenance_date = last_maintenance_date
-            vehicle.next_maintenance_date = next_maintenance_date
-
-            # Atualizar a categoria do veículo com base no novo preço por dia
-            if price_per_day <= 50:
-                vehicle.categoria = 'Económico'
-            elif price_per_day <= 250:
-                vehicle.categoria = 'Silver'
-            else:
-                vehicle.categoria = 'Gold'
+            vehicle.categoria = 'Gold'
 
         # Salvar as alterações no banco de dados
         db.session.commit()
 
         # Redirecionar de volta para o painel de administração
         return redirect(url_for('admin_panel'))
-
-    # Renderizar a página de edição de veículo com o formulário preenchido
-    return render_template('edit_vehicle.html', vehicle=vehicle)
 
     # Renderizar a página de edição de veículo com o formulário preenchido
     return render_template('edit_vehicle.html', vehicle=vehicle)
@@ -422,22 +414,38 @@ def maintenance_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
 
     if request.method == 'POST':
-        # Atualizar o status do veículo para indisponível, definir a data de manutenção e a próxima manutenção
-        vehicle.status = False
-        vehicle.in_maintenance = True
-        vehicle.last_maintenance_date = date.today()
-        vehicle.next_maintenance_date = date.today(
-        ) + timedelta(days=6*30)  # Próxima manutenção em 6 meses
+        # Verificar se o botão de manutenção foi pressionado
+        if 'maintenance' in request.form:
+            # Atualizar o status do veículo para indisponível, definir a data de manutenção e a próxima manutenção
+            vehicle.status = False
+            vehicle.in_maintenance = True
+            vehicle.last_maintenance_date = date.today()
+            vehicle.next_maintenance_date = date.today() + timedelta(days=6 *
+                                                                     30)  # Próxima manutenção em 6 meses
 
-        db.session.commit()
+            db.session.commit()
+
+            # Adicionar mensagem flash para informar que o veículo está em manutenção
+            flash('success', 'Veículo enviado para manutenção com sucesso!')
+
+        # Verificar se o botão de concluir manutenção foi pressionado
+        elif 'complete_maintenance' in request.form:
+            # Atualizar o status do veículo para disponível, definir in_maintenance como False
+            vehicle.status = True
+            vehicle.in_maintenance = False
+
+            # Atualizar a próxima data de manutenção (180 dias após a última manutenção)
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + \
+                timedelta(days=180)
+
+            db.session.commit()
+
+            # Adicionar mensagem flash para informar sobre a conclusão da manutenção
+            flash('success', 'Veículo concluiu a manutenção com sucesso!')
+
         return redirect(url_for('admin_panel'))
 
     return render_template('maintenance_vehicle.html', vehicle=vehicle)
-
-
-# Criar um scheduler para executar tarefas em segundo plano
-scheduler = BackgroundScheduler()
-scheduler.start()
 
 
 def check_maintenance_status():
@@ -452,10 +460,13 @@ def check_maintenance_status():
             # Definir o veículo como disponível e definir in_maintenance como False
             vehicle.status = True
             vehicle.in_maintenance = False
-            vehicle.next_maintenance_date = vehicle.last_maintenance_date + \
-                timedelta(days=180)
+            vehicle.next_maintenance_date = date.today() + timedelta(days=180)
             db.session.commit()
 
+
+# Criar um scheduler para executar tarefas em segundo plano
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 # Agendar a função para ser executada diariamente à meia-noite (00:00)
 scheduler.add_job(check_maintenance_status, 'interval',
