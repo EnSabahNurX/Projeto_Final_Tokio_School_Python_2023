@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import pytz
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
@@ -256,29 +256,44 @@ def edit_vehicle(id):
         next_maintenance_date = datetime.strptime(
             next_maintenance_date_str, '%Y-%m-%d').date()
 
-        # Atualizar os dados do veículo
-        vehicle.type = VehicleType[type.upper()]
-        vehicle.brand = brand
-        vehicle.model = model
-        vehicle.year = year
-        vehicle.price_per_day = price_per_day
-        vehicle.status = status
-        vehicle.last_maintenance_date = last_maintenance_date
-        vehicle.next_maintenance_date = next_maintenance_date
+        # Verificar se o botão de "Concluir Manutenção" foi pressionado
+        if 'complete_maintenance' in request.form:
+            # Definir o veículo como disponível
+            vehicle.status = True
+            vehicle.in_maintenance = False
+            vehicle.next_maintenance_date = None  # Limpar a data de próxima manutenção
 
-        # Atualizar a categoria do veículo com base no novo preço por dia
-        if price_per_day <= 50:
-            vehicle.categoria = 'Económico'
-        elif price_per_day <= 250:
-            vehicle.categoria = 'Silver'
+            # Calcular a nova data de próxima manutenção (6 meses à frente da data atual)
+            six_months_later = datetime.now() + timedelta(days=6 * 30)
+            vehicle.next_maintenance_date = six_months_later.date()
+
         else:
-            vehicle.categoria = 'Gold'
+            # Atualizar os dados do veículo
+            vehicle.type = VehicleType[type.upper()]
+            vehicle.brand = brand
+            vehicle.model = model
+            vehicle.year = year
+            vehicle.price_per_day = price_per_day
+            vehicle.status = status
+            vehicle.last_maintenance_date = last_maintenance_date
+            vehicle.next_maintenance_date = next_maintenance_date
+
+            # Atualizar a categoria do veículo com base no novo preço por dia
+            if price_per_day <= 50:
+                vehicle.categoria = 'Económico'
+            elif price_per_day <= 250:
+                vehicle.categoria = 'Silver'
+            else:
+                vehicle.categoria = 'Gold'
 
         # Salvar as alterações no banco de dados
         db.session.commit()
 
         # Redirecionar de volta para o painel de administração
         return redirect(url_for('admin_panel'))
+
+    # Renderizar a página de edição de veículo com o formulário preenchido
+    return render_template('edit_vehicle.html', vehicle=vehicle)
 
     # Renderizar a página de edição de veículo com o formulário preenchido
     return render_template('edit_vehicle.html', vehicle=vehicle)
@@ -410,8 +425,8 @@ def maintenance_vehicle(id):
         # Atualizar o status do veículo para indisponível, definir a data de manutenção e a próxima manutenção
         vehicle.status = False
         vehicle.in_maintenance = True
-        vehicle.last_maintenance_date = datetime.date.today()
-        vehicle.next_maintenance_date = datetime.date.today(
+        vehicle.last_maintenance_date = date.today()
+        vehicle.next_maintenance_date = date.today(
         ) + datetime.timedelta(days=6*30)  # Próxima manutenção em 6 meses
 
         db.session.commit()
@@ -431,7 +446,7 @@ def check_maintenance_status():
         in_maintenance=True).all()
 
     # Verificar se a data atual é igual ou superior à data de próxima manutenção
-    today = datetime.date.today()
+    today = date.today()
     for vehicle in vehicles_in_maintenance:
         if vehicle.next_maintenance_date <= today:
             # Definir o veículo como disponível e definir in_maintenance como False

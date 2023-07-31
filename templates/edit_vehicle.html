@@ -60,6 +60,10 @@
                 value="{{ vehicle.next_maintenance_date.strftime('%Y-%m-%d') if vehicle.next_maintenance_date else '' }}">
         </div>
         <div class="d-flex justify-content-end mt-4"></div>
+            <!-- Botão para concluir a manutenção -->
+            {% if vehicle.in_maintenance %}
+            <button type="submit" class="btn btn-sm btn-success" name="complete_maintenance" value="1">Concluir Manutenção</button>
+            {% endif %}
             <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Cancelar</a>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </div>
