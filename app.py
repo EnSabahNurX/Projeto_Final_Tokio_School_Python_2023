@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import pytz
-import datetime
+from datetime import datetime, timedelta
 import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
@@ -43,6 +43,8 @@ class VehicleType(enum.Enum):
     CARRO = 'Carro'
     MOTA = 'Mota'
 
+# Classe para o modelo de Veículo
+
 
 class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -53,8 +55,6 @@ class Vehicle(db.Model):
     price_per_day = db.Column(db.Float, nullable=False)
     status = db.Column(db.Boolean, default=True)
     categoria = db.Column(db.String(50), nullable=False, default='')
-
-    # Campos para manutenção
     in_maintenance = db.Column(db.Boolean, default=False)
     last_maintenance_date = db.Column(db.Date)
     next_maintenance_date = db.Column(db.Date)
@@ -67,7 +67,6 @@ class Vehicle(db.Model):
         self.price_per_day = price_per_day
         self.categoria = categoria
 
-    # Método para atualizar a categoria do veículo com base no preço por dia
     def update_categoria(self):
         if self.price_per_day <= 50:
             self.categoria = 'Económico'
@@ -76,20 +75,18 @@ class Vehicle(db.Model):
         else:
             self.categoria = 'Gold'
 
-    # Método para colocar o veículo em manutenção
     def start_maintenance(self):
         self.in_maintenance = True
-        self.status = False  # Altera o status para indisponível durante a manutenção
+        self.status = False
         self.last_maintenance_date = datetime.now().date()
         self.next_maintenance_date = self.last_maintenance_date + \
-            datetime.timedelta(days=30)
+            timedelta(days=30)
 
-    # Método para finalizar a manutenção
     def end_maintenance(self):
         self.in_maintenance = False
-        self.status = True  # Retorna o status para disponível após a manutenção
+        self.status = True
         self.next_maintenance_date = self.last_maintenance_date + \
-            datetime.timedelta(days=180)  # Próxima manutenção em 6 meses
+            timedelta(days=180)
 
 # Modelo de classe para clientes
 
@@ -142,7 +139,8 @@ def index():
 @app.before_request
 def check_admin_session():
     # Lista de rotas que requerem autenticação de administrador
-    admin_routes = ['/admin', '/edit_vehicle/', '/delete_vehicle/']
+    admin_routes = ['/admin', '/add_vehicle',
+                    '/edit_vehicle/', '/delete_vehicle/']
 
     if request.path in admin_routes:
         if 'admin' not in session:
@@ -183,11 +181,11 @@ def admin_panel():
         model = request.form['model']
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
-        status = int(request.form['status'])
+        categoria = request.form['categoria']
 
         # Adição de novo veículo
         vehicle = Vehicle(type=VehicleType[type.upper(
-        )], brand=brand, model=model, year=year, price_per_day=price_per_day, status=status)
+        )], brand=brand, model=model, year=year, price_per_day=price_per_day, categoria=categoria)
 
         # Salvar as alterações no banco de dados
         db.session.add(vehicle)
@@ -196,7 +194,6 @@ def admin_panel():
     # Consultar todos os veículos no banco de dados
     vehicles = Vehicle.query.all()
     return render_template('admin.html', vehicles=vehicles)
-
 
 # Rota para a página de adicionar veículos
 
@@ -215,6 +212,16 @@ def add_vehicle():
         vehicle = Vehicle(type=VehicleType[type.upper(
         )], brand=brand, model=model, year=year, price_per_day=price_per_day)
 
+        # Definir a data de criação do veículo como a data de última manutenção
+        vehicle.last_maintenance_date = datetime.now().date()
+
+        # Calcular a data da próxima manutenção (6 meses à frente)
+        six_months_later = datetime.now() + timedelta(days=6*30)
+        vehicle.next_maintenance_date = six_months_later.date()
+
+        # Atualizar categoria
+        vehicle.update_categoria()
+
         # Salvar as alterações no banco de dados
         db.session.add(vehicle)
         db.session.commit()
@@ -223,7 +230,6 @@ def add_vehicle():
         return redirect(url_for('admin_panel'))
 
     return render_template('add_vehicle.html')
-
 
 # Rota para a página de edição de veículo
 
@@ -245,9 +251,9 @@ def edit_vehicle(id):
         # Obter as datas de manutenção do formulário e convertê-las em objetos datetime.date
         last_maintenance_date_str = request.form['last_maintenance_date']
         next_maintenance_date_str = request.form['next_maintenance_date']
-        last_maintenance_date = datetime.datetime.strptime(
+        last_maintenance_date = datetime.strptime(
             last_maintenance_date_str, '%Y-%m-%d').date()
-        next_maintenance_date = datetime.datetime.strptime(
+        next_maintenance_date = datetime.strptime(
             next_maintenance_date_str, '%Y-%m-%d').date()
 
         # Atualizar os dados do veículo
@@ -356,7 +362,7 @@ def register_client():
         apelido = request.form['apelido']
         email = request.form['email']
         telefone = request.form['telefone']
-        data_nascimento = datetime.datetime.strptime(
+        data_nascimento = datetime.strptime(
             request.form['data_nascimento'], '%Y-%m-%d').date()
         morada = request.form['morada']
         nif = request.form['nif']
@@ -406,7 +412,7 @@ def maintenance_vehicle(id):
         vehicle.in_maintenance = True
         vehicle.last_maintenance_date = datetime.date.today()
         vehicle.next_maintenance_date = datetime.date.today(
-        ) + datetime.timedelta(days=180)  # Próxima manutenção em 6 meses
+        ) + datetime.timedelta(days=6*30)  # Próxima manutenção em 6 meses
 
         db.session.commit()
         return redirect(url_for('admin_panel'))
@@ -427,7 +433,7 @@ def check_maintenance_status():
     # Verificar se a data atual é igual ou superior à data de próxima manutenção
     today = datetime.date.today()
     for vehicle in vehicles_in_maintenance:
-        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
+        if vehicle.next_maintenance_date <= today:
             # Definir o veículo como disponível e definir in_maintenance como False
             vehicle.status = True
             vehicle.in_maintenance = False
