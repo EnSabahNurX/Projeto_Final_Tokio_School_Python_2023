@@ -24,11 +24,12 @@ Estrutura da app:
 - Manutenção
 - Após x utilizações, o veículo terá de ser enviado para a manutenção
 - Alerta de necessidade de levar os veículos à manutenção
-
-O objetivo principal é criar um site para o sistema de aluguel de veículos funcione normalmente, se for possível criar um app para a empresa fazer o gerenciamento do negócio e integrar tudo com a base de dados do site.
 - Legalização
 - 30 dias para legalizar (carro) pelo Estado
 - Por exemplo, 5 em 5 anos, deve voltar a ser legalizado
 - Parametrizar o alerta que informa a necessidade do aumento do estoque.
 - Aspeto financeiro
 - Entrada e saída de dinheiro
+
+
+O objetivo principal é criar um site para o sistema de aluguel de veículos funcione normalmente, se for possível criar um app para a empresa fazer o gerenciamento do negócio e integrar tudo com a base de dados do site.
