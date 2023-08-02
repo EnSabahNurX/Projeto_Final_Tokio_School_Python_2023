@@ -83,39 +83,39 @@ class Vehicle(db.Model):
         else:
             self.categoria = 'Gold'
 
+    def initialize_vehicle(self):
+        # Define a data de criação do veículo como a data de última legalização
+        self.last_legalization_date = date.today()
+
+        # Calcular a data da próxima legalização (1 ano à frente)
+        one_year_later = date.today() + timedelta(days=365)
+        self.next_legalization_date = one_year_later
+
+        # Atualizar a categoria do veículo com base no preço por dia
+        if self.price_per_day >= 250:
+            self.categoria = 'Gold'
+        elif self.price_per_day >= 50:
+            self.categoria = 'Silver'
+        else:
+            self.categoria = 'Económico'
+
+        # Definir as datas de manutenção
+        self.last_maintenance_date = datetime.now().date()
+        self.next_maintenance_date = self.last_maintenance_date + \
+            timedelta(days=180)
+
     def start_maintenance(self):
         self.in_maintenance = True
         self.status = False
-        self.last_maintenance_date = datetime.now().date()
+        self.last_maintenance_date = date.today()
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=30)
-
-        # Iniciar o processo de legalização
-        self.last_legalization_date = date.today()
-        self.next_legalization_date = self.last_legalization_date + \
-            timedelta(days=365)
-        if not self.legalization_history:  # Verificar se legalization_history é None ou vazio
-            self.legalization_history = f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
-        else:
-            self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
 
     def end_maintenance(self):
         self.in_maintenance = False
         self.status = True
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=180)
-        if not self.maintenance_history:  # Verificar se maintenance_history é None ou vazio
-            self.maintenance_history = f'{self.last_maintenance_date.strftime("%Y-%m-%d")};'
-        else:
-            self.maintenance_history += f'{self.last_maintenance_date.strftime("%Y-%m-%d")};'
-
-        # Concluir o processo de legalização
-        self.next_legalization_date = self.last_legalization_date + \
-            timedelta(days=365)
-        if not self.legalization_history:  # Verificar se legalization_history é None ou vazio
-            self.legalization_history = f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
-        else:
-            self.legalization_history += f'{self.last_legalization_date.strftime("%Y-%m-%d")};'
 
 # Modelo de classe para clientes
 
@@ -262,18 +262,11 @@ def add_vehicle():
         price_per_day = float(request.form['price_per_day'])
 
         # Adição de novo veículo
-        vehicle = Vehicle(type=VehicleType[type.upper(
-        )], brand=brand, model=model, year=year, price_per_day=price_per_day)
+        vehicle = Vehicle(type=VehicleType[type.upper()],
+                          brand=brand, model=model, year=year, price_per_day=price_per_day)
 
-        # Definir a data de criação do veículo como a data de última manutenção
-        vehicle.last_maintenance_date = date.today()
-
-        # Calcular a data da próxima manutenção (6 meses à frente)
-        six_months_later = date.today() + timedelta(days=6*30)
-        vehicle.next_maintenance_date = six_months_later
-
-        # Iniciar o processo de legalização
-        vehicle.start_maintenance()
+        # Inicializar o veículo com valores padrão (não entra em manutenção)
+        vehicle.initialize_vehicle()
 
         # Salvar as alterações no banco de dados
         db.session.add(vehicle)
