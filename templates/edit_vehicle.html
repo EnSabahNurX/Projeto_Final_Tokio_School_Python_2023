@@ -1,7 +1,6 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-
 <div class="container mt-4">
     <h1>Editar Veículo</h1>
     <form method="POST" enctype="multipart/form-data">
@@ -30,14 +29,24 @@
                 value="{{ vehicle.price_per_day }}" required>
         </div>
         <div class="mb-3">
+            <label for="last_maintenance_date" class="form-label">Última Manutenção</label>
+            <input type="date" class="form-control" id="last_maintenance_date" name="last_maintenance_date"
+                value="{{ vehicle.last_maintenance_date }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="next_maintenance_date" class="form-label">Próxima Manutenção</label>
+            <input type="date" class="form-control" id="next_maintenance_date" name="next_maintenance_date"
+                value="{{ vehicle.next_maintenance_date }}" required>
+        </div>
+        <div class="mb-3">
             <label for="last_legalization_date" class="form-label">Última Legalização</label>
             <input type="date" class="form-control" id="last_legalization_date" name="last_legalization_date"
-                value="{{ vehicle.last_legalization_date.strftime('%Y-%m-%d') }}" required>
+                value="{{ vehicle.last_legalization_date }}" required>
         </div>
         <div class="mb-3">
             <label for="next_legalization_date" class="form-label">Próxima Legalização</label>
             <input type="date" class="form-control" id="next_legalization_date" name="next_legalization_date"
-                value="{{ vehicle.next_legalization_date.strftime('%Y-%m-%d') }}" required>
+                value="{{ vehicle.next_legalization_date }}" required>
         </div>
         <div class="form-group">
             <label for="image">Upload Vehicle Images</label>
@@ -45,7 +54,7 @@
         </div>
         <div class="d-flex justify-content-end mt-4">
             <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Cancelar</a>
-            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            <button type="submit" class="btn btn-primary">Editar Veículo</button>
         </div>
     </form>
 </div>
@@ -65,5 +74,4 @@
         document.getElementById("categoria").value = categoria;
     });
 </script>
-
 {% endblock %}

@@ -334,30 +334,43 @@ def edit_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
 
     if request.method == 'POST':
-        # Obter dados do formulário
+        # Obter os dados do formulário
         type = request.form['type']
         brand = request.form['brand']
         model = request.form['model']
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
-        status = int(request.form['status'])
-
-        # Obter as datas de manutenção e legalização do formulário e convertê-las em objetos date
         last_maintenance_date_str = request.form['last_maintenance_date']
         next_maintenance_date_str = request.form['next_maintenance_date']
         last_legalization_date_str = request.form['last_legalization_date']
         next_legalization_date_str = request.form['next_legalization_date']
 
-        last_maintenance_date = datetime.strptime(
+        # Atualizar os dados do veículo
+        vehicle.type = VehicleType[type.upper()]
+        vehicle.brand = brand
+        vehicle.model = model
+        vehicle.year = year
+        vehicle.price_per_day = price_per_day
+
+        # Converter as datas do formulário em objetos date
+        vehicle.last_maintenance_date = datetime.strptime(
             last_maintenance_date_str, '%Y-%m-%d').date()
-        next_maintenance_date = datetime.strptime(
+        vehicle.next_maintenance_date = datetime.strptime(
             next_maintenance_date_str, '%Y-%m-%d').date()
-        last_legalization_date = datetime.strptime(
+        vehicle.last_legalization_date = datetime.strptime(
             last_legalization_date_str, '%Y-%m-%d').date()
-        next_legalization_date = datetime.strptime(
+        vehicle.next_legalization_date = datetime.strptime(
             next_legalization_date_str, '%Y-%m-%d').date()
 
-        # Salvar as imagens no campo image_filenames
+        # Atualizar a categoria do veículo com base no novo preço por dia
+        if price_per_day <= 50:
+            vehicle.categoria = 'Económico'
+        elif price_per_day <= 250:
+            vehicle.categoria = 'Silver'
+        else:
+            vehicle.categoria = 'Gold'
+
+        # Salvar as novas imagens no campo image_filenames
         if 'image' in request.files:
             images = request.files.getlist('image')
             filenames = []
@@ -368,26 +381,6 @@ def edit_vehicle(id):
                         app.config['UPLOAD_FOLDER'], filename))
                     filenames.append(filename)
             vehicle.add_images(filenames)
-
-        # Atualizar os dados do veículo
-        vehicle.type = VehicleType[type.upper()]
-        vehicle.brand = brand
-        vehicle.model = model
-        vehicle.year = year
-        vehicle.price_per_day = price_per_day
-        vehicle.status = status
-        vehicle.last_maintenance_date = last_maintenance_date
-        vehicle.next_maintenance_date = next_maintenance_date
-        vehicle.last_legalization_date = last_legalization_date
-        vehicle.next_legalization_date = next_legalization_date
-
-        # Atualizar a categoria do veículo com base no novo preço por dia
-        if price_per_day <= 50:
-            vehicle.categoria = 'Económico'
-        elif price_per_day <= 250:
-            vehicle.categoria = 'Silver'
-        else:
-            vehicle.categoria = 'Gold'
 
         db.session.commit()
 
