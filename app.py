@@ -76,8 +76,6 @@ class Vehicle(db.Model):
     last_legalization_date = db.Column(db.Date)
     next_legalization_date = db.Column(db.Date)
     legalization_history = db.Column(db.String(1000), default='')
-    # image_filenames = db.Column(db.PickleType)
-    # Caminho das imagens separados por vírgula
     imagens = db.Column(db.String(1000))
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=''):
