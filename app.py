@@ -10,7 +10,6 @@ import atexit
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.utils import secure_filename
 
-images = UploadSet('images', IMAGES)
 
 app = Flask(__name__)
 
@@ -27,6 +26,17 @@ db_path = os.path.join(db_folder, 'database.db')
 # Configurações do SQLite - banco de dados ficará dentro da pasta 'database'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Defina o UploadSet para imagens
+images = UploadSet('images', IMAGES)
+
+# Defina o diretório de upload de imagens (pasta 'static')
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/images')
+
+# Se a pasta 'static/images' não existir, crie-a
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
 
 # Configuração do Bootstrap 5 com Font Awesome
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'yeti'
@@ -66,7 +76,7 @@ class Vehicle(db.Model):
     last_legalization_date = db.Column(db.Date)
     next_legalization_date = db.Column(db.Date)
     legalization_history = db.Column(db.String(1000), default='')
-    image_filenames = db.Column(db.String(1000), default='')
+    image_filenames = db.Column(db.PickleType)
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=''):
         self.type = type
@@ -75,19 +85,20 @@ class Vehicle(db.Model):
         self.year = year
         self.price_per_day = price_per_day
         self.categoria = categoria
-        self.maintenance_history = ''  # Inicializar como uma string vazia
-        self.last_legalization_date = None  # Inicializar como None
-        self.next_legalization_date = None  # Inicializar como None
-        self.legalization_history = ''  # Inicializar como uma string vazia
+        self.maintenance_history = ''
+        self.last_legalization_date = None
+        self.next_legalization_date = None
+        self.legalization_history = ''
+        self.image_filenames = []
 
     def add_images(self, filenames):
         for filename in filenames:
-            self.image_urls.append(filename)
+            self.image_filenames.append(filename)
 
     def delete_images(self, filenames):
         for filename in filenames:
-            if filename in self.image_urls:
-                self.image_urls.remove(filename)
+            if filename in self.image_filenames:
+                self.image_filenames.remove(filename)
                 # Delete the image file from the server
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 if os.path.exists(file_path):
@@ -295,6 +306,10 @@ def add_vehicle():
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
 
+        # Adição de novo veículo
+        vehicle = Vehicle(type=VehicleType[type.upper()],
+                          brand=brand, model=model, year=year, price_per_day=price_per_day)
+
         # Salvar as imagens no campo image_filenames
         if 'image' in request.files:
             images = request.files.getlist('image')
@@ -306,10 +321,6 @@ def add_vehicle():
                         app.config['UPLOAD_FOLDER'], filename))
                     filenames.append(filename)
             vehicle.add_images(filenames)
-
-        # Adição de novo veículo
-        vehicle = Vehicle(type=VehicleType[type.upper()],
-                          brand=brand, model=model, year=year, price_per_day=price_per_day)
 
         # Inicializar o veículo com valores padrão (não entra em manutenção)
         vehicle.initialize_vehicle()
