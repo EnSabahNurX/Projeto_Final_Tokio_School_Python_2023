@@ -76,7 +76,9 @@ class Vehicle(db.Model):
     last_legalization_date = db.Column(db.Date)
     next_legalization_date = db.Column(db.Date)
     legalization_history = db.Column(db.String(1000), default='')
-    image_filenames = db.Column(db.PickleType)
+    # image_filenames = db.Column(db.PickleType)
+    # Caminho das imagens separados por vírgula
+    imagens = db.Column(db.String(1000))
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=''):
         self.type = type
@@ -306,33 +308,26 @@ def add_vehicle():
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
 
-        # Adição de novo veículo
-        vehicle = Vehicle(type=VehicleType[type.upper()],
-                          brand=brand, model=model, year=year, price_per_day=price_per_day)
+        # Processar o upload das imagens
+        imagens = request.files.getlist('imagens')
+        imagens_paths = []
+        for imagem in imagens:
+            filename = secure_filename(imagem.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            imagem.save(path)
+            imagens_paths.append(path)
 
-        # Salvar as imagens no campo image_filenames
-        if 'image' in request.files:
-            images = request.files.getlist('image')
-            filenames = []
-            for image in images:
-                if image.filename:
-                    filename = secure_filename(image.filename)
-                    image.save(os.path.join(
-                        app.config['UPLOAD_FOLDER'], filename))
-                    filenames.append(filename)
-            vehicle.add_images(filenames)
+        # Criar um novo objeto Veiculo e adicioná-lo ao banco de dados
+        novo_veiculo = Vehicle(type=VehicleType[type.upper(
+        )], brand=brand, model=model, year=year, price_per_day=price_per_day)
+        # Salvar os caminhos das imagens
+        novo_veiculo.imagens = ','.join(imagens_paths)
+        novo_veiculo.initialize_vehicle()
+        db.session.add(novo_veiculo)
+        db.session.commit()  # Salvar o novo veiculo no banco de dados
 
-        # Inicializar o veículo com valores padrão (não entra em manutenção)
-        vehicle.initialize_vehicle()
-
-        # Salvar as alterações no banco de dados
-        db.session.add(vehicle)
-        db.session.commit()
-
-        # Mensagem de sucesso para exibir na página
+        # Redirecionar para o painel de administração com mensagem de sucesso
         flash('Novo veículo adicionado com sucesso!', 'success')
-
-        # Redirecionar de volta para o painel de administração
         return redirect(url_for('admin_panel'))
 
     return render_template('add_vehicle.html')
@@ -356,13 +351,6 @@ def edit_vehicle(id):
         last_legalization_date_str = request.form['last_legalization_date']
         next_legalization_date_str = request.form['next_legalization_date']
 
-        # Atualizar os dados do veículo
-        vehicle.type = VehicleType[type.upper()]
-        vehicle.brand = brand
-        vehicle.model = model
-        vehicle.year = year
-        vehicle.price_per_day = price_per_day
-
         # Converter as datas do formulário em objetos date
         vehicle.last_maintenance_date = datetime.strptime(
             last_maintenance_date_str, '%Y-%m-%d').date()
@@ -381,17 +369,23 @@ def edit_vehicle(id):
         else:
             vehicle.categoria = 'Gold'
 
-        # Salvar as novas imagens no campo image_filenames
-        if 'image' in request.files:
-            images = request.files.getlist('image')
-            filenames = []
-            for image in images:
-                if image.filename:
-                    filename = secure_filename(image.filename)
-                    image.save(os.path.join(
-                        app.config['UPLOAD_FOLDER'], filename))
-                    filenames.append(filename)
-            vehicle.add_images(filenames)
+        # Processar o upload das imagens
+        imagens = request.files.getlist('imagens')
+        imagens_paths = []
+        for imagem in imagens:
+            filename = secure_filename(imagem.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            imagem.save(path)
+            imagens_paths.append(path)
+
+        # Atualizar os dados do veículo
+        vehicle.type = VehicleType[type.upper()]
+        vehicle.brand = brand
+        vehicle.model = model
+        vehicle.year = year
+        vehicle.price_per_day = price_per_day
+        # Salvar os caminhos das imagens
+        vehicle.imagens = ','.join(imagens_paths)
 
         db.session.commit()
 
