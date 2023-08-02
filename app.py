@@ -203,6 +203,10 @@ def login():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_panel():
+    # Chamar a função para verificar a manutenção do veículo
+    check_maintenance_status()
+    # Adicionar mensagem flash para informar sobre a próxima manutenção
+
     if request.method == 'POST':
         # Obter dados do formulário e adicionar um novo veículo
         # Restante do código...
@@ -213,11 +217,12 @@ def admin_panel():
 
     # Consultar todos os veículos no banco de dados
     vehicles = Vehicle.query.all()
-
     # Lógica para verificar veículos que precisam de manutenção
     today = date.today()
     vehicles_needing_maintenance = [
-        vehicle for vehicle in vehicles if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today and not vehicle.in_maintenance]
+        vehicle for vehicle in vehicles
+        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= (today + timedelta(days=30)) and not vehicle.in_maintenance
+    ]
     if vehicles_needing_maintenance:
         # Montar a mensagem de alerta
         alert_message = 'Atenção: Os seguintes veículos precisam de manutenção:\n'
@@ -537,11 +542,12 @@ def check_maintenance_status():
     # Verificar se a data atual é igual ou superior à data de próxima manutenção
     today = date.today()
     for vehicle in vehicles_in_maintenance:
-        if vehicle.next_maintenance_date <= today:
+        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
             # Definir o veículo como disponível e definir in_maintenance como False
             vehicle.status = True
             vehicle.in_maintenance = False
-            vehicle.next_maintenance_date = date.today() + timedelta(days=180)
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + \
+                timedelta(days=180)
             db.session.commit()
 
 
