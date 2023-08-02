@@ -151,6 +151,9 @@ class Cliente(db.Model):
 
 @app.route('/')
 def index():
+    # Chamar a função para verificar a manutenção do veículo
+    check_maintenance_status()
+
     # Carrega todos os veículos do banco de dados
     veiculos = Vehicle.query.all()
 
@@ -205,7 +208,6 @@ def login():
 def admin_panel():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
-    # Adicionar mensagem flash para informar sobre a próxima manutenção
 
     if request.method == 'POST':
         # Obter dados do formulário e adicionar um novo veículo
