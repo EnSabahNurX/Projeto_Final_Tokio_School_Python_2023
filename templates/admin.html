@@ -3,9 +3,8 @@
 {% block content %}
 
 <div class="container mt-4">
-    <h1>Admin Panel</h1>
-    <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar
-        Novo Veículo</a>
+    <h1>Painel de Administração</h1>
+    <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar Novo Veículo</a>
     <h2 class="mt-4">Lista de Veículos</h2>
     <!-- Adicionar a exibição de mensagens flash -->
     {% with messages = get_flashed_messages() %}
@@ -29,7 +28,7 @@
                 <th scope="col">Modelo</th>
                 <th scope="col">Ano</th>
                 <th scope="col">Diária (€)</th>
-                <th>Categoria</th>
+                <th scope="col">Categoria</th>
                 <th scope="col">Status</th>
                 <th scope="col">Em Manutenção</th>
                 <th scope="col">Próxima Manutenção</th>
@@ -82,8 +81,7 @@
                     {% if vehicle.in_maintenance %}
                     <form method="post" action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
                         <button type="submit" class="btn btn-sm btn-success" name="complete_maintenance"
-                            value="1">Concluir
-                            Manutenção</button>
+                            value="1">Concluir Manutenção</button>
                     </form>
                     {% else %}
                     <!-- Formulário para enviar o veículo para manutenção -->
@@ -91,7 +89,6 @@
                         <button type="submit" class="btn btn-sm btn-warning" name="maintenance"
                             onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
                     </form>
-                    <!-- Formulário para concluir a manutenção do veículo -->
                     {% endif %}
                     <!-- Formulário para concluir a legalização do veículo -->
                     <form method="post" action="{{ url_for('legalize_vehicle', id=vehicle.id) }}">
