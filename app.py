@@ -7,9 +7,7 @@ from datetime import datetime, date, timedelta
 import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
-from flask_uploads import UploadSet, IMAGES
 from werkzeug.utils import secure_filename
-
 
 app = Flask(__name__)
 
@@ -27,8 +25,6 @@ db_path = os.path.join(db_folder, 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Defina o UploadSet para imagens
-images = UploadSet('images', IMAGES)
 
 # Defina o diretório de upload de imagens (pasta 'static')
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/images')
@@ -89,20 +85,21 @@ class Vehicle(db.Model):
         self.last_legalization_date = None
         self.next_legalization_date = None
         self.legalization_history = ''
-        self.image_filenames = []
+        self.imagens = ''
 
-    def add_images(self, filenames):
-        for filename in filenames:
-            self.image_filenames.append(filename)
+    def delete_image(self, image_path):
+        # Verificar se a imagem está associada ao veículo
+        if image_path in self.imagens.split(','):
+            # Remover a imagem do servidor
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_path))
 
-    def delete_images(self, filenames):
-        for filename in filenames:
-            if filename in self.image_filenames:
-                self.image_filenames.remove(filename)
-                # Delete the image file from the server
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+            # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
+            imagens = self.imagens.split(',')
+            imagens.remove(image_path)
+            self.imagens = ','.join(imagens)
+
+            # Salvar as alterações no banco de dados
+            db.session.commit()
 
     def update_categoria(self):
         if self.price_per_day <= 50:
@@ -315,7 +312,6 @@ def add_vehicle():
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             imagem.save(path)
             imagens_paths.append(path)
-
         # Criar um novo objeto Veiculo e adicioná-lo ao banco de dados
         novo_veiculo = Vehicle(type=VehicleType[type.upper(
         )], brand=brand, model=model, year=year, price_per_day=price_per_day)
@@ -409,6 +405,23 @@ def delete_vehicle(id):
     db.session.commit()
 
     return redirect(url_for('admin_panel'))
+
+# Rota para exclusão de imagem
+
+
+@app.route('/delete_image/<path:image_path>/<int:vehicle_id>')
+def delete_image(image_path, vehicle_id):
+    # Encontrar o veículo no banco de dados pelo ID
+    vehicle = Vehicle.query.get(vehicle_id)
+    if not vehicle:
+        flash('Veículo não encontrado.', 'error')
+        return redirect(url_for('edit_vehicle', vehicle_id=vehicle_id))
+
+    # Chamar o método delete_image na instância do veículo para apagar a imagem
+    vehicle.delete_image(image_path)
+
+    flash('Imagem removida com sucesso!', 'success')
+    return redirect(url_for('edit_vehicle', vehicle_id=vehicle_id))
 
 # Rota para a página de login do cliente
 
