@@ -81,12 +81,18 @@ class Vehicle(db.Model):
         self.next_legalization_date = None  # Inicializar como None
         self.legalization_history = ''  # Inicializar como uma string vazia
 
-    def add_image(self, image):
-        self.image_filenames += f'{image};'
+    def add_images(self, filenames):
+        for filename in filenames:
+            self.image_urls.append(filename)
 
-    @property
-    def image_urls(self):
-        return [images.url(filename) for filename in self.image_filenames.split(';') if filename]
+    def delete_images(self, filenames):
+        for filename in filenames:
+            if filename in self.image_urls:
+                self.image_urls.remove(filename)
+                # Delete the image file from the server
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
 
     def update_categoria(self):
         if self.price_per_day <= 50:
