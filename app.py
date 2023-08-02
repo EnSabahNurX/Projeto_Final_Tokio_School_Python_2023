@@ -255,6 +255,15 @@ def admin_panel():
     # Passar a variável 'date' para o template 'admin.html'
     return render_template('admin.html', vehicles=vehicles, date=date.today())
 
+# Rota para a página de visualizar veículos
+
+
+@app.route('/admin/view_vehicle/<int:id>')
+def view_vehicle(id):
+    vehicle = Vehicle.query.get_or_404(id)
+    return render_template('view_vehicle.html', vehicle=vehicle)
+
+
 # Rota para a página de adicionar veículos
 
 
