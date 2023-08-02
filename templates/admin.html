@@ -33,6 +33,7 @@
                 <th scope="col">Em Manutenção</th>
                 <th scope="col">Próxima Manutenção</th>
                 <th scope="col">Próxima Legalização</th>
+                <th>Categoria</th>
                 <th scope="col">Ações</th>
             </tr>
         </thead>
@@ -70,6 +71,7 @@
                     </div>
                     {% endif %}
                 </td>
+                <td>{{ vehicle.categoria }}</td>
                 <td>
                     <a href="{{ url_for('edit_vehicle', id=vehicle.id) }}"
                         class="btn btn-sm btn-primary">Editar</a>
