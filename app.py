@@ -7,7 +7,6 @@ from datetime import datetime, date, timedelta
 import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
-from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.utils import secure_filename
 
