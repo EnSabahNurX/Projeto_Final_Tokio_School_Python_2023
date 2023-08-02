@@ -7,6 +7,11 @@ from datetime import datetime, date, timedelta
 import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from flask_uploads import UploadSet, IMAGES
+from werkzeug.utils import secure_filename
+
+images = UploadSet('images', IMAGES)
 
 app = Flask(__name__)
 
@@ -62,6 +67,7 @@ class Vehicle(db.Model):
     last_legalization_date = db.Column(db.Date)
     next_legalization_date = db.Column(db.Date)
     legalization_history = db.Column(db.String(1000), default='')
+    image_filenames = db.Column(db.String(1000), default='')
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=''):
         self.type = type
@@ -74,6 +80,13 @@ class Vehicle(db.Model):
         self.last_legalization_date = None  # Inicializar como None
         self.next_legalization_date = None  # Inicializar como None
         self.legalization_history = ''  # Inicializar como uma string vazia
+
+    def add_image(self, image):
+        self.image_filenames += f'{image};'
+
+    @property
+    def image_urls(self):
+        return [images.url(filename) for filename in self.image_filenames.split(';') if filename]
 
     def update_categoria(self):
         if self.price_per_day <= 50:
@@ -277,6 +290,18 @@ def add_vehicle():
         year = int(request.form['year'])
         price_per_day = float(request.form['price_per_day'])
 
+        # Salvar as imagens no campo image_filenames
+        if 'image' in request.files:
+            images = request.files.getlist('image')
+            filenames = []
+            for image in images:
+                if image.filename:
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(
+                        app.config['UPLOAD_FOLDER'], filename))
+                    filenames.append(filename)
+            vehicle.add_images(filenames)
+
         # Adição de novo veículo
         vehicle = Vehicle(type=VehicleType[type.upper()],
                           brand=brand, model=model, year=year, price_per_day=price_per_day)
@@ -326,6 +351,18 @@ def edit_vehicle(id):
             last_legalization_date_str, '%Y-%m-%d').date()
         next_legalization_date = datetime.strptime(
             next_legalization_date_str, '%Y-%m-%d').date()
+
+        # Salvar as imagens no campo image_filenames
+        if 'image' in request.files:
+            images = request.files.getlist('image')
+            filenames = []
+            for image in images:
+                if image.filename:
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(
+                        app.config['UPLOAD_FOLDER'], filename))
+                    filenames.append(filename)
+            vehicle.add_images(filenames)
 
         # Atualizar os dados do veículo
         vehicle.type = VehicleType[type.upper()]
