@@ -296,6 +296,7 @@ def view_vehicle(id):
 # Rota para a página de adicionar veículos
 
 
+# Rota para a página de adicionar veículos
 @app.route('/add_vehicle', methods=['GET', 'POST'])
 def add_vehicle():
     if request.method == 'POST':
@@ -388,6 +389,7 @@ def edit_vehicle(id):
         db.session.commit()
 
         # Redirecionar de volta para o painel de administração
+        flash('Novo veículo atualizado com sucesso!', 'success')
         return redirect(url_for('admin_panel'))
 
     # Renderizar a página de edição de veículo com o formulário preenchido
