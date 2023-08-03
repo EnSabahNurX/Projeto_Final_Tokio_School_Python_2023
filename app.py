@@ -353,16 +353,18 @@ def edit_vehicle(id):
         # Processar o upload das imagens
         imagens = request.files.getlist('imagens')
         imagens_paths = vehicle.imagens.split(',')
-
-        # Criar a pasta de destino, caso não exista
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
-
+        print(imagens)  # Verificar se imagens contém dados
         for imagem in imagens:
+            if imagem.filename == '':
+                # A imagem está vazia, ignorá-la
+                continue
+
             filename = secure_filename(imagem.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             imagem.save(path)
             imagens_paths.append(filename)
+
+        print(imagens_paths)  # Verificar os caminhos das imagens
 
         # Atualizar os dados do veículo
         vehicle.type = VehicleType[type.upper()]
