@@ -366,7 +366,7 @@ def edit_vehicle(id):
 
         # Processar o upload das imagens
         imagens = request.files.getlist('imagens')
-        imagens_paths = []
+        imagens_paths = vehicle.imagens.split(',')
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -381,11 +381,10 @@ def edit_vehicle(id):
         vehicle.price_per_day = price_per_day
         # Salvar os caminhos das imagens
         vehicle.imagens = ','.join(imagens_paths)
-
         db.session.commit()
 
         # Redirecionar de volta para o painel de administração
-        flash('Novo veículo atualizado com sucesso!', 'success')
+        flash('Veículo atualizado com sucesso!', 'success')
         return redirect(url_for('admin_panel'))
 
     # Renderizar a página de edição de veículo com o formulário preenchido
@@ -415,13 +414,13 @@ def delete_image(image_path, vehicle_id):
     vehicle = Vehicle.query.get(vehicle_id)
     if not vehicle:
         flash('Veículo não encontrado.', 'error')
-        return redirect(url_for('edit_vehicle', vehicle_id=vehicle_id))
+        return redirect(url_for('edit_vehicle', vehicle_id=vehicle.id))
 
     # Chamar o método delete_image na instância do veículo para apagar a imagem
     vehicle.delete_image(image_path)
 
     flash('Imagem removida com sucesso!', 'success')
-    return redirect(url_for('edit_vehicle', vehicle_id=vehicle_id))
+    return redirect(url_for('edit_vehicle', vehicle_id=vehicle.id))
 
 # Rota para a página de login do cliente
 
