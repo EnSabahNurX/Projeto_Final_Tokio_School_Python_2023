@@ -371,7 +371,7 @@ def edit_vehicle(id):
             filename = secure_filename(imagem.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             imagem.save(path)
-            imagens_paths.append(path)
+            imagens_paths.append(filename)
 
         # Atualizar os dados do veículo
         vehicle.type = VehicleType[type.upper()]
@@ -408,19 +408,31 @@ def delete_vehicle(id):
 # Rota para exclusão de imagem
 
 
-@app.route('/delete_image/<path:image_path>/<int:vehicle_id>')
+@app.route('/delete_image/<path:image_path>/<int:vehicle_id>', methods=['POST'])
 def delete_image(image_path, vehicle_id):
     # Encontrar o veículo no banco de dados pelo ID
     vehicle = Vehicle.query.get(vehicle_id)
     if not vehicle:
         flash('Veículo não encontrado.', 'error')
-        return redirect(url_for('edit_vehicle', vehicle_id=vehicle.id))
+        return redirect(url_for('edit_vehicle', id=vehicle_id))
 
-    # Chamar o método delete_image na instância do veículo para apagar a imagem
-    vehicle.delete_image(image_path)
+    # Verificar se a imagem está associada ao veículo
+    if image_path in vehicle.imagens.split(','):
+        # Remover a imagem do servidor
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_path))
 
-    flash('Imagem removida com sucesso!', 'success')
-    return redirect(url_for('edit_vehicle', vehicle_id=vehicle.id))
+        # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
+        imagens = vehicle.imagens.split(',')
+        imagens.remove(image_path)
+        vehicle.imagens = ','.join(imagens)
+
+        # Salvar as alterações no banco de dados
+        db.session.commit()
+
+        flash('Imagem removida com sucesso!', 'success')
+
+    return redirect(url_for('edit_vehicle', id=vehicle_id))
+
 
 # Rota para a página de login do cliente
 

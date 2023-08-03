@@ -1,9 +1,10 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
+
 <div class="container mt-4">
     <h1>Editar Veículo</h1>
-    <form method="post" action="/edit_vehicle" enctype="multipart/form-data">
+    <form method="post" action="/edit_vehicle/{{ vehicle.id }}" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="type" class="form-label">Tipo de Veículo</label>
             <select class="form-select" id="type" name="type" required>
@@ -31,47 +32,48 @@
         <div class="mb-3">
             <label for="last_maintenance_date" class="form-label">Última Manutenção</label>
             <input type="date" class="form-control" id="last_maintenance_date" name="last_maintenance_date"
-                value="{{ vehicle.last_maintenance_date }}" required>
+                value="{{ vehicle.last_maintenance_date.strftime('%Y-%m-%d') }}" required>
         </div>
         <div class="mb-3">
             <label for="next_maintenance_date" class="form-label">Próxima Manutenção</label>
             <input type="date" class="form-control" id="next_maintenance_date" name="next_maintenance_date"
-                value="{{ vehicle.next_maintenance_date }}" required>
+                value="{{ vehicle.next_maintenance_date.strftime('%Y-%m-%d') }}" required>
         </div>
         <div class="mb-3">
             <label for="last_legalization_date" class="form-label">Última Legalização</label>
             <input type="date" class="form-control" id="last_legalization_date" name="last_legalization_date"
-                value="{{ vehicle.last_legalization_date }}" required>
+                value="{{ vehicle.last_legalization_date.strftime('%Y-%m-%d') }}" required>
         </div>
         <div class="mb-3">
             <label for="next_legalization_date" class="form-label">Próxima Legalização</label>
             <input type="date" class="form-control" id="next_legalization_date" name="next_legalization_date"
-                value="{{ vehicle.next_legalization_date }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="current_images">Imagens Atuais do Veículo</label>
-            <div class="d-flex flex-wrap">
-                {% for image_path in vehicle.imagens.split(',') %}
-                <div class="m-2">
-                    <img src="{{ url_for('static', filename=image_path) }}" alt="Imagem do Veículo"
-                        style="max-width: 200px; max-height: 150px;">
-                    <a href="{{ url_for('delete_image', image_path=image_path, vehicle_id=vehicle.id) }}"
-                        class="btn btn-danger btn-sm mt-2">Apagar</a>
-                </div>
-                {% endfor %}
-            </div>
+                value="{{ vehicle.next_legalization_date.strftime('%Y-%m-%d') }}" required>
         </div>
         <div class="form-group">
-            <label for="imagens">Adicionar Novas Imagens</label>
+            <label for="imagens">Imagens do veículo</label>
             <input type="file" class="form-control" id="imagens" name="imagens" multiple>
+        </div>
+        <div class="mb-3">
+            <label for="current_images" class="form-label">Imagens atuais do veículo</label>
+            {% if vehicle.imagens %}
+            {% for image_path in vehicle.imagens.split(',') %}
+            <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename='uploads/' + image_path) }}" alt="Vehicle Image"
+                    class="img-thumbnail me-2" style="max-height: 100px;">
+                <a href="{{ url_for('delete_image', image_path=image_path, vehicle_id=vehicle.id) }}"
+                    class="btn btn-danger btn-sm">Apagar</a>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>Não há imagens associadas a este veículo.</p>
+            {% endif %}
         </div>
         <div class="d-flex justify-content-end mt-4">
             <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Cancelar</a>
-            <button type="submit" class="btn btn-primary">Editar Veículo</button>
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
         </div>
     </form>
 </div>
-
 <!-- Lógica para preencher a categoria automaticamente -->
 <script>
     document.getElementById("price_per_day").addEventListener("input", function () {
