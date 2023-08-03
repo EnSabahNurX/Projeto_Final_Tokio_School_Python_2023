@@ -87,20 +87,6 @@ class Vehicle(db.Model):
         self.legalization_history = ''
         self.imagens = ''
 
-    def delete_image(self, image_path):
-        # Verificar se a imagem está associada ao veículo
-        if image_path in self.imagens.split(','):
-            # Remover a imagem do servidor
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_path))
-
-            # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
-            imagens = self.imagens.split(',')
-            imagens.remove(image_path)
-            self.imagens = ','.join(imagens)
-
-            # Salvar as alterações no banco de dados
-            db.session.commit()
-
     def update_categoria(self):
         if self.price_per_day <= 50:
             self.categoria = 'Económico'
@@ -367,6 +353,11 @@ def edit_vehicle(id):
         # Processar o upload das imagens
         imagens = request.files.getlist('imagens')
         imagens_paths = vehicle.imagens.split(',')
+
+        # Criar a pasta de destino, caso não exista
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'])
+
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
