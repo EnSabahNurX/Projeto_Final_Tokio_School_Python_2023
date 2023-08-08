@@ -8,8 +8,10 @@ import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
+from flask_reuploaded import Reuploaded
 
 app = Flask(__name__)
+reuploaded = Reuploaded(app)
 
 # Definir a chave secreta para a sessão
 app.secret_key = 'sua_chave_secreta_aqui'
@@ -291,13 +293,14 @@ def add_vehicle():
         price_per_day = float(request.form['price_per_day'])
 
         # Processar o upload das imagens
-        imagens = request.files.getlist('imagens')
+        imagens = reuploaded.getlist('imagens')
         imagens_paths = []
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             imagem.save(path)
             imagens_paths.append(path)
+
         # Criar um novo objeto Veiculo e adicioná-lo ao banco de dados
         novo_veiculo = Vehicle(type=VehicleType[type.upper(
         )], brand=brand, model=model, year=year, price_per_day=price_per_day)
@@ -305,7 +308,7 @@ def add_vehicle():
         novo_veiculo.imagens = ','.join(imagens_paths)
         novo_veiculo.initialize_vehicle()
         db.session.add(novo_veiculo)
-        db.session.commit()  # Salvar o novo veiculo no banco de dados
+        db.session.commit()  # Salvar o novo veículo no banco de dados
 
         # Redirecionar para o painel de administração com mensagem de sucesso
         flash('Novo veículo adicionado com sucesso!', 'success')
