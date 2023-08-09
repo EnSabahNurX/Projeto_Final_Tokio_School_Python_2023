@@ -282,7 +282,7 @@ def view_vehicle(id):
 def add_vehicle():
     if request.method == 'POST':
         # Obter dados do formulário
-        type = request.form['type']
+        type = request.form['vehicle-type']
         brand = request.form['brand']
         model = request.form['model']
         year = int(request.form['year'])
@@ -321,7 +321,7 @@ def edit_vehicle(id):
 
     if request.method == 'POST':
         # Obter os dados do formulário
-        type = request.form['type']
+        type = request.form['vehicle-type']
         brand = request.form['brand']
         model = request.form['model']
         year = int(request.form['year'])
@@ -380,7 +380,7 @@ def edit_vehicle(id):
         return redirect(url_for('admin_panel'))
 
     # Renderizar a página de edição de veículo com o formulário preenchido
-    return render_template('edit_vehicle.html', vehicle=vehicle)
+    return render_template('edit_vehicle.html', vehicle=vehicle, VehicleType=VehicleType)
 
 
 # Rota para exclusão de veículo
