@@ -8,10 +8,10 @@ import enum
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
-from flask_reuploaded import Reuploaded
+
 
 app = Flask(__name__)
-reuploaded = Reuploaded(app)
+
 
 # Definir a chave secreta para a sessão
 app.secret_key = 'sua_chave_secreta_aqui'
@@ -30,10 +30,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Defina o diretório de upload de imagens (pasta 'static')
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/images')
-
-# Se a pasta 'static/images' não existir, crie-a
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 
 # Configuração do Bootstrap 5 com Font Awesome
@@ -293,7 +289,7 @@ def add_vehicle():
         price_per_day = float(request.form['price_per_day'])
 
         # Processar o upload das imagens
-        imagens = reuploaded.getlist('imagens')
+        imagens = request.files.getlist('imagens')
         imagens_paths = []
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
@@ -636,6 +632,11 @@ atexit.register(lambda: scheduler.shutdown())
 # Verificar e criar o diretório "database" se não existir
 if not os.path.exists(db_folder):
     os.makedirs(db_folder)
+
+
+# Se a pasta 'static/images' não existir, crie-a
+if not os.path.exists(os.path.join(app.root_path, 'static/images')):
+    os.makedirs(os.path.join(app.root_path, 'static/images'))
 
 # Criação das tabelas do banco de dados
 with app.app_context():
