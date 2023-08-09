@@ -324,7 +324,7 @@ def edit_vehicle(id):
 
     if request.method == 'POST':
         # Obter os dados do formulário
-        type = request.form['vehicle-type']
+        type = request.form['vehicle_type']
         brand = request.form['brand']
         model = request.form['model']
         year = int(request.form['year'])
