@@ -6,7 +6,7 @@
     <h1>Editar Veículo</h1>
     <form method="post" action="/edit_vehicle/{{ vehicle.id }}" enctype="multipart/form-data">
         <div class="mb-3">
-            <label for="type" class="form-label">Tipo de Veículo</label>
+            <label for="vehicle_type" class="form-label">Tipo de Veículo</label>
             <select class="form-select" id="vehicle_type" name="vehicle_type">
                 <option value="CARRO" {% if vehicle.type==VehicleType.CARRO %}selected{% endif %}>Carro</option>
                 <option value="MOTA" {% if vehicle.type==VehicleType.MOTA %}selected{% endif %}>Mota</option>
@@ -56,18 +56,23 @@
         <div class="mb-3">
             <label for="current_images" class="form-label">Imagens atuais do veículo</label>
             {% if vehicle.imagens %}
-            {% for image_path in vehicle.imagens.split(',') %}
-            <div class="d-flex align-items-center">
-                <img src="{{ url_for('static', filename='uploads/' + image_path) }}" alt="Vehicle Image"
-                    class="img-thumbnail me-2" style="max-height: 100px;">
-                <a href="{{ url_for('delete_image', image_path=image_path, vehicle_id=vehicle.id) }}"
-                    class="btn btn-danger btn-sm">Apagar</a>
+            <div class="row">
+                {% for image_path in vehicle.imagens.split(',') %}
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex flex-column align-items-center">
+                        <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
+                            class="img-fluid img-thumbnail" style="max-height: 200px;">
+                        <a href="{{ url_for('delete_image', image_path=image_path, vehicle_id=vehicle.id) }}"
+                            class="btn btn-danger btn-sm mt-2">Apagar</a>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
             {% else %}
             <p>Não há imagens associadas a este veículo.</p>
             {% endif %}
         </div>
+
         <div class="d-flex justify-content-end mt-4">
             <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Cancelar</a>
             <button type="submit" class="btn btn-primary">Salvar Alterações</button>
