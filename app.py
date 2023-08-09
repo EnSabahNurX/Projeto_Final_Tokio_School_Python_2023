@@ -294,9 +294,10 @@ def add_vehicle():
         imagens_paths = []
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
-            # path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # Caminho relativo à pasta 'static'
             path = filename
-            imagem.save(path)
+            full_path = os.path.join(app.config['UPLOAD_FOLDER'], path)
+            imagem.save(full_path)
             imagens_paths.append(path)
 
         # Criar um novo objeto Veiculo e adicioná-lo ao banco de dados
@@ -361,9 +362,11 @@ def edit_vehicle(id):
                 continue
 
             filename = secure_filename(imagem.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            imagem.save(path)
-            imagens_paths.append(filename)
+            # Caminho relativo à pasta 'static'
+            path = filename
+            full_path = os.path.join(app.config['UPLOAD_FOLDER'], path)
+            imagem.save(full_path)
+            imagens_paths.append(path)
 
         print(imagens_paths)  # Verificar os caminhos das imagens
 
