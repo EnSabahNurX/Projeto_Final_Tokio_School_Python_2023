@@ -294,7 +294,8 @@ def add_vehicle():
         imagens_paths = []
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            path = filename
             imagem.save(path)
             imagens_paths.append(path)
 
