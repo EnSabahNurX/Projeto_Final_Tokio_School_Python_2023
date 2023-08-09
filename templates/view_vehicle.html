@@ -30,12 +30,11 @@
                 {% endfor %}
             </ul>
             <div class="mt-3">
-                <h6>Vehicle Images</h6>
+                <h5>Imagens</h5>
                 <div class="row">
-                    {% for image_url in vehicle.image_urls %}
+                    {% for imagem_path in imagens_paths %}
                     <div class="col-md-4 mb-3">
-                        <img src="{{ url_for('static', filename='images/' + image_url) }}" class="img-thumbnail"
-                            alt="Vehicle Image">
+                        <img src="{{ url_for('static', filename='images/' ~ imagem_path) }}" alt="Imagem do Veículo">
                     </div>
                     {% endfor %}
                 </div>

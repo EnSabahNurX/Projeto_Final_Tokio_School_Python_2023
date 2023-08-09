@@ -271,7 +271,8 @@ def admin_panel():
 @app.route('/admin/view_vehicle/<int:id>')
 def view_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
-    return render_template('view_vehicle.html', vehicle=vehicle)
+    imagens_paths = vehicle.imagens.split(',') if vehicle.imagens else []
+    return render_template('view_vehicle.html', vehicle=vehicle, imagens_paths=imagens_paths)
 
 
 # Rota para a página de adicionar veículos
