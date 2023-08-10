@@ -413,22 +413,28 @@ def delete_image(image_path, vehicle_id):
         flash('Veículo não encontrado.', 'error')
         return redirect(url_for('edit_vehicle', id=vehicle_id))
 
-    # Verificar se a imagem está associada ao veículo
-    if image_path in vehicle.imagens.split(','):
-        # Remover a imagem do servidor
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_path))
+    if request.method == 'POST' or request.form.get('_method') == 'DELETE':
+        # Verificar se a imagem está associada ao veículo
+        if image_path in vehicle.imagens.split(','):
+            # Remover a imagem do servidor
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image_path))
 
-        # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
-        imagens = vehicle.imagens.split(',')
-        imagens.remove(image_path)
-        vehicle.imagens = ','.join(imagens)
+            # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
+            imagens = vehicle.imagens.split(',')
+            imagens.remove(image_path)
+            vehicle.imagens = ','.join(imagens)
 
-        # Salvar as alterações no banco de dados
-        db.session.commit()
+            # Salvar as alterações no banco de dados
+            db.session.commit()
 
-        flash('Imagem removida com sucesso!', 'success')
+            flash('Imagem removida com sucesso!', 'success')
 
-    return redirect(url_for('edit_vehicle', id=vehicle_id))
+        return redirect(url_for('edit_vehicle', id=vehicle_id))
+
+    else:
+        # Redirecionar de volta para a página de edição do veículo com mensagem de erro
+        flash('Método de requisição inválido.', 'error')
+        return redirect(url_for('edit_vehicle', id=vehicle_id))
 
 
 # Rota para a página de login do cliente
