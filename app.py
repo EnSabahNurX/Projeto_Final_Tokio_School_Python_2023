@@ -304,7 +304,7 @@ def add_vehicle():
         novo_veiculo = Vehicle(type=VehicleType[type.upper(
         )], brand=brand, model=model, year=year, price_per_day=price_per_day)
         # Salvar os caminhos das imagens
-        novo_veiculo.imagens = ','.join(imagens_paths)
+        novo_veiculo.imagens = ','.join(imagens_paths).lstrip('').lstrip(',')
         novo_veiculo.initialize_vehicle()
         db.session.add(novo_veiculo)
         db.session.commit()  # Salvar o novo veículo no banco de dados
@@ -377,7 +377,7 @@ def edit_vehicle(id):
         vehicle.year = year
         vehicle.price_per_day = price_per_day
         # Salvar os caminhos das imagens
-        vehicle.imagens = ','.join(imagens_paths)
+        vehicle.imagens = ','.join(imagens_paths).lstrip('').lstrip(',')
         db.session.commit()
 
         # Redirecionar de volta para o painel de administração
@@ -408,11 +408,11 @@ def delete_vehicle(id):
 @app.route('/delete_image/<path:image_path>/<int:vehicle_id>', methods=['POST'])
 def delete_image(image_path, vehicle_id):
     # Encontrar o veículo no banco de dados pelo ID
-    vehicle = Vehicle.query.get(vehicle_id)    
+    vehicle = Vehicle.query.get(vehicle_id)
     if not vehicle:
         flash('Veículo não encontrado.', 'error')
         return redirect(url_for('edit_vehicle', id=vehicle_id))
-    
+
     if request.method == 'POST' or request.form.get('_method') == 'DELETE':
         # Verificar se a imagem está associada ao veículo
         if image_path in vehicle.imagens.split(','):
@@ -422,7 +422,7 @@ def delete_image(image_path, vehicle_id):
             # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
             imagens = vehicle.imagens.split(',')
             imagens.remove(image_path)
-            vehicle.imagens = ','.join(imagens)
+            vehicle.imagens = ','.join(imagens).lstrip('').lstrip(',')
 
             # Salvar as alterações no banco de dados
             db.session.commit()
