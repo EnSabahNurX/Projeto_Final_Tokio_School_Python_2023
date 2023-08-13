@@ -408,11 +408,11 @@ def delete_vehicle(id):
 @app.route('/delete_image/<path:image_path>/<int:vehicle_id>', methods=['POST'])
 def delete_image(image_path, vehicle_id):
     # Encontrar o veículo no banco de dados pelo ID
-    vehicle = Vehicle.query.get(vehicle_id)
+    vehicle = Vehicle.query.get(vehicle_id)    
     if not vehicle:
         flash('Veículo não encontrado.', 'error')
         return redirect(url_for('edit_vehicle', id=vehicle_id))
-
+    
     if request.method == 'POST' or request.form.get('_method') == 'DELETE':
         # Verificar se a imagem está associada ao veículo
         if image_path in vehicle.imagens.split(','):
@@ -432,10 +432,8 @@ def delete_image(image_path, vehicle_id):
         return redirect(url_for('edit_vehicle', id=vehicle_id))
 
     else:
-        # Redirecionar de volta para a página de edição do veículo com mensagem de erro
         flash('Método de requisição inválido.', 'error')
         return redirect(url_for('edit_vehicle', id=vehicle_id))
-
 
 # Rota para a página de login do cliente
 
