@@ -44,17 +44,14 @@ db = SQLAlchemy(app)
 # Configuração do Flask-Migrate
 migrate = Migrate(app, db)
 
+
 # Definir as opções válidas para o campo 'type' (Carro e Mota)
-
-
 class VehicleType(enum.Enum):
     CARRO = "Carro"
     MOTA = "Mota"
 
 
 # Classe para o modelo de Veículo
-
-
 class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(VehicleType), nullable=False)
@@ -307,6 +304,8 @@ def view_vehicle(id):
 
 
 # Rota para a página de adicionar veículos
+
+
 @app.route("/add_vehicle", methods=["GET", "POST"])
 def add_vehicle():
     if request.method == "POST":
@@ -433,8 +432,6 @@ def edit_vehicle(id):
 
 
 # Rota para exclusão de veículo
-
-
 @app.route("/delete_vehicle/<int:id>", methods=["POST"])
 def delete_vehicle(id):
     # Obter o veículo pelo ID
@@ -488,8 +485,6 @@ def delete_image(image_path, vehicle_id):
 
 
 # Rota para a página de login do cliente
-
-
 @app.route("/client_login", methods=["GET", "POST"])
 def client_login():
     if "client" in session:
@@ -608,8 +603,6 @@ def register_client():
 
 
 # Rota para confirmar a legalização do veículo
-
-
 @app.route("/legalize_vehicle/<int:id>", methods=["POST"])
 def legalize_vehicle(id):
     # Obter o veículo pelo ID
@@ -638,8 +631,6 @@ def legalize_vehicle(id):
 
 
 # Rota para manutenção do veículo
-
-
 @app.route("/admin/maintenance_vehicle/<int:id>", methods=["GET", "POST"])
 def maintenance_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
