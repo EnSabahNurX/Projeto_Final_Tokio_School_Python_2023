@@ -698,6 +698,36 @@ def check_maintenance_status():
             db.session.commit()
 
 
+# Rota para registrar uma nova utilização do veículo e verificar a próxima manutenção
+@app.route("/register_usage/<int:vehicle_id>", methods=["POST"])
+def register_usage_route(vehicle_id):
+    # Obter o veículo pelo ID
+    vehicle = Vehicle.query.get_or_404(vehicle_id)
+
+    # Registrar a utilização e verificar a próxima manutenção
+    register_usage(vehicle)
+
+    # Redirecionar de volta para a página de edição do veículo
+    flash("Utilização registrada com sucesso!", "success")
+    return redirect(url_for("edit_vehicle", id=vehicle_id))
+
+
+# Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
+def register_usage(vehicle):
+    vehicle.num_uses += 1
+
+    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
+        days_since_last_maintenance = (
+            datetime.now().date() - vehicle.last_maintenance_date
+        ).days
+        if days_since_last_maintenance >= 30:
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=30
+            )
+
+    db.session.commit()
+
+
 # Criar um scheduler para executar tarefas em segundo plano
 scheduler = BackgroundScheduler()
 scheduler.start()
