@@ -71,6 +71,7 @@ class Vehicle(db.Model):
     next_legalization_date = db.Column(db.Date)
     legalization_history = db.Column(db.String(1000), default='')
     imagens = db.Column(db.String(1000))
+    available_from = db.Column(db.Date, nullable=True)
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=''):
         self.type = type
@@ -113,6 +114,7 @@ class Vehicle(db.Model):
         self.last_maintenance_date = datetime.now().date()
         self.next_maintenance_date = self.last_maintenance_date + \
             timedelta(days=180)
+        self.available_from = date.today()  # Define a disponibilidade como hoje por padrão
 
     def start_maintenance(self):
         self.in_maintenance = True
