@@ -173,16 +173,26 @@ def index():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
 
-    # Carrega todos os veículos do banco de dados
+    # Carregar todos os veículos do banco de dados
     veiculos = Vehicle.query.all()
 
-    # Verifica se há uma sessão ativa de cliente
+    # Verificar se há uma sessão ativa de cliente
     if "client" in session:
         cliente = session["client"]
     else:
         cliente = None
 
-    return render_template("index.html", veiculos=veiculos, cliente=cliente)
+    # Verificar se há veículos suficientes no estoque
+    num_veiculos = len(veiculos)
+    num_clientes = len(Cliente.query.all())
+    estoque_suficiente = num_veiculos >= num_clientes + 5
+
+    return render_template(
+        "index.html",
+        veiculos=veiculos,
+        cliente=cliente,
+        estoque_suficiente=estoque_suficiente,
+    )
 
 
 # Função de middleware para verificar a sessão de administrador
@@ -279,6 +289,9 @@ def admin_panel():
 
 
 # Rota para a página de visualizar veículos
+
+
+# Rota para visualisar os detalhes do veículo
 @app.route("/admin/view_vehicle/<int:id>")
 def view_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
