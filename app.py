@@ -182,16 +182,10 @@ def index():
     else:
         cliente = None
 
-    # Verificar se há veículos suficientes no estoque
-    num_veiculos = len(veiculos)
-    num_clientes = len(Cliente.query.all())
-    estoque_suficiente = num_veiculos >= num_clientes + 5
-
     return render_template(
         "index.html",
         veiculos=veiculos,
         cliente=cliente,
-        estoque_suficiente=estoque_suficiente,
     )
 
 
@@ -284,8 +278,25 @@ def admin_panel():
         if not vehicle.next_legalization_date:
             vehicle.next_legalization_date = date.today() + timedelta(days=365)
 
+    # Verificar se há veículos suficientes no estoque
+    num_veiculos = len(vehicles)
+    num_clientes = len(Cliente.query.all())
+    estoque_suficiente = num_veiculos >= num_clientes + 5
+
+    # sempre que a página inicial for carregada, ela verificará se há veículos suficientes no estoque e exibirá uma mensagem de aviso caso contrário.
+    if not estoque_suficiente:
+        flash(
+            "Atenção: O estoque de veículos está baixo. Considere adicionar mais veículos para atender à demanda.",
+            "warning",
+        )
+
     # Passar a variável 'date' para o template 'admin.html'
-    return render_template("admin.html", vehicles=vehicles, date=date.today())
+    return render_template(
+        "admin.html",
+        vehicles=vehicles,
+        date=date.today(),
+        estoque_suficiente=estoque_suficiente,
+    )
 
 
 # Rota para a página de visualizar veículos
