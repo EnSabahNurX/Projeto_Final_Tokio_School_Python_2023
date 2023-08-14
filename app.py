@@ -464,7 +464,10 @@ def delete_image(image_path, vehicle_id):
         # Verificar se a imagem está associada ao veículo
         if image_path in vehicle.imagens.split(","):
             # Remover a imagem do servidor
-            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], image_path))
+            try:
+                os.remove(os.path.join(app.config["UPLOAD_FOLDER"], image_path))
+            except Exception as e:
+                flash("Imagem não existe na base de dados, então foi atualizado a lista e removida a imagem não existente!", "warning")
 
             # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
             imagens = vehicle.imagens.split(",")
@@ -699,17 +702,6 @@ def check_maintenance_status():
 
 
 # Rota para registrar uma nova utilização do veículo e verificar a próxima manutenção
-@app.route("/register_usage/<int:vehicle_id>", methods=["POST"])
-def register_usage_route(vehicle_id):
-    # Obter o veículo pelo ID
-    vehicle = Vehicle.query.get_or_404(vehicle_id)
-
-    # Registrar a utilização e verificar a próxima manutenção
-    register_usage(vehicle)
-
-    # Redirecionar de volta para a página de edição do veículo
-    flash("Utilização registrada com sucesso!", "success")
-    return redirect(url_for("edit_vehicle", id=vehicle_id))
 
 
 # Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
@@ -726,6 +718,19 @@ def register_usage(vehicle):
             )
 
     db.session.commit()
+
+
+@app.route("/register_usage/<int:vehicle_id>", methods=["POST"])
+def register_usage_route(vehicle_id):
+    # Obter o veículo pelo ID
+    vehicle = Vehicle.query.get_or_404(vehicle_id)
+
+    # Registrar a utilização e verificar a próxima manutenção
+    register_usage(vehicle)
+
+    # Redirecionar de volta para a página de edição do veículo
+    flash("Utilização registrada com sucesso!", "success")
+    return redirect(url_for("edit_vehicle", id=vehicle_id))
 
 
 # Criar um scheduler para executar tarefas em segundo plano
