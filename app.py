@@ -586,7 +586,7 @@ def maintenance_vehicle(id):
             db.session.commit()
 
             # Adicionar mensagem flash para informar que o veículo está em manutenção
-            flash('success', 'Veículo enviado para manutenção com sucesso!')
+            flash('Veículo enviado para manutenção com sucesso!', 'success')
 
         # Verificar se o botão de concluir manutenção foi pressionado
         elif 'complete_maintenance' in request.form:
@@ -603,7 +603,7 @@ def maintenance_vehicle(id):
             db.session.commit()
 
             # Adicionar mensagem flash para informar sobre a conclusão da manutenção
-            flash('success', 'Veículo concluiu a manutenção com sucesso!')
+            flash('Veículo concluiu a manutenção com sucesso!', 'success')
 
         return redirect(url_for('admin_panel'))
 
