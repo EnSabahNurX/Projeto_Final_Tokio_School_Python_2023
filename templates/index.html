@@ -2,30 +2,52 @@
 
 {% block content %}
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Veículos Disponíveis</h1>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for veiculo in veiculos %}
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ veiculo.brand }}</h5>
-                            <p class="card-text">{{ veiculo.model }}</p>
-                            <p class="card-text">Ano: {{ veiculo.year }}</p>
-                            <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="{{ url_for('edit_vehicle', id=veiculo.id) }}" class="btn btn-primary">Editar</a>
-                            <form action="{{ url_for('delete_vehicle', id=veiculo.id) }}" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-danger">Excluir</button>
-                            </form>
-                        </div>
+<div class="container mt-4">
+    <h1 class="mb-4">Veículos Disponíveis</h1>
+
+    <!-- Carros Disponíveis -->
+    <h2 class="mb-3">Carros</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for veiculo in veiculos_carros %}
+            <div class="col">
+                <div class="card h-100">
+                    <!-- Imagem do veículo aqui -->
+                    <div class="card-body">
+                        <h5 class="card-title">{{ veiculo.brand }}</h5>
+                        <p class="card-text">{{ veiculo.model }}</p>
+                        <p class="card-text">Ano: {{ veiculo.year }}</p>
+                        <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Botões de ação aqui -->
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 
-    <!-- Bootstrap JavaScript -->
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Motas Disponíveis -->
+    <h2 class="mt-5 mb-3">Motas</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for veiculo in veiculos_motas %}
+            <div class="col">
+                <div class="card h-100">
+                    <!-- Imagem do veículo aqui -->
+                    <div class="card-body">
+                        <h5 class="card-title">{{ veiculo.brand }}</h5>
+                        <p class="card-text">{{ veiculo.model }}</p>
+                        <p class="card-text">Ano: {{ veiculo.year }}</p>
+                        <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Botões de ação aqui -->
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Bootstrap JavaScript -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 {% endblock %}

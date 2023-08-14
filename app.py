@@ -174,11 +174,15 @@ def index():
     check_maintenance_status()
 
     # Consultar todos os veículos disponíveis no banco de dados
-    veiculos = Vehicle.query.filter_by(status="Disponível").all()
+    veiculos = Vehicle.query.filter_by(status=1).all()
 
     # Separar os veículos em carros e motas
-    veiculos_carros = [veiculo for veiculo in veiculos if veiculo.type == "Carro"]
-    veiculos_motas = [veiculo for veiculo in veiculos if veiculo.type == "Mota"]
+    veiculos_carros = [
+        veiculo for veiculo in veiculos if veiculo.type == VehicleType.CARRO
+    ]
+    veiculos_motas = [
+        veiculo for veiculo in veiculos if veiculo.type == VehicleType.MOTA
+    ]
 
     # Verificar se há uma sessão ativa de cliente
     if "client" in session:
