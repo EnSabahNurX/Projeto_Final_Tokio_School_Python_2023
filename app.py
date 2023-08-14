@@ -196,6 +196,7 @@ def index():
         cliente=cliente,
         veiculos_carros=veiculos_carros,
         veiculos_motas=veiculos_motas,
+        current_year=datetime.now().year,
     )
 
 
