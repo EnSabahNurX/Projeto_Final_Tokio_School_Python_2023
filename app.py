@@ -397,7 +397,7 @@ def edit_vehicle(id):
         # Processar o upload das imagens
         imagens = request.files.getlist("imagens")
         imagens_paths = vehicle.imagens.split(",")
-        print(imagens)  # Verificar se imagens contém dados
+
         for imagem in imagens:
             if imagem.filename == "":
                 # A imagem está vazia, ignorá-la
@@ -409,8 +409,6 @@ def edit_vehicle(id):
             full_path = os.path.join(app.config["UPLOAD_FOLDER"], path)
             imagem.save(full_path)
             imagens_paths.append(path)
-
-        print(imagens_paths)  # Verificar os caminhos das imagens
 
         # Atualizar os dados do veículo
         vehicle.type = VehicleType[type.upper()]
@@ -467,7 +465,10 @@ def delete_image(image_path, vehicle_id):
             try:
                 os.remove(os.path.join(app.config["UPLOAD_FOLDER"], image_path))
             except Exception as e:
-                flash("Imagem não existe na base de dados, então foi atualizado a lista e removida a imagem não existente!", "warning")
+                flash(
+                    "Imagem não existe na base de dados, então foi atualizado a lista e removida a imagem não existente!",
+                    "warning",
+                )
 
             # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
             imagens = vehicle.imagens.split(",")
