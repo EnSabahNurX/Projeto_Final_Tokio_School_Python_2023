@@ -337,6 +337,7 @@ def edit_vehicle(id):
         next_maintenance_date_str = request.form['next_maintenance_date']
         last_legalization_date_str = request.form['last_legalization_date']
         next_legalization_date_str = request.form['next_legalization_date']
+        available_from_str = request.form['available_from']
 
         # Converter as datas do formulário em objetos date
         vehicle.last_maintenance_date = datetime.strptime(
@@ -347,6 +348,8 @@ def edit_vehicle(id):
             last_legalization_date_str, '%Y-%m-%d').date()
         vehicle.next_legalization_date = datetime.strptime(
             next_legalization_date_str, '%Y-%m-%d').date()
+        vehicle.available_from = datetime.strptime(
+            available_from_str, '%Y-%m-%d').date()
 
         # Atualizar a categoria do veículo com base no novo preço por dia
         if price_per_day <= 50:
@@ -380,6 +383,7 @@ def edit_vehicle(id):
         vehicle.model = model
         vehicle.year = year
         vehicle.price_per_day = price_per_day
+
         # Salvar os caminhos das imagens
         vehicle.imagens = ','.join(imagens_paths).lstrip('').lstrip(',')
         db.session.commit()

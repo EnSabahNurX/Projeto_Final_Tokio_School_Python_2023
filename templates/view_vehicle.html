@@ -11,6 +11,7 @@
             <p class="card-text"><strong>Category:</strong> {{ vehicle.categoria }}</p>
             <p class="card-text"><strong>Status:</strong> {% if vehicle.status %}Available{% else %}Unavailable{% endif
                 %}</p>
+            <p class="card-text"><strong>Available after:</strong> {{ vehicle.available_from }}</p>
             <p class="card-text"><strong>In Maintenance:</strong> {% if vehicle.in_maintenance %}Yes{% else %}No{% endif
                 %}</p>
             <p class="card-text"><strong>Last Maintenance Date:</strong> {{ vehicle.last_maintenance_date }}</p>
