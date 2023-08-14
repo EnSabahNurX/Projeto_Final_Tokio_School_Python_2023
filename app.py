@@ -129,8 +129,6 @@ class Vehicle(db.Model):
 
 
 # Modelo de classe para clientes
-
-
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -170,8 +168,6 @@ class Cliente(db.Model):
 
 
 # Rota inicial
-
-
 @app.route("/")
 def index():
     # Chamar a função para verificar a manutenção do veículo
@@ -190,8 +186,6 @@ def index():
 
 
 # Função de middleware para verificar a sessão de administrador
-
-
 @app.before_request
 def check_admin_session():
     # Lista de rotas que requerem autenticação de administrador
@@ -203,8 +197,6 @@ def check_admin_session():
 
 
 # Rota para a página de login do administrador
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     # Verifica se já há uma sessão de admin ativa
@@ -227,8 +219,6 @@ def login():
 
 
 # Rota para o painel de administração
-
-
 @app.route("/admin", methods=["GET", "POST"])
 def admin_panel():
     # Chamar a função para verificar a manutenção do veículo
@@ -289,8 +279,6 @@ def admin_panel():
 
 
 # Rota para a página de visualizar veículos
-
-
 @app.route("/admin/view_vehicle/<int:id>")
 def view_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
@@ -301,11 +289,6 @@ def view_vehicle(id):
 
 
 # Rota para a página de adicionar veículos
-
-
-# Rota para a página de adicionar veículos
-
-
 @app.route("/add_vehicle", methods=["GET", "POST"])
 def add_vehicle():
     if request.method == "POST":
@@ -445,8 +428,6 @@ def delete_vehicle(id):
 
 
 # Rota para exclusão de imagem
-
-
 @app.route("/delete_image/<path:image_path>/<int:vehicle_id>", methods=["POST"])
 def delete_image(image_path, vehicle_id):
     # Encontrar o veículo no banco de dados pelo ID
@@ -518,8 +499,6 @@ def client_login():
 
 
 # Rota para logout do cliente
-
-
 @app.route("/client_logout")
 def client_logout():
     session.pop("client", None)  # Remove a chave 'client' da sessão
@@ -528,8 +507,6 @@ def client_logout():
 
 
 # Rota para logout
-
-
 @app.route("/logout")
 def logout():
     # Remover a sessão de administrador
@@ -538,8 +515,6 @@ def logout():
 
 
 # Rota para a página de registro do cliente
-
-
 @app.route("/register_client", methods=["GET", "POST"])
 def register_client():
     if "client" in session:
@@ -676,6 +651,7 @@ def maintenance_vehicle(id):
     return render_template("maintenance_vehicle.html", vehicle=vehicle)
 
 
+# Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
     # Obter todos os veículos em manutenção
     vehicles_in_maintenance = Vehicle.query.filter_by(in_maintenance=True).all()
@@ -691,9 +667,6 @@ def check_maintenance_status():
                 days=180
             )
             db.session.commit()
-
-
-# Rota para registrar uma nova utilização do veículo e verificar a próxima manutenção
 
 
 # Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
@@ -712,6 +685,7 @@ def register_usage(vehicle):
     db.session.commit()
 
 
+# Rota para atualizar o número de utilização do veículo
 @app.route("/register_usage/<int:vehicle_id>", methods=["POST"])
 def register_usage_route(vehicle_id):
     # Obter o veículo pelo ID
