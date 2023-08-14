@@ -12,6 +12,16 @@
             <div class="col">
                 <div class="card h-100">
                     <!-- Imagem do veículo aqui -->
+                    <div class="d-flex flex-column align-items-center">
+                    {% if veiculo.imagens %}
+                        {% for image_path in veiculo.imagens.split(',') %}
+                            {% if loop.index <= 1 %}
+                               <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
+                                    class="img-fluid img-thumbnail" style="height: 150px;">
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title">{{ veiculo.brand }}</h5>
                         <p class="card-text">{{ veiculo.model }}</p>
@@ -33,6 +43,16 @@
             <div class="col">
                 <div class="card h-100">
                     <!-- Imagem do veículo aqui -->
+                    <div class="d-flex flex-column align-items-center">
+                    {% if veiculo.imagens %}
+                        {% for image_path in veiculo.imagens.split(',') %}
+                            {% if loop.index <= 1 %}
+                               <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
+                                    class="img-fluid img-thumbnail" style="height: 150px;">
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title">{{ veiculo.brand }}</h5>
                         <p class="card-text">{{ veiculo.model }}</p>
