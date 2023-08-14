@@ -173,8 +173,12 @@ def index():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
 
-    # Carregar todos os veículos do banco de dados
-    veiculos = Vehicle.query.all()
+    # Consultar todos os veículos disponíveis no banco de dados
+    veiculos = Vehicle.query.filter_by(status="Disponível").all()
+
+    # Separar os veículos em carros e motas
+    veiculos_carros = [veiculo for veiculo in veiculos if veiculo.type == "Carro"]
+    veiculos_motas = [veiculo for veiculo in veiculos if veiculo.type == "Mota"]
 
     # Verificar se há uma sessão ativa de cliente
     if "client" in session:
@@ -186,6 +190,8 @@ def index():
         "index.html",
         veiculos=veiculos,
         cliente=cliente,
+        veiculos_carros=veiculos_carros,
+        veiculos_motas=veiculos_motas,
     )
 
 
