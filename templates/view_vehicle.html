@@ -1,38 +1,39 @@
-    {% extends 'base_admin.html' %}
+{% extends 'base_admin.html' %}
 
-    {% block content %}
-    <div class="container mt-4">
-        <h1>Detalhes do Veículo</h1>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ vehicle.brand }} {{ vehicle.model }}</h5>
-                <p class="card-text"><strong>Tipo de Veículo:</strong> {{ vehicle.type.value }}</p>
-                <p class="card-text"><strong>Ano:</strong> {{ vehicle.year }}</p>
-                <p class="card-text"><strong>Preço por Dia:</strong> {{ vehicle.price_per_day }}</p>
-                <p class="card-text"><strong>Categoria:</strong> {{ vehicle.categoria }}</p>
-                <p class="card-text"><strong>Status:</strong> {% if vehicle.status %}Available{% else %}Unavailable{% endif
-                    %}</p>
-                <p class="card-text"><strong>Disponível a partir de:</strong> {{ vehicle.available_from }}</p>
-                <p class="card-text"><strong>Número de Utilizações:</strong> {% if vehicle.num_uses %}{{ vehicle.num_uses }}{% else %} 0{% endif %}</p>
-                <p class="card-text"><strong>Em Manutenção:</strong> {% if vehicle.in_maintenance %}Sim{% else %}Não{% endif
-                    %}</p>
-                <p class="card-text"><strong>Última Manutenção:</strong> {{ vehicle.last_maintenance_date }}</p>
-                <p class="card-text"><strong>Próxima Manutenção:</strong> {{ vehicle.next_maintenance_date }}</p>
-                <p class="card-text"><strong>Histórico de Manutenção:</strong></p>
-                <ul>
-                    {% for maintenance_date in vehicle.maintenance_history.split(';') if maintenance_date %}
-                    <li>{{ maintenance_date }}</li>
-                    {% endfor %}
-                </ul>
-                <p class="card-text"><strong>Última Legalização:</strong> {{ vehicle.last_legalization_date }}</p>
-                <p class="card-text"><strong>Próxima Legalização:</strong> {{ vehicle.next_legalization_date }}</p>
-                <p class="card-text"><strong>Histórico de Legalização:</strong></p>
-                <ul>
-                    {% for legalization_date in vehicle.legalization_history.split(';') if legalization_date %}
-                    <li>{{ legalization_date }}</li>
-                    {% endfor %}
-                </ul>
-                <div class="row">
+{% block content %}
+<div class="container mt-4">
+    <h1>Detalhes do Veículo</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ vehicle.brand }} {{ vehicle.model }}</h5>
+            <p class="card-text"><strong>Tipo de Veículo:</strong> {{ vehicle.type.value }}</p>
+            <p class="card-text"><strong>Ano:</strong> {{ vehicle.year }}</p>
+            <p class="card-text"><strong>Preço por Dia:</strong> {{ vehicle.price_per_day }}</p>
+            <p class="card-text"><strong>Categoria:</strong> {{ vehicle.categoria }}</p>
+            <p class="card-text"><strong>Status:</strong> {% if vehicle.status %}Disponível{% else %}Indisponível{%
+                endif%}</p>
+            <p class="card-text"><strong>Disponível a partir de:</strong> {{ vehicle.available_from }}</p>
+            <p class="card-text"><strong>Número de Utilizações:</strong> {% if vehicle.num_uses %}{{ vehicle.num_uses
+                }}{% else %} 0{% endif %}</p>
+            <p class="card-text"><strong>Em Manutenção:</strong> {% if vehicle.in_maintenance %}Sim{% else %}Não{% endif
+                %}</p>
+            <p class="card-text"><strong>Última Manutenção:</strong> {{ vehicle.last_maintenance_date }}</p>
+            <p class="card-text"><strong>Próxima Manutenção:</strong> {{ vehicle.next_maintenance_date }}</p>
+            <p class="card-text"><strong>Histórico de Manutenção:</strong></p>
+            <ul>
+                {% for maintenance_date in vehicle.maintenance_history.split(';') if maintenance_date %}
+                <li>{{ maintenance_date }}</li>
+                {% endfor %}
+            </ul>
+            <p class="card-text"><strong>Última Legalização:</strong> {{ vehicle.last_legalization_date }}</p>
+            <p class="card-text"><strong>Próxima Legalização:</strong> {{ vehicle.next_legalization_date }}</p>
+            <p class="card-text"><strong>Histórico de Legalização:</strong></p>
+            <ul>
+                {% for legalization_date in vehicle.legalization_history.split(';') if legalization_date %}
+                <li>{{ legalization_date }}</li>
+                {% endfor %}
+            </ul>
+            <div class="row">
                 {% for image_path in vehicle.imagens.split(',') %}
                 <div class="col-md-4 mb-3">
                     <div class="d-flex flex-column align-items-center">

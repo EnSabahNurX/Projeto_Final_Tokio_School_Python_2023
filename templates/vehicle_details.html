@@ -11,9 +11,8 @@
         <div class="col-md-6">
             <h1>{{ veiculo.brand }} {{ veiculo.model }}</h1>
             <p>Ano: {{ veiculo.year }}</p>
-            <p>Descrição: {{ veiculo.description }}</p>
             <p>Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-            <p>Status: {{ veiculo.status }}</p>
+            <p>Status: {% if veiculo.status %}Disponível{% else %}Indisponível{%endif%}</p>
             <div class="mt-4">
                 <a href="{{ url_for('add_to_cart', id=veiculo.id) }}" class="btn btn-primary">Reservar</a>
                 <a href="{{ url_for('checkout', id=veiculo.id) }}" class="btn btn-success">Alugar</a>
