@@ -1,4 +1,4 @@
-#!/home/ricardo/VSCode/projeto_final/.venv/bin/python
+#!/media/ricardo/Arch/home/ricardo/VSCode/projeto_final/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
