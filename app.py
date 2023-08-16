@@ -212,22 +212,20 @@ def vehicle_details(id):
     return render_template("vehicle_details.html", veiculo=veiculo)
 
 
+# Rota para a página de reserva do veículo
 @app.route("/reserve/<int:id>", methods=["GET", "POST"])
 def reserve(id):
-    # Obter o veículo com base no ID passado
     veiculo = Vehicle.query.get(id)
 
     if request.method == "POST":
-        # Obter os detalhes do formulário de reserva
         data_recolha = request.form.get("data_recolha")
         hora_recolha = request.form.get("hora_recolha")
-        duracao = request.form.get("duracao")
+        duracao = int(request.form.get("duracao"))
 
-        # Realizar a lógica de reserva aqui, como adicionar ao carrinho ou criar um contrato de aluguel
+        # Calcular o preço total do aluguel
+        preco_total = veiculo.price_per_day * duracao
 
-        # Redirecionar para a página de carrinho ou pagamento, dependendo da lógica acima
-        # Exemplo:
-        return redirect(url_for('checkout', id=id))
+        return redirect(url_for("checkout", id=id, preco_total=preco_total))
 
     return render_template("reserve.html", veiculo=veiculo)
 
