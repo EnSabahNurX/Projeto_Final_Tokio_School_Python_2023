@@ -200,6 +200,18 @@ def index():
     )
 
 
+# Rota para a página de detalhes do veículo
+@app.route("/vehicle/<int:id>")
+def vehicle_details(id):
+    # Chamar a função para verificar a manutenção do veículo
+    check_maintenance_status()
+
+    # Consultar o veículo pelo ID no banco de dados
+    veiculo = Vehicle.query.get_or_404(id)
+
+    return render_template("vehicle_details.html", veiculo=veiculo)
+
+
 # Função de middleware para verificar a sessão de administrador
 @app.before_request
 def check_admin_session():

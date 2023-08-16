@@ -9,61 +9,56 @@
     <h2 class="mb-3">Carros</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for veiculo in veiculos_carros %}
-            <div class="col">
-                <div class="card h-100">
-                    <!-- Imagem do veículo aqui -->
-                    <div class="d-flex flex-column align-items-center">
+        <div class="col">
+            <div class="card h-100">
+                <!-- Imagem do veículo aqui -->
+                <div class="d-flex flex-column align-items-center">
                     {% if veiculo.imagens %}
-                        {% for image_path in veiculo.imagens.split(',') %}
-                            {% if loop.index <= 1 %}
-                               <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
-                                    class="img-fluid img-thumbnail" style="height: 150px;">
-                            {% endif %}
+                    {% for image_path in veiculo.imagens.split(',') %}
+                    {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
+                        alt="Imagem do Veículo" class="img-fluid img-thumbnail" style="height: 150px;">
+                        {% endif %}
                         {% endfor %}
-                    {% endif %}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ veiculo.brand }}</h5>
-                        <p class="card-text">{{ veiculo.model }}</p>
-                        <p class="card-text">Ano: {{ veiculo.year }}</p>
-                        <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                    </div>
-                    <div class="card-footer">
-                        <!-- Botões de ação aqui -->
-                    </div>
+                        {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ veiculo.brand }}</h5>
+                    <p class="card-text">{{ veiculo.model }}</p>
+                    <p class="card-text">Ano: {{ veiculo.year }}</p>
+                    <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary">Detalhes</a>
                 </div>
             </div>
+        </div>
         {% endfor %}
     </div>
-
+    <br>
+    <br>
     <!-- Motas Disponíveis -->
-    <h2 class="mt-5 mb-3">Motas</h2>
+    <h2 class="mb-3">Carros</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for veiculo in veiculos_motas %}
-            <div class="col">
-                <div class="card h-100">
-                    <!-- Imagem do veículo aqui -->
-                    <div class="d-flex flex-column align-items-center">
+        <div class="col">
+            <div class="card h-100">
+                <!-- Imagem do veículo aqui -->
+                <div class="d-flex flex-column align-items-center">
                     {% if veiculo.imagens %}
-                        {% for image_path in veiculo.imagens.split(',') %}
-                            {% if loop.index <= 1 %}
-                               <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
-                                    class="img-fluid img-thumbnail" style="height: 150px;">
-                            {% endif %}
+                    {% for image_path in veiculo.imagens.split(',') %}
+                    {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
+                        alt="Imagem do Veículo" class="img-fluid img-thumbnail" style="height: 150px;">
+                        {% endif %}
                         {% endfor %}
-                    {% endif %}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ veiculo.brand }}</h5>
-                        <p class="card-text">{{ veiculo.model }}</p>
-                        <p class="card-text">Ano: {{ veiculo.year }}</p>
-                        <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                    </div>
-                    <div class="card-footer">
-                        <!-- Botões de ação aqui -->
-                    </div>
+                        {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ veiculo.brand }}</h5>
+                    <p class="card-text">{{ veiculo.model }}</p>
+                    <p class="card-text">Ano: {{ veiculo.year }}</p>
+                    <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary">Detalhes</a>
                 </div>
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>
