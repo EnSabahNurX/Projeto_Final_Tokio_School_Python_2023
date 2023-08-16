@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Reserva de Veículo</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='images/' ~ veiculo.imagens.split(',')[0]) }}"
+                alt="Imagem do Veículo" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <h2>{{ veiculo.brand }} {{ veiculo.model }}</h2>
+            <p>Ano: {{ veiculo.year }}</p>
+            <p>Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="data_recolha" class="form-label">Data de Recolha</label>
+                    <input type="date" class="form-control" id="data_recolha" name="data_recolha" required>
+                </div>
+                <div class="mb-3">
+                    <label for="hora_recolha" class="form-label">Hora de Recolha</label>
+                    <input type="time" class="form-control" id="hora_recolha" name="hora_recolha" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duracao" class="form-label">Duração do Aluguer (em dias)</label>
+                    <input type="number" class="form-control" id="duracao" name="duracao" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Continuar para Pagamento</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
