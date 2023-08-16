@@ -213,14 +213,16 @@ def vehicle_details(id):
 
 
 # Rota para a Reserva do veículo
-def add_to_cart():
+@app.route("/add_to_cart/<int:id>")
+def add_to_cart(id):
     veiculo = Vehicle.query.get_or_404(id)
 
     return render_template("add_to_cart.html", veiculo=veiculo)
 
 
 # Rota para a Aluguel do veículo
-def checkout():
+@app.route("/checkout/<int:id>")
+def checkout(id):
     veiculo = Vehicle.query.get_or_404(id)
 
     return render_template("checkout.html", veiculo=veiculo)
