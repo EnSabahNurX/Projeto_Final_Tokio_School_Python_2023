@@ -227,7 +227,10 @@ def reserve(id):
 
         return redirect(url_for("checkout", id=id, preco_total=preco_total))
 
-    return render_template("reserve.html", veiculo=veiculo)
+    return render_template(
+        "reserve.html",
+        veiculo=veiculo,
+    )
 
 
 # Rota para a Aluguel do veículo

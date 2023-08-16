@@ -26,10 +26,25 @@
                     <label for="duracao" class="form-label">Duração do Aluguer (em dias)</label>
                     <input type="number" class="form-control" id="duracao" name="duracao" required>
                 </div>
+                <p>Preço Total: <span id="precoTotal">€0.00</span></p>
                 <button type="submit" class="btn btn-primary">Continuar para Pagamento</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const duracaoInput = document.getElementById("duracao");
+        const precoTotalSpan = document.getElementById("precoTotal");
+
+        duracaoInput.addEventListener("input", function () {
+            const duracao = parseFloat(duracaoInput.value);
+            const precoPorDia = {{ veiculo.price_per_day| safe
+        }};
+    const precoTotal = duracao * precoPorDia;
+    precoTotalSpan.textContent = `€${precoTotal.toFixed(2)}`;
+        });
+    });
+</script>
 
 {% endblock %}
