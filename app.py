@@ -212,6 +212,20 @@ def vehicle_details(id):
     return render_template("vehicle_details.html", veiculo=veiculo)
 
 
+# Rota para a Reserva do veículo
+def add_to_cart():
+    veiculo = Vehicle.query.get_or_404(id)
+
+    return render_template("add_to_cart.html", veiculo=veiculo)
+
+
+# Rota para a Aluguel do veículo
+def checkout():
+    veiculo = Vehicle.query.get_or_404(id)
+
+    return render_template("checkout.html", veiculo=veiculo)
+
+
 # Função de middleware para verificar a sessão de administrador
 @app.before_request
 def check_admin_session():
