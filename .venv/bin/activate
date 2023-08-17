@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/media/ricardo/Arch/home/ricardo/VSCode/projeto_final/.venv"
+VIRTUAL_ENV="/mnt/547384a5-8511-493a-9e41-edb29d1726e5/home/ricardo/VSCode/projeto_final/.venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

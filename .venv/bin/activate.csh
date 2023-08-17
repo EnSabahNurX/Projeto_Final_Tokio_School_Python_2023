@@ -8,7 +8,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/media/ricardo/Arch/home/ricardo/VSCode/projeto_final/.venv"
+setenv VIRTUAL_ENV "/mnt/547384a5-8511-493a-9e41-edb29d1726e5/home/ricardo/VSCode/projeto_final/.venv"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"
