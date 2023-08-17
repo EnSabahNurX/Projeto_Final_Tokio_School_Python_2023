@@ -213,7 +213,7 @@ def vehicle_details(id):
 
 
 # Rota para a página de reserva do veículo
-@app.route("/reserve/<int:id>", methods=["GET", "POST"])
+""" @app.route("/reserve/<int:id>", methods=["GET", "POST"])
 def reserve(id):
     veiculo = Vehicle.query.get(id)
 
@@ -230,7 +230,31 @@ def reserve(id):
     return render_template(
         "reserve.html",
         veiculo=veiculo,
-    )
+        preco_total=0,
+    ) """
+@app.route("/reserve/<int:id>", methods=["GET", "POST"])
+def reserve(id):
+    veiculo = Vehicle.query.get(id)
+
+    if not veiculo:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        data_recolha = request.form.get("data_recolha")
+        duracao = int(request.form.get("duracao"))
+        preco_total = float(request.form.get("preco_total"))
+        payment_method = request.form.get("payment_method")
+
+        return render_template(
+            "payment_simulation.html",
+            veiculo=veiculo,
+            data_recolha=data_recolha,
+            duracao=duracao,
+            preco_total=preco_total,
+            payment_method=payment_method,
+        )
+
+    return render_template("reserve_vehicle.html", veiculo=veiculo)
 
 
 # Dicionário para simular as respostas de pagamento, em um abiente de produção real isto não é necessário, pois será utilizado APIs

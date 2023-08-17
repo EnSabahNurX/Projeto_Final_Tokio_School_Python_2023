@@ -27,6 +27,13 @@
                     <input type="number" class="form-control" id="duracao" name="duracao" required>
                 </div>
                 <p>Preço Total: <span id="precoTotal">€0.00</span></p>
+                <div class="mb-3">
+                    <label for="payment_method" class="form-label">Método de Pagamento</label>
+                    <select class="form-control" id="payment_method" name="payment_method" required>
+                        <option value="mbway">MB WAY</option>
+                        <option value="multibanco">Multibanco</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary">Continuar para Pagamento</button>
             </form>
         </div>
