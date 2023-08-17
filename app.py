@@ -232,6 +232,8 @@ def reserve(id):
         veiculo=veiculo,
         preco_total=0,
     ) """
+
+
 @app.route("/reserve/<int:id>", methods=["GET", "POST"])
 def reserve(id):
     veiculo = Vehicle.query.get(id)
@@ -257,30 +259,36 @@ def reserve(id):
     return render_template("reserve.html", veiculo=veiculo)
 
 
-# Dicionário para simular as respostas de pagamento, em um abiente de produção real isto não é necessário, pois será utilizado APIs
-payment_responses = {
-    "mbway": {
-        "success": True,
-        "message": "Pagamento com MB WAY realizado com sucesso!",
-    },
-    "multibanco": {
-        "success": True,
-        "message": "Pagamento com Multibanco realizado com sucesso!",
-        "entidade": "12345",
-        "referencia": "67890",
-    },
-}
-
-
 # Rota para processar o pagamento
-@app.route("/process_payment", methods=["POST"])
-def process_payment():
+@app.route("/complete_payment", methods=["POST"])
+def complete_payment():
+    # Receber os dados do formulário
     veiculo_id = request.form.get("veiculo_id")
     data_recolha = request.form.get("data_recolha")
-    duracao = request.form.get("duracao")
-    preco_total = request.form.get("preco_total")
+    duracao = int(request.form.get("duracao"))
     payment_method = request.form.get("payment_method")
 
+    # Obter o veículo a partir do ID
+    veiculo = Vehicle.query.get(veiculo_id)
+
+    # Calcular o preço total do aluguer
+    preco_total = duracao * veiculo.price_per_day
+
+    # Dicionário para simular as respostas de pagamento
+    payment_responses = {
+        "mbway": {
+            "success": True,
+            "message": "Pagamento com MB WAY realizado com sucesso!",
+        },
+        "multibanco": {
+            "success": True,
+            "message": "Pagamento com Multibanco realizado com sucesso!",
+            "entidade": "12345",
+            "referencia": "67890",
+        },
+    }
+
+    # Obter a resposta de pagamento do dicionário simulado
     payment_response = payment_responses.get(payment_method)
 
     if payment_response:
