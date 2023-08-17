@@ -236,21 +236,24 @@ def reserve(id):
 
 @app.route("/reserve/<int:id>", methods=["GET", "POST"])
 def reserve(id):
+    # Obter o veículo a partir do ID
     veiculo = Vehicle.query.get(id)
 
-    if not veiculo:
-        return redirect(url_for("index"))
-
     if request.method == "POST":
+        # Receber os dados do formulário
         data_recolha = request.form.get("data_recolha")
+        hora_recolha = request.form.get("hora_recolha")
         duracao = int(request.form.get("duracao"))
-        preco_total = float(request.form.get("preco_total"))
         payment_method = request.form.get("payment_method")
+
+        # Calcular o preço total do aluguer
+        preco_total = duracao * veiculo.price_per_day
 
         return render_template(
             "payment_simulation.html",
             veiculo=veiculo,
             data_recolha=data_recolha,
+            hora_recolha=hora_recolha,
             duracao=duracao,
             preco_total=preco_total,
             payment_method=payment_method,
