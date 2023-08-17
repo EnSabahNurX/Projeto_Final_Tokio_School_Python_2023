@@ -247,8 +247,16 @@ def complete_payment():
     # Receber os dados do formulário
     veiculo_id = request.form.get("veiculo_id")
     data_recolha = request.form.get("data_recolha")
-    duracao = int(request.form.get("duracao"))
+    print(request.form.get("duracao"))
+    # duracao = int(request.form.get("duracao"))
     payment_method = request.form.get("payment_method")
+    
+     # Verificar se a duração é um valor válido antes de convertê-lo em um inteiro
+    if request.form.get("duracao") is not None and request.form.get("duracao").isdigit():
+        duracao = int(request.form.get("duracao"))
+    else:
+        # Lidar com o caso em que a duração não é um número válido
+        return render_template("payment_error.html", message="Duração inválida")
 
     # Obter o veículo a partir do ID
     veiculo = Vehicle.query.get(veiculo_id)
