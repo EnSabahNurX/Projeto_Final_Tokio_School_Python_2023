@@ -15,7 +15,6 @@
             <p>Status: {% if veiculo.status %}Disponível{% else %}Indisponível{%endif%}</p>
             <div class="mt-4">
                 <a href="{{ url_for('reserve', id=veiculo.id) }}" class="btn btn-primary">Reservar</a>
-                <a href="{{ url_for('checkout', id=veiculo.id) }}" class="btn btn-success">Alugar</a>
             </div>
         </div>
     </div>
