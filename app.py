@@ -286,6 +286,11 @@ def complete_payment():
     # Redirecionar para a página de confirmação do pedido
     return redirect(url_for("order_confirmation"))
 
+# Rota para a página de confirmação de pagamento
+@app.route("/order_confirmation")
+def order_confirmation():
+    return render_template("order_confirmation.html")
+
 
 # Função de middleware para verificar a sessão de administrador
 @app.before_request
