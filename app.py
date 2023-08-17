@@ -250,9 +250,12 @@ def complete_payment():
     print(request.form.get("duracao"))
     # duracao = int(request.form.get("duracao"))
     payment_method = request.form.get("payment_method")
-    
-     # Verificar se a duração é um valor válido antes de convertê-lo em um inteiro
-    if request.form.get("duracao") is not None and request.form.get("duracao").isdigit():
+
+    # Verificar se a duração é um valor válido antes de convertê-lo em um inteiro
+    if (
+        request.form.get("duracao") is not None
+        and request.form.get("duracao").isdigit()
+    ):
         duracao = int(request.form.get("duracao"))
     else:
         # Lidar com o caso em que a duração não é um número válido
@@ -293,6 +296,7 @@ def complete_payment():
 
     # Redirecionar para a página de confirmação do pedido
     return redirect(url_for("order_confirmation"))
+
 
 # Rota para a página de confirmação de pagamento
 @app.route("/order_confirmation")
