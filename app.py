@@ -213,27 +213,6 @@ def vehicle_details(id):
 
 
 # Rota para a página de reserva do veículo
-""" @app.route("/reserve/<int:id>", methods=["GET", "POST"])
-def reserve(id):
-    veiculo = Vehicle.query.get(id)
-
-    if request.method == "POST":
-        data_recolha = request.form.get("data_recolha")
-        hora_recolha = request.form.get("hora_recolha")
-        duracao = int(request.form.get("duracao"))
-
-        # Calcular o preço total do aluguel
-        preco_total = veiculo.price_per_day * duracao
-
-        return redirect(url_for("checkout", id=id, preco_total=preco_total))
-
-    return render_template(
-        "reserve.html",
-        veiculo=veiculo,
-        preco_total=0,
-    ) """
-
-
 @app.route("/reserve/<int:id>", methods=["GET", "POST"])
 def reserve(id):
     # Obter o veículo a partir do ID
@@ -306,14 +285,6 @@ def complete_payment():
 
     # Redirecionar para a página de confirmação do pedido
     return redirect(url_for("order_confirmation"))
-
-
-# Rota para a Aluguel do veículo
-@app.route("/checkout/<int:id>")
-def checkout(id):
-    veiculo = Vehicle.query.get_or_404(id)
-
-    return render_template("checkout.html", veiculo=veiculo)
 
 
 # Função de middleware para verificar a sessão de administrador
