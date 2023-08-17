@@ -233,6 +233,46 @@ def reserve(id):
     )
 
 
+# Dicionário para simular as respostas de pagamento, em um abiente de produção real isto não é necessário, pois será utilizado APIs
+payment_responses = {
+    "mbway": {
+        "success": True,
+        "message": "Pagamento com MB WAY realizado com sucesso!",
+    },
+    "multibanco": {
+        "success": True,
+        "message": "Pagamento com Multibanco realizado com sucesso!",
+        "entidade": "12345",
+        "referencia": "67890",
+    },
+}
+
+
+# Rota para processar o pagamento
+@app.route("/process_payment", methods=["POST"])
+def process_payment():
+    veiculo_id = request.form.get("veiculo_id")
+    data_recolha = request.form.get("data_recolha")
+    duracao = request.form.get("duracao")
+    preco_total = request.form.get("preco_total")
+    payment_method = request.form.get("payment_method")
+
+    payment_response = payment_responses.get(payment_method)
+
+    if payment_response:
+        if payment_response["success"]:
+            # Simulação de sucesso no pagamento
+            return redirect(url_for("order_confirmation"))
+        else:
+            # Simulação de falha no pagamento
+            return render_template(
+                "payment_error.html", message=payment_response["message"]
+            )
+
+    # Redirecionar para a página de confirmação do pedido
+    return redirect(url_for("order_confirmation"))
+
+
 # Rota para a Aluguel do veículo
 @app.route("/checkout/<int:id>")
 def checkout(id):
