@@ -17,7 +17,7 @@
             <p>Entidade: 12345</p>
             <p>Referência: 67890</p>
             <p>Por favor, insira os detalhes do pagamento simulado:</p>
-            <form method="POST" action="{{ url_for('complete_payment') }}">
+            <form method="POST" action="{{ url_for('process_payment') }}">
                 <div class="mb-3">
                     <label for="numero_cartao" class="form-label">Número do Cartão</label>
                     <input type="text" class="form-control" id="numero_cartao" name="numero_cartao" required>
@@ -38,7 +38,7 @@
                 <button type="submit" class="btn btn-primary">Confirmar Pagamento</button>
             </form>
             {% elif payment_method == 'mbway' %}
-            <form method="POST" action="{{ url_for('complete_payment') }}">
+            <form method="POST" action="{{ url_for('process_payment') }}">
                 <div class="mb-3">
                     <label for="phone_number" class="form-label">Número de Telemóvel</label>
                     <input type="text" class="form-control" id="phone_number" name="phone_number" required>

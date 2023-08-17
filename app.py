@@ -254,7 +254,7 @@ def reserve(id):
             payment_method=payment_method,
         )
 
-    return render_template("reserve_vehicle.html", veiculo=veiculo)
+    return render_template("reserve.html", veiculo=veiculo)
 
 
 # Dicionário para simular as respostas de pagamento, em um abiente de produção real isto não é necessário, pois será utilizado APIs
