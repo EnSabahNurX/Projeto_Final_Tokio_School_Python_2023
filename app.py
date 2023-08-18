@@ -215,7 +215,7 @@ def vehicle_details(id):
 
 # Rota para a página de reserva do veículo
 @app.route("/reserve/<int:id>", methods=["GET", "POST"])
-@login_required
+#@login_required
 def reserve(id):
     # Obter o veículo a partir do ID
     veiculo = Vehicle.query.get(id)
