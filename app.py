@@ -9,6 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
+from models import Vehicle, Cliente
 
 
 app = Flask(__name__)
@@ -45,7 +46,7 @@ db = SQLAlchemy(app)
 # Configuração do Flask-Migrate
 migrate = Migrate(app, db)
 
-
+""" 
 # Definir as opções válidas para o campo 'type' (Carro e Mota)
 class VehicleType(enum.Enum):
     CARRO = "Carro"
@@ -166,7 +167,7 @@ class Cliente(db.Model):
 
     def __repr__(self):
         return f"<Cliente {self.nome} {self.apelido}>"
-
+ """
 
 # Rota inicial
 @app.route("/")
