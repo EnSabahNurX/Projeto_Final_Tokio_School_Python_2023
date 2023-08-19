@@ -215,7 +215,7 @@ def vehicle_details(id):
 
 # Rota para a página de reserva do veículo
 @app.route("/reserve/<int:id>", methods=["GET", "POST"])
-#@login_required
+@login_required
 def reserve(id):
     # Obter o veículo a partir do ID
     veiculo = Vehicle.query.get(id)
@@ -609,30 +609,27 @@ def delete_image(image_path, vehicle_id):
 # Rota para a página de login do cliente
 @app.route("/client_login", methods=["GET", "POST"])
 def client_login():
-    if "client" in session:
-        return redirect(url_for("index"))
+    if "user_id" in session:
+        # Se o usuário já estiver logado, redirecione para a página de reserva
+        # Verifica se há uma URL de redirecionamento armazenada
+        redirect_url = session.pop("redirect_url", url_for("index"))
+        return redirect(redirect_url)
+
     if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-        # Consulta todos os clientes existentes no banco de dados
-        clientes = Cliente.query.all()
+        # Verifique as credenciais do cliente aqui (substitua com a sua lógica)
+        client = Cliente.query.filter_by(email=email).first()
+        if client.email == email and client.password == password:
+            # Define a sessão para o usuário logado
+            session["user_id"] = client.id
 
-        # Verifica se as credenciais de login estão corretas
-        for cliente in clientes:
-            if cliente.email == email and cliente.password == password:
-                # Define a sessão do cliente logado
-                session["client"] = {
-                    "id": cliente.id,
-                    "nome": cliente.nome,
-                    "email": cliente.email,
-                }
+            # Verifica se há uma URL de redirecionamento armazenada
+            redirect_url = session.pop("redirect_url", url_for("index"))
+            return redirect(redirect_url)
 
-                # Exibe a mensagem de sucesso na página de login do cliente
-                success_message = "Cliente logado com sucesso!"
-                return redirect(url_for("index"))
-
-        # Se as credenciais estiverem incorretas, exibe uma mensagem de erro
+        # Em caso de credenciais inválidas, exiba uma mensagem de erro
         error_message = "Credenciais de login inválidas. Por favor, tente novamente."
         return render_template("client_login.html", error_message=error_message)
 
@@ -642,7 +639,7 @@ def client_login():
 # Rota para logout do cliente
 @app.route("/client_logout")
 def client_logout():
-    session.pop("client", None)  # Remove a chave 'client' da sessão
+    session.pop("user_id", None)  # Remove a chave 'client' da sessão
     # Redireciona para a página de login do cliente
     return redirect(url_for("client_login"))
 
