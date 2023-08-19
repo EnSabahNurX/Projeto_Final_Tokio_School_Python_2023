@@ -9,7 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
-from models import Vehicle, Cliente
+from models import db, Vehicle, VehicleType, Cliente
 
 
 app = Flask(__name__)
@@ -40,11 +40,16 @@ app.config["BOOTSTRAP_USE_MINIFIED"] = True
 app.config["BOOTSTRAP_USE_CDN"] = True
 app.config["BOOTSTRAP_FONTAWESOME"] = True
 
-# Inicializar a extensão SQLAlchemy
+""" # Inicializar a extensão SQLAlchemy
 db = SQLAlchemy(app)
 
 # Configuração do Flask-Migrate
+migrate = Migrate(app, db) """
+
+# Inicialização do banco de dados
+db.init_app(app)
 migrate = Migrate(app, db)
+
 
 """ 
 # Definir as opções válidas para o campo 'type' (Carro e Mota)

@@ -1,10 +1,10 @@
-from app import db
-import enum
-from datetime import date, datetime, timedelta
+from flask_sqlalchemy import SQLAlchemy
+from enum import Enum
 
+db = SQLAlchemy()
 
 # Definir as opções válidas para o campo 'type' (Carro e Mota)
-class VehicleType(enum.Enum):
+class VehicleType(Enum):
     CARRO = "Carro"
     MOTA = "Mota"
 
