@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import pytz
 from datetime import datetime, date, timedelta
