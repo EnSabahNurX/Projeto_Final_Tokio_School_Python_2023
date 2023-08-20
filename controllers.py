@@ -1,3 +1,4 @@
+from models import db, Vehicle, Cliente
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_migrate import Migrate
@@ -8,44 +9,8 @@ import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
 from models import db, Vehicle, VehicleType, Cliente
-from views import app as views_app
-
-app = Flask(__name__)
 
 
-# Definir a chave secreta para a sessão
-app.secret_key = "sua_chave_secreta_aqui"
-
-# Configurar o fuso horário de Portugal
-app.config["TIMEZONE"] = pytz.timezone("Europe/Lisbon")
-
-# Caminho do banco de dados
-db_folder = os.path.join(os.path.dirname(__file__), "database")
-db_path = os.path.join(db_folder, "database.db")
-
-# Configurações do SQLite - banco de dados ficará dentro da pasta 'database'
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-
-# Defina o diretório de upload de imagens (pasta 'static')
-app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static/images")
-
-
-# Configuração do Bootstrap 5 com Font Awesome
-app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = "yeti"
-app.config["BOOTSTRAP_USE_MINIFIED"] = True
-app.config["BOOTSTRAP_USE_CDN"] = True
-app.config["BOOTSTRAP_FONTAWESOME"] = True
-
-
-# Inicialização do banco de dados
-db.init_app(app)
-migrate = Migrate(app, db)
-
-
-# Rota inicial
-@app.route("/")
 def index():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
@@ -77,8 +42,6 @@ def index():
     )
 
 
-# Rota para a página de detalhes do veículo
-@app.route("/vehicle/<int:id>")
 def vehicle_details(id):
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
@@ -89,8 +52,6 @@ def vehicle_details(id):
     return render_template("vehicle_details.html", veiculo=veiculo)
 
 
-# Rota para a página de reserva do veículo
-@app.route("/reserve/<int:id>", methods=["GET", "POST"])
 @login_required
 def reserve(id):
     # Obter o veículo a partir do ID
@@ -119,8 +80,6 @@ def reserve(id):
     return render_template("reserve.html", veiculo=veiculo)
 
 
-# Rota para processar o pagamento
-@app.route("/complete_payment", methods=["POST"])
 def complete_payment():
     # Receber os dados do formulário
     veiculo_id = request.form.get("veiculo_id")
@@ -176,14 +135,10 @@ def complete_payment():
     return redirect(url_for("order_confirmation"))
 
 
-# Rota para a página de confirmação de pagamento
-@app.route("/order_confirmation")
 def order_confirmation():
     return render_template("order_confirmation.html")
 
 
-# Função de middleware para verificar a sessão de administrador
-@app.before_request
 def check_admin_session():
     # Lista de rotas que requerem autenticação de administrador
     admin_routes = ["/admin", "/add_vehicle", "/edit_vehicle/", "/delete_vehicle/"]
@@ -193,8 +148,6 @@ def check_admin_session():
             return redirect(url_for("login"))
 
 
-# Rota para a página de login do administrador
-@app.route("/login", methods=["GET", "POST"])
 def login():
     # Verifica se já há uma sessão de admin ativa
     if "admin" in session:
@@ -215,8 +168,6 @@ def login():
     return render_template("login.html")
 
 
-# Rota para o painel de administração
-@app.route("/admin", methods=["GET", "POST"])
 def admin_panel():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
@@ -292,8 +243,6 @@ def admin_panel():
     )
 
 
-# Rota para visualisar os detalhes do veículo
-@app.route("/admin/view_vehicle/<int:id>")
 def view_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
     imagens_paths = vehicle.imagens.split(",") if vehicle.imagens else []
@@ -302,8 +251,6 @@ def view_vehicle(id):
     )
 
 
-# Rota para a página de adicionar veículos
-@app.route("/add_vehicle", methods=["GET", "POST"])
 def add_vehicle():
     if request.method == "POST":
         # Obter dados do formulário
@@ -345,8 +292,6 @@ def add_vehicle():
     return render_template("add_vehicle.html")
 
 
-# Rota para a página de edição de veículo
-@app.route("/edit_vehicle/<int:id>", methods=["GET", "POST"])
 def edit_vehicle(id):
     # Obter o veículo pelo ID
     vehicle = Vehicle.query.get_or_404(id)
@@ -428,8 +373,6 @@ def edit_vehicle(id):
     )
 
 
-# Rota para exclusão de veículo
-@app.route("/delete_vehicle/<int:id>", methods=["POST"])
 def delete_vehicle(id):
     # Obter o veículo pelo ID
     vehicle = Vehicle.query.get_or_404(id)
@@ -441,8 +384,6 @@ def delete_vehicle(id):
     return redirect(url_for("admin_panel"))
 
 
-# Rota para exclusão de imagem
-@app.route("/delete_image/<path:image_path>/<int:vehicle_id>", methods=["POST"])
 def delete_image(image_path, vehicle_id):
     # Encontrar o veículo no banco de dados pelo ID
     vehicle = Vehicle.query.get(vehicle_id)
@@ -479,8 +420,6 @@ def delete_image(image_path, vehicle_id):
         return redirect(url_for("edit_vehicle", id=vehicle_id))
 
 
-# Rota para a página de login do cliente
-@app.route("/client_login", methods=["GET", "POST"])
 def client_login():
     if "user_id" in session:
         # Se o usuário já estiver logado, redirecione para a página de reserva
@@ -509,24 +448,18 @@ def client_login():
     return render_template("client_login.html")
 
 
-# Rota para logout do cliente
-@app.route("/client_logout")
 def client_logout():
     session.pop("user_id", None)  # Remove a chave 'client' da sessão
     # Redireciona para a página de login do cliente
     return redirect(url_for("client_login"))
 
 
-# Rota para logout
-@app.route("/logout")
 def logout():
     # Remover a sessão de administrador
     session.pop("admin", None)
     return redirect(url_for("login"))
 
 
-# Rota para a página de registro do cliente
-@app.route("/register_client", methods=["GET", "POST"])
 def register_client():
     if "client" in session:
         return redirect(url_for("index"))
@@ -588,8 +521,6 @@ def register_client():
     return render_template("register_client.html")
 
 
-# Rota para confirmar a legalização do veículo
-@app.route("/legalize_vehicle/<int:id>", methods=["POST"])
 def legalize_vehicle(id):
     # Obter o veículo pelo ID
     vehicle = Vehicle.query.get_or_404(id)
@@ -616,8 +547,6 @@ def legalize_vehicle(id):
     return redirect(url_for("admin_panel"))
 
 
-# Rota para manutenção do veículo
-@app.route("/admin/maintenance_vehicle/<int:id>", methods=["GET", "POST"])
 def maintenance_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
 
@@ -662,6 +591,18 @@ def maintenance_vehicle(id):
     return render_template("maintenance_vehicle.html", vehicle=vehicle)
 
 
+def register_usage_route(vehicle_id):
+    # Obter o veículo pelo ID
+    vehicle = Vehicle.query.get_or_404(vehicle_id)
+
+    # Registrar a utilização e verificar a próxima manutenção
+    register_usage(vehicle)
+
+    # Redirecionar de volta para a página de edição do veículo
+    flash("Utilização registrada com sucesso!", "success")
+    return redirect(url_for("edit_vehicle", id=vehicle_id))
+
+
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
     # Obter todos os veículos em manutenção
@@ -694,47 +635,3 @@ def register_usage(vehicle):
             )
 
     db.session.commit()
-
-
-# Rota para atualizar o número de utilização do veículo
-@app.route("/register_usage/<int:vehicle_id>", methods=["POST"])
-def register_usage_route(vehicle_id):
-    # Obter o veículo pelo ID
-    vehicle = Vehicle.query.get_or_404(vehicle_id)
-
-    # Registrar a utilização e verificar a próxima manutenção
-    register_usage(vehicle)
-
-    # Redirecionar de volta para a página de edição do veículo
-    flash("Utilização registrada com sucesso!", "success")
-    return redirect(url_for("edit_vehicle", id=vehicle_id))
-
-
-# Criar um scheduler para executar tarefas em segundo plano
-scheduler = BackgroundScheduler()
-scheduler.start()
-
-# Agendar a função para ser executada diariamente à meia-noite (00:00)
-scheduler.add_job(
-    check_maintenance_status, "interval", days=1, start_date="2023-07-27 00:00:00"
-)
-
-# Ao sair da aplicação, finalizar o scheduler
-atexit.register(lambda: scheduler.shutdown())
-
-# Verificar e criar o diretório "database" se não existir
-if not os.path.exists(db_folder):
-    os.makedirs(db_folder)
-
-
-# Se a pasta 'static/images' não existir, crie-a
-if not os.path.exists(os.path.join(app.root_path, "static/images")):
-    os.makedirs(os.path.join(app.root_path, "static/images"))
-
-# Criação das tabelas do banco de dados
-with app.app_context():
-    db.create_all()
-
-# Executar a aplicação Flask com debug mode habilitado
-if __name__ == "__main__":
-    app.run(debug=True)
