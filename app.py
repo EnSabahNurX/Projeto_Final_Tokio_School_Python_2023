@@ -44,6 +44,10 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
+# Importar as rotas do views
+app.register_blueprint(views_app)
+
+
 # Rota inicial
 @app.route("/")
 def index():
