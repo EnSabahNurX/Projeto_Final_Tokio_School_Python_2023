@@ -1,14 +1,10 @@
-from models import db, Vehicle, Cliente
+from models import db, Vehicle, VehicleType, Cliente
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_migrate import Migrate
-import pytz
+from flask import render_template, request, redirect, url_for, session, flash
 from datetime import datetime, date, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
-from models import db, Vehicle, VehicleType, Cliente
+from app import app
 
 
 def index():
