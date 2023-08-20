@@ -10,6 +10,11 @@ from decorators import login_required
 from models import db, Vehicle, VehicleType, Cliente
 from views import app as views_app
 
+
+from flask import Flask
+from models import db
+
+
 app = Flask(__name__)
 
 
@@ -47,7 +52,7 @@ migrate = Migrate(app, db)
 # Importar as rotas do views
 # app.register_blueprint(views_app)
 
-
+"""
 # Rota inicial
 @app.route("/")
 def index():
@@ -712,6 +717,8 @@ def register_usage_route(vehicle_id):
     # Redirecionar de volta para a página de edição do veículo
     flash("Utilização registrada com sucesso!", "success")
     return redirect(url_for("edit_vehicle", id=vehicle_id))
+
+"""
 
 
 # Criar um scheduler para executar tarefas em segundo plano

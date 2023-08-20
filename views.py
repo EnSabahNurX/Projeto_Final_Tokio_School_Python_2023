@@ -1,5 +1,24 @@
 from flask import Flask
-from controllers import *
+from controllers import (
+    index,
+    vehicle_details,
+    reserve,
+    complete_payment,
+    order_confirmation,
+    admin_panel,
+    view_vehicle,
+    add_vehicle,
+    edit_vehicle,
+    delete_vehicle,
+    delete_image,
+    client_login,
+    client_logout,
+    logout,
+    register_client,
+    legalize_vehicle,
+    maintenance_vehicle,
+    register_usage_route,
+)
 
 app = Flask(__name__)
 
