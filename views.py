@@ -40,3 +40,30 @@ app.route("/edit_vehicle/<int:id>", methods=["GET", "POST"])(edit_vehicle)
 
 # Rota para exclusão de veículo
 app.route("/delete_vehicle/<int:id>", methods=["POST"])(delete_vehicle)
+
+# Rota para exclusão de imagem
+app.route("/delete_image/<path:image_path>/<int:vehicle_id>", methods=["POST"])(
+    delete_image
+)
+
+# Rota para a página de login do cliente
+app.route("/client_login", methods=["GET", "POST"])(client_login)
+
+# Rota para logout do cliente
+app.route("/client_logout")(client_logout)
+
+# Rota para logout do admin
+app.route("/logout")(logout)
+
+# Rota para a página de registro do cliente
+app.route("/register_client", methods=["GET", "POST"])(register_client)
+
+# Rota para confirmar a legalização do veículo
+app.route("/legalize_vehicle/<int:id>", methods=["POST"])(legalize_vehicle)
+
+# Rota para manutenção do veículo
+app.route("/admin/maintenance_vehicle/<int:id>", methods=["GET", "POST"])(
+    maintenance_vehicle
+)
+# Rota para atualizar o número de utilização do veículo
+app.route("/register_usage/<int:vehicle_id>", methods=["POST"])(register_usage_route)
