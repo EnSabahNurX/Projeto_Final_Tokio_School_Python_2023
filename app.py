@@ -7,12 +7,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
-from models import db, Vehicle, VehicleType, Cliente
-from views import app as views_app
-
-
-from flask import Flask
 from models import db
+from views import app_views
 
 
 app = Flask(__name__)
@@ -49,8 +45,8 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
-# Importar as rotas do views
-# app.register_blueprint(views_app)
+# Registrar as rotas do arquivo views.py
+app.register_blueprint(app_views)
 
 """
 # Rota inicial
@@ -719,6 +715,40 @@ def register_usage_route(vehicle_id):
     return redirect(url_for("edit_vehicle", id=vehicle_id))
 
 """
+
+
+# Função para verificar o status de manutenção do veículo
+def check_maintenance_status():
+    # Obter todos os veículos em manutenção
+    vehicles_in_maintenance = Vehicle.query.filter_by(in_maintenance=True).all()
+
+    # Verificar se a data atual é igual ou superior à data de próxima manutenção
+    today = date.today()
+    for vehicle in vehicles_in_maintenance:
+        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
+            # Definir o veículo como disponível e definir in_maintenance como False
+            vehicle.status = True
+            vehicle.in_maintenance = False
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=180
+            )
+            db.session.commit()
+
+
+# Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
+def register_usage(vehicle):
+    vehicle.num_uses += 1
+
+    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
+        days_since_last_maintenance = (
+            datetime.now().date() - vehicle.last_maintenance_date
+        ).days
+        if days_since_last_maintenance >= 30:
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=30
+            )
+
+    db.session.commit()
 
 
 # Criar um scheduler para executar tarefas em segundo plano

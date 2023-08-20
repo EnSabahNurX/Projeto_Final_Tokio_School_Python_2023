@@ -1,4 +1,5 @@
 from flask import Flask
+from app import app
 from controllers import (
     index,
     vehicle_details,
@@ -20,7 +21,10 @@ from controllers import (
     register_usage_route,
 )
 
-app = Flask(__name__)
+
+# Cria um Blueprint para as rotas
+app_views = Blueprint("app_views", __name__)
+
 
 # Rotas
 
