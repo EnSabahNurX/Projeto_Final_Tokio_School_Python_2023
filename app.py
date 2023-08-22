@@ -1,13 +1,11 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_migrate import Migrate
-from datetime import datetime, date, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
 from models import db
-from models import db, Vehicle, VehicleType, Cliente
 from config import Config
 from views import *
 
