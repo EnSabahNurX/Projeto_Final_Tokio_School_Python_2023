@@ -1,11 +1,7 @@
-# views.py
-
 from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente
 from config import Config
 from decorators import login_required
-
-
 
 
 # Função para verificar o status de manutenção do veículo
