@@ -8,14 +8,16 @@ import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
 from models import db
-#from views import app_views
+
+# from views import app_views
 from models import db, Vehicle, VehicleType, Cliente
+from config import Config
 
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
-
-# Definir a chave secreta para a sessão
+""" # Definir a chave secreta para a sessão
 app.secret_key = "sua_chave_secreta_aqui"
 
 # Configurar o fuso horário de Portugal
@@ -38,7 +40,7 @@ app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static/images")
 app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = "yeti"
 app.config["BOOTSTRAP_USE_MINIFIED"] = True
 app.config["BOOTSTRAP_USE_CDN"] = True
-app.config["BOOTSTRAP_FONTAWESOME"] = True
+app.config["BOOTSTRAP_FONTAWESOME"] = True """
 
 
 # Inicialização do banco de dados
@@ -746,14 +748,14 @@ scheduler.add_job(
 # Ao sair da aplicação, finalizar o scheduler
 atexit.register(lambda: scheduler.shutdown())
 
-# Verificar e criar o diretório "database" se não existir
+""" # Verificar e criar o diretório "database" se não existir
 if not os.path.exists(db_folder):
     os.makedirs(db_folder)
 
 
 # Se a pasta 'static/images' não existir, crie-a
 if not os.path.exists(os.path.join(app.root_path, "static/images")):
-    os.makedirs(os.path.join(app.root_path, "static/images"))
+    os.makedirs(os.path.join(app.root_path, "static/images")) """
 
 # Criação das tabelas do banco de dados
 with app.app_context():
