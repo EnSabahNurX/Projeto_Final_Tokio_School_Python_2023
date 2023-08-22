@@ -1,6 +1,7 @@
 import os
 import pytz
 
+
 # Caminho do banco de dados
 db_folder = os.path.join(os.path.dirname(__file__), "database")
 db_path = os.path.join(db_folder, "database.db")
@@ -21,7 +22,7 @@ class Config:
     TIMEZONE = pytz.timezone("Europe/Lisbon")
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{db_path}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    UPLOAD_FOLDER = "static/images"
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static/images")
     BOOTSTRAP_BOOTSWATCH_THEME = "yeti"
     BOOTSTRAP_USE_MINIFIED = True
     BOOTSTRAP_USE_CDN = True
