@@ -1,7 +1,11 @@
+import os
+from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente
 from config import Config
 from decorators import login_required
+from werkzeug.utils import secure_filename
+from app import app
 
 
 # Função para verificar o status de manutenção do veículo
@@ -20,22 +24,6 @@ def check_maintenance_status():
                 days=180
             )
             db.session.commit()
-
-
-# Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
-def register_usage(vehicle):
-    vehicle.num_uses += 1
-
-    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
-        days_since_last_maintenance = (
-            datetime.now().date() - vehicle.last_maintenance_date
-        ).days
-        if days_since_last_maintenance >= 30:
-            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
-                days=30
-            )
-
-    db.session.commit()
 
 
 # Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
