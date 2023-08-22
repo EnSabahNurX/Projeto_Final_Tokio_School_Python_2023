@@ -6,6 +6,8 @@ from config import Config
 from decorators import login_required
 
 
+
+
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
     # Obter todos os veículos em manutenção

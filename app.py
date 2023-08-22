@@ -19,39 +19,8 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 
-
-# Função para verificar o status de manutenção do veículo
-def check_maintenance_status():
-    # Obter todos os veículos em manutenção
-    vehicles_in_maintenance = Vehicle.query.filter_by(in_maintenance=True).all()
-
-    # Verificar se a data atual é igual ou superior à data de próxima manutenção
-    today = date.today()
-    for vehicle in vehicles_in_maintenance:
-        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
-            # Definir o veículo como disponível e definir in_maintenance como False
-            vehicle.status = True
-            vehicle.in_maintenance = False
-            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
-                days=180
-            )
-            db.session.commit()
-
-
-# Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
-def register_usage(vehicle):
-    vehicle.num_uses += 1
-
-    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
-        days_since_last_maintenance = (
-            datetime.now().date() - vehicle.last_maintenance_date
-        ).days
-        if days_since_last_maintenance >= 30:
-            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
-                days=30
-            )
-
-    db.session.commit()
+# Registrar as rotas do arquivo urls.py
+from urls import *
 
 
 # Função de middleware para verificar a sessão de administrador
@@ -63,6 +32,7 @@ def check_admin_session():
     if request.path in admin_routes:
         if "admin" not in session:
             return redirect(url_for("login"))
+
 
 # Criar um scheduler para executar tarefas em segundo plano
 scheduler = BackgroundScheduler()
