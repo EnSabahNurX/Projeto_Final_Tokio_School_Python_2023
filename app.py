@@ -8,7 +8,8 @@ import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
 from models import db
-from views import app_views
+#from views import app_views
+from models import db, Vehicle, VehicleType, Cliente
 
 
 app = Flask(__name__)
@@ -46,9 +47,9 @@ migrate = Migrate(app, db)
 
 
 # Registrar as rotas do arquivo views.py
-app.register_blueprint(app_views)
+# app.register_blueprint(app_views)
 
-"""
+
 # Rota inicial
 @app.route("/")
 def index():
@@ -685,22 +686,6 @@ def check_maintenance_status():
             db.session.commit()
 
 
-# Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
-def register_usage(vehicle):
-    vehicle.num_uses += 1
-
-    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
-        days_since_last_maintenance = (
-            datetime.now().date() - vehicle.last_maintenance_date
-        ).days
-        if days_since_last_maintenance >= 30:
-            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
-                days=30
-            )
-
-    db.session.commit()
-
-
 # Rota para atualizar o número de utilização do veículo
 @app.route("/register_usage/<int:vehicle_id>", methods=["POST"])
 def register_usage_route(vehicle_id):
@@ -713,8 +698,6 @@ def register_usage_route(vehicle_id):
     # Redirecionar de volta para a página de edição do veículo
     flash("Utilização registrada com sucesso!", "success")
     return redirect(url_for("edit_vehicle", id=vehicle_id))
-
-"""
 
 
 # Função para verificar o status de manutenção do veículo
