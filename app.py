@@ -1,15 +1,12 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_migrate import Migrate
-import pytz
 from datetime import datetime, date, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from werkzeug.utils import secure_filename
 from decorators import login_required
 from models import db
-
-# from views import app_views
 from models import db, Vehicle, VehicleType, Cliente
 from config import Config
 
@@ -17,39 +14,10 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-""" # Definir a chave secreta para a sessão
-app.secret_key = "sua_chave_secreta_aqui"
-
-# Configurar o fuso horário de Portugal
-app.config["TIMEZONE"] = pytz.timezone("Europe/Lisbon")
-
-# Caminho do banco de dados
-db_folder = os.path.join(os.path.dirname(__file__), "database")
-db_path = os.path.join(db_folder, "database.db")
-
-# Configurações do SQLite - banco de dados ficará dentro da pasta 'database'
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-
-# Defina o diretório de upload de imagens (pasta 'static')
-app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static/images")
-
-
-# Configuração do Bootstrap 5 com Font Awesome
-app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = "yeti"
-app.config["BOOTSTRAP_USE_MINIFIED"] = True
-app.config["BOOTSTRAP_USE_CDN"] = True
-app.config["BOOTSTRAP_FONTAWESOME"] = True """
-
 
 # Inicialização do banco de dados
 db.init_app(app)
 migrate = Migrate(app, db)
-
-
-# Registrar as rotas do arquivo views.py
-# app.register_blueprint(app_views)
 
 
 # Rota inicial
@@ -748,14 +716,6 @@ scheduler.add_job(
 # Ao sair da aplicação, finalizar o scheduler
 atexit.register(lambda: scheduler.shutdown())
 
-""" # Verificar e criar o diretório "database" se não existir
-if not os.path.exists(db_folder):
-    os.makedirs(db_folder)
-
-
-# Se a pasta 'static/images' não existir, crie-a
-if not os.path.exists(os.path.join(app.root_path, "static/images")):
-    os.makedirs(os.path.join(app.root_path, "static/images")) """
 
 # Criação das tabelas do banco de dados
 with app.app_context():
