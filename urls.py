@@ -24,7 +24,7 @@ app.add_url_rule("/login", view_func=login)
 app.add_url_rule("/admin", view_func=admin_panel)
 
 # Rota para visualisar os detalhes do veículo pelo admin
-app.add_url_rule("/admin/view_vehicle/<int:id>",view_func=view_vehicle)
+app.add_url_rule("/admin/view_vehicle/<int:id>", view_func=view_vehicle)
 
 # Rota para a página de adicionar veículos
 app.add_url_rule("/add_vehicle", view_func=add_vehicle)
@@ -36,17 +36,18 @@ app.add_url_rule("/edit_vehicle/<int:id>", view_func=edit_vehicle)
 app.add_url_rule("/delete_vehicle/<int:id>", view_func=delete_vehicle)
 
 # Rota para exclusão de imagem
-app.add_url_rule("/delete_image/<path:image_path>/<int:vehicle_id>", view_func=delete_image
+app.add_url_rule(
+    "/delete_image/<path:image_path>/<int:vehicle_id>", view_func=delete_image
 )
 
 # Rota para a página de login do cliente
 app.add_url_rule("/client_login", view_func=client_login)
 
 # Rota para logout do cliente
-app.add_url_rule("/client_logout"view_func=client_logout)
+app.add_url_rule("/client_logout", view_func=client_logout)
 
 # Rota para logout do admin
-app.add_url_rule("/logout"view_func=logout)
+app.add_url_rule("/logout", view_func=logout)
 
 # Rota para a página de registro do cliente
 app.add_url_rule("/register_client", view_func=register_client)
@@ -55,8 +56,6 @@ app.add_url_rule("/register_client", view_func=register_client)
 app.add_url_rule("/legalize_vehicle/<int:id>", view_func=legalize_vehicle)
 
 # Rota para manutenção do veículo
-app.add_url_rule("/admin/maintenance_vehicle/<int:id>", view_func=
-    maintenance_vehicle
-)
+app.add_url_rule("/admin/maintenance_vehicle/<int:id>", view_func=maintenance_vehicle)
 # Rota para atualizar o número de utilização do veículo
 app.add_url_rule("/register_usage/<int:vehicle_id>", view_func=register_usage_route)
