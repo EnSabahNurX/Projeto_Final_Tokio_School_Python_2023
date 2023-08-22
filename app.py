@@ -9,6 +9,7 @@ from decorators import login_required
 from models import db
 from models import db, Vehicle, VehicleType, Cliente
 from config import Config
+from views import *
 
 
 app = Flask(__name__)
