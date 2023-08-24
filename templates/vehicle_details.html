@@ -4,11 +4,11 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6">
-            <div id="vehicleCarousel" class="carousel slide" data-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-bs-ride="carousel">
                 <ol class="carousel-indicators">
                     {% set image_count = veiculo.imagens.split(',')|length %}
                     {% for i in range(image_count) %}
-                        <li data-target="#vehicleCarousel" data-slide-to="{{ i }}"
+                        <li data-target="#carouselExampleIndicators" data-slide-to="{{ i }}"
                             {% if i == 0 %}class="active"{% endif %}></li>
                     {% endfor %}
                 </ol>
@@ -22,11 +22,11 @@
                         {% set first_image = false %}
                     {% endfor %}
                 </div>
-                <a class="carousel-control-prev" href="#vehicleCarousel" role="button" data-slide="prev">
+                <a class="carousel-control-prev" href="#vehicleCarousel" role="button" data-slide="prev" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="sr-only">Anterior</span>
                 </a>
-                <a class="carousel-control-next" href="#vehicleCarousel" role="button" data-slide="next">
+                <a class="carousel-control-next" href="#vehicleCarousel" role="button" data-slide="next" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="sr-only">Próximo</span>
                 </a>
@@ -43,4 +43,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
