@@ -15,10 +15,11 @@
                 <div class="carousel-inner">
                     {% set first_image = true %}
                     {% for image_path in veiculo.imagens.split(',') %}
-                    <div class="carousel-item {% if first_image %}active{% endif %} data-bs-interval="3000"">
+                    <div class="carousel-item {% if first_image %}active{% endif %} data-bs-interval=" 3000"">
                         <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
                             class="d-block w-100" style="max-height: 500px;">
                     </div>
+                    {% set first_image = false %}
                     {% endfor %}
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#vehicleCarousel"
