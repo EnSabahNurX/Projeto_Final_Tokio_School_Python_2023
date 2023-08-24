@@ -6,20 +6,17 @@
         <div class="col-md-6">
             <div id="vehicleCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
-                    {% set image_count = veiculo.imagens.split(',')|length %}
-                    {% for i in range(image_count) %}
-                    <button type="button" data-bs-target="#vehicleCarousel" data-bs-slide-to="{{ i }}" {% if i==0
-                        %}class="active" {% endif %}></button>
+                    {% for image in images_with_index %}
+                    <button type="button" data-bs-target="#vehicleCarousel" data-bs-slide-to="{{ image.index }}" {% if
+                        loop.first %}class="active" {% endif %}></button>
                     {% endfor %}
                 </div>
                 <div class="carousel-inner">
-                    {% set first_image = true %}
-                    {% for image_path in veiculo.imagens.split(',') %}
-                    <div class="carousel-item {% if first_image %}active{% endif %} data-bs-interval=3000">
-                        <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
-                            class="d-block w-100" style="max-height: 500px;">
+                    {% for image in images_with_index %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ url_for('static', filename='images/' ~ image.path) }}" alt="Imagem do Veículo"
+                            class="d-block w-100">
                     </div>
-                    {% set first_image = false %}
                     {% endfor %}
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#vehicleCarousel"
