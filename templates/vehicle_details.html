@@ -1,23 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ url_for('static', filename='images/' ~ veiculo.imagens.split(',')[0]) }}"
-                alt="Imagem do Veículo" class="img-fluid" style="max-height: 400px;">
+            <div id="vehicleCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% set first_image = true %}
+                    {% for image_path in veiculo.imagens.split(',') %}
+                        <div class="carousel-item {% if first_image %}active{% endif %}">
+                            <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
+                                alt="Imagem do Veículo" class="d-block img-fluid">
+                        </div>
+                        {% set first_image = false %}
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#vehicleCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Anterior</span>
+                </a>
+                <a class="carousel-control-next" href="#vehicleCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Próximo</span>
+                </a>
+            </div>
         </div>
         <div class="col-md-6">
             <h1>{{ veiculo.brand }} {{ veiculo.model }}</h1>
             <p>Ano: {{ veiculo.year }}</p>
             <p>Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-            <p>Status: {% if veiculo.status %}Disponível{% else %}Indisponível{%endif%}</p>
+            <p>Status: {% if veiculo.status %}Disponível{% else %}Indisponível{% endif %}</p>
             <div class="mt-4">
                 <a href="{{ url_for('reserve', id=veiculo.id) }}" class="btn btn-primary">Reservar</a>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
