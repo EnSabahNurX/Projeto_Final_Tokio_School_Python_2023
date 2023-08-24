@@ -4,32 +4,33 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-bs-ride="carousel">
-                <ol class="carousel-indicators">
+            <div id="vehicleCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
                     {% set image_count = veiculo.imagens.split(',')|length %}
                     {% for i in range(image_count) %}
-                        <li data-target="#carouselExampleIndicators" data-slide-to="{{ i }}"
-                            {% if i == 0 %}class="active"{% endif %}></li>
+                    <button type="button" data-bs-target="#vehicleCarousel" data-bs-slide-to="{{ i }}" {% if i==0
+                        %}class="active" {% endif %}></button>
                     {% endfor %}
-                </ol>
+                </div>
                 <div class="carousel-inner">
                     {% set first_image = true %}
                     {% for image_path in veiculo.imagens.split(',') %}
-                        <div class="carousel-item {% if first_image %}active{% endif %}">
-                            <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
-                                alt="Imagem do Veículo" class="d-block img-fluid">
-                        </div>
-                        {% set first_image = false %}
+                    <div class="carousel-item {% if first_image %}active{% endif %} data-bs-interval="3000"">
+                        <img src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Imagem do Veículo"
+                            class="d-block w-100" style="max-height: 500px;">
+                    </div>
                     {% endfor %}
                 </div>
-                <a class="carousel-control-prev" href="#vehicleCarousel" role="button" data-slide="prev" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#vehicleCarousel"
+                    data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Anterior</span>
-                </a>
-                <a class="carousel-control-next" href="#vehicleCarousel" role="button" data-slide="next" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#vehicleCarousel"
+                    data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Próximo</span>
-                </a>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
             </div>
         </div>
         <div class="col-md-6">
@@ -43,5 +44,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
