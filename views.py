@@ -78,8 +78,16 @@ def vehicle_details(id):
 
     # Consultar o veículo pelo ID no banco de dados
     veiculo = Vehicle.query.get_or_404(id)
+    image_paths = veiculo.imagens.split(",")
+    images_with_index = [
+        {"index": index, "path": path} for index, path in enumerate(image_paths)
+    ]
 
-    return render_template("vehicle_details.html", veiculo=veiculo)
+    return render_template(
+        "vehicle_details.html",
+        veiculo=veiculo,
+        images_with_index=images_with_index,
+    )
 
 
 @login_required
@@ -107,7 +115,10 @@ def reserve(id):
             payment_method=payment_method,
         )
 
-    return render_template("reserve.html", veiculo=veiculo)
+    return render_template(
+        "reserve.html",
+        veiculo=veiculo,
+    )
 
 
 def complete_payment():
@@ -277,7 +288,9 @@ def view_vehicle(id):
     vehicle = Vehicle.query.get_or_404(id)
     imagens_paths = vehicle.imagens.split(",") if vehicle.imagens else []
     return render_template(
-        "view_vehicle.html", vehicle=vehicle, imagens_paths=imagens_paths
+        "view_vehicle.html",
+        vehicle=vehicle,
+        imagens_paths=imagens_paths,
     )
 
 
@@ -399,7 +412,9 @@ def edit_vehicle(id):
 
     # Renderizar a página de edição de veículo com o formulário preenchido
     return render_template(
-        "edit_vehicle.html", vehicle=vehicle, VehicleType=VehicleType
+        "edit_vehicle.html",
+        vehicle=vehicle,
+        VehicleType=VehicleType,
     )
 
 
@@ -447,7 +462,12 @@ def delete_image(image_path, vehicle_id):
 
     else:
         flash("Método de requisição inválido.", "error")
-        return redirect(url_for("edit_vehicle", id=vehicle_id))
+        return redirect(
+            url_for(
+                "edit_vehicle",
+                id=vehicle_id,
+            )
+        )
 
 
 def client_login():
@@ -618,7 +638,10 @@ def maintenance_vehicle(id):
 
         return redirect(url_for("admin_panel"))
 
-    return render_template("maintenance_vehicle.html", vehicle=vehicle)
+    return render_template(
+        "maintenance_vehicle.html",
+        vehicle=vehicle,
+    )
 
 
 def register_usage_route(vehicle_id):
@@ -630,4 +653,9 @@ def register_usage_route(vehicle_id):
 
     # Redirecionar de volta para a página de edição do veículo
     flash("Utilização registrada com sucesso!", "success")
-    return redirect(url_for("edit_vehicle", id=vehicle_id))
+    return redirect(
+        url_for(
+            "edit_vehicle",
+            id=vehicle_id,
+        )
+    )
