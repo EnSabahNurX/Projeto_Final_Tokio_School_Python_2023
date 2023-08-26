@@ -331,7 +331,7 @@ def add_vehicle():
             return False
 
         # Validar a diária
-        float(request.form["price_per_day"]) <= 0:
+        if float(request.form["price_per_day"]) <= 0:
             flash("A diária deve ser um número positivo.", category="danger")
             return False
 
