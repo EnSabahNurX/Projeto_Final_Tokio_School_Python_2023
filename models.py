@@ -32,7 +32,11 @@ class Vehicle(db.Model):
     available_from = db.Column(db.Date, nullable=True)
     num_uses = db.Column(db.Integer, default=0)
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
-    reservations = db.relationship("Reservation", backref="vehicle", lazy=True)
+    reservations = db.relationship(
+        "Reservation",
+        backref="vehicle",
+        lazy=True,
+    )
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=""):
         self.type = type
@@ -102,7 +106,11 @@ class Cliente(db.Model):
     password = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
     id = db.Column(db.Integer, primary_key=True)
-    reservations = db.relationship("Reservation", backref="cliente", lazy=True)
+    reservations = db.relationship(
+        "Reservation",
+        backref="cliente",
+        lazy=True,
+    )
 
     def __init__(
         self,
@@ -133,8 +141,18 @@ class Cliente(db.Model):
 # Classe para o modelo de Reserva
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey("cliente.id"), nullable=False)
-    vehicle_id = db.Column(db.Integer, db.ForeignKey("vehicle.id"), nullable=False)
+    customer_id = db.Column(
+        db.Integer,
+        db.ForeignKey("cliente.id"),
+        nullable=False,
+        name="fk_reservation_customer",
+    )
+    vehicle_id = db.Column(
+        db.Integer,
+        db.ForeignKey("vehicle.id"),
+        nullable=False,
+        name="fk_reservation_vehicle",
+    )
     start_date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.String(255), nullable=False)
     end_date = db.Column(db.Time, nullable=False)
