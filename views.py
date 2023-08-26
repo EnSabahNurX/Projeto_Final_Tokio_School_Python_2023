@@ -326,17 +326,20 @@ def add_vehicle():
         novo_veiculo.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
 
         # Validar o ano
-        if not isinstance(form.year.data, int):
+        if not isinstance(request.form["year"], int):
             flash("O ano deve ser um número inteiro.", category="danger")
             return False
 
         # Validar a diária
-        if form.price_per_day.data <= 0:
+        if float(request.form["price_per_day"]) <= 0:
             flash("A diária deve ser um número positivo.", category="danger")
             return False
 
         # Validar as datas de legalização
-        if form.last_legalization_date.data >= form.next_legalization_date.data:
+        if (
+            request.form["last_legalization_date"]
+            >= request.form["next_legalization_date"]
+        ):
             flash(
                 "A última data de legalização deve ser anterior à próxima data de legalização.",
                 category="danger",
@@ -397,6 +400,27 @@ def edit_vehicle(id):
             vehicle.categoria = "Silver"
         else:
             vehicle.categoria = "Gold"
+
+        # Validar o ano
+        if not isinstance(request.form["year"], int):
+            flash("O ano deve ser um número inteiro.", category="danger")
+            return False
+
+        # Validar a diária
+        if float(request.form["price_per_day"]) <= 0:
+            flash("A diária deve ser um número positivo.", category="danger")
+            return False
+
+        # Validar as datas de legalização
+        if (
+            request.form["last_legalization_date"]
+            >= request.form["next_legalization_date"]
+        ):
+            flash(
+                "A última data de legalização deve ser anterior à próxima data de legalização.",
+                category="danger",
+            )
+            return False
 
         # Processar o upload das imagens
         imagens = request.files.getlist("imagens")
