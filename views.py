@@ -167,6 +167,7 @@ def complete_payment():
             # Simulação de sucesso no pagamento
             # Adicionar a reserva
             customer_id = int(session["user_id"])
+            print('hora',hora_recolha)
             reservation = Reservation(
                 customer_id=customer_id,
                 vehicle_id=veiculo_id,
