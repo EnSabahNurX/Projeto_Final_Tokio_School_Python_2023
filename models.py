@@ -103,6 +103,7 @@ class Cliente(db.Model):
     data_nascimento = db.Column(db.Date, nullable=False)
     morada = db.Column(db.String(200), nullable=False)
     nif = db.Column(db.String(20), unique=True, nullable=False)
+    price_per_day = db.Column(db.Float, nullable=False, default=50)
     password = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
     id = db.Column(db.Integer, primary_key=True)
