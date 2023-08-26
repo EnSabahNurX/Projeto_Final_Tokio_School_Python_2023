@@ -583,6 +583,10 @@ def register_client():
         ).date()
         morada = request.form["morada"]
         nif = request.form["nif"]
+        if not str(nif).isdigit():
+            error_message = "O NIF deve conter apenas números. Por favor, tente novamente."
+            return render_template("register_client.html", error_message=error_message)
+
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
         price_per_day = float(request.form["price_per_day"])

@@ -102,7 +102,7 @@ class Cliente(db.Model):
     telefone = db.Column(db.String(20), nullable=False)
     data_nascimento = db.Column(db.Date, nullable=False)
     morada = db.Column(db.String(200), nullable=False)
-    nif = db.Column(db.String(20), unique=True, nullable=False)
+    nif = db.Column(db.Integer, unique=True, nullable=False)
     price_per_day = db.Column(db.Float, nullable=False, default=50)
     password = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
