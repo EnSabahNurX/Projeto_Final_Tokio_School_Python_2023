@@ -133,7 +133,7 @@ class Cliente(db.Model):
 # Classe para o modelo de Reserva
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey("client.id"), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey("cliente.id"), nullable=False)
     vehicle_id = db.Column(db.Integer, db.ForeignKey("vehicle.id"), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.String(255), nullable=False)
