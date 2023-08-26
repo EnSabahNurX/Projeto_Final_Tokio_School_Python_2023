@@ -125,8 +125,8 @@ def complete_payment():
     # Receber os dados do formulário
     veiculo_id = request.form.get("veiculo_id")
     data_recolha = request.form.get("data_recolha")
-    print(request.form.get("duracao"))
-    # duracao = int(request.form.get("duracao"))
+    hora_recolha = request.form.get("hora_recolha")
+    duracao = int(request.form.get("duracao"))
     payment_method = request.form.get("payment_method")
 
     # Verificar se a duração é um valor válido antes de convertê-lo em um inteiro
@@ -166,7 +166,7 @@ def complete_payment():
         if payment_response["success"]:
             # Simulação de sucesso no pagamento
             # Adicionar a reserva
-            customer_id = user_id
+            customer_id = int(session["user_id"])
             reservation = Reservation(
                 customer_id=customer_id,
                 vehicle_id=veiculo_id,
