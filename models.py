@@ -130,12 +130,13 @@ class Cliente(db.Model):
 # Classe para o modelo de Reserva
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, nullable=False)
-    vehicle_id = db.Column(db.Integer, nullable=False)
-    start_date = db.Column(db.DateTime, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey("client.id"), nullable=False)
+    vehicle_id = db.Column(db.Integer, db.ForeignKey("vehicle.id"), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.String(255), nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.String(255), nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
     def add_reservations(self):
