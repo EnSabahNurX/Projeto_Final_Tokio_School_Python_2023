@@ -171,10 +171,10 @@ def complete_payment():
                 customer_id=customer_id,
                 vehicle_id=veiculo_id,
                 start_date=datetime.strptime(data_recolha, "%Y-%m-%d"),
-                start_time=datetime.datetime.strptime(hora_recolha, "%H:%M:%S"),
+                start_time=datetime.strptime(hora_recolha, "%H:%M:%S"),
                 end_date=datetime.strptime(data_recolha, "%Y-%m-%d")
                 + timedelta(days=duracao),
-                end_time=datetime.datetime.strptime(hora_recolha, "%H:%M:%S"),
+                end_time=datetime.strptime(hora_recolha, "%H:%M:%S"),
                 price=preco_total,
             )
             reservation.add_reservations()
