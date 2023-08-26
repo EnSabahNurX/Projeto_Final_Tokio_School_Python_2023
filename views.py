@@ -326,12 +326,12 @@ def add_vehicle():
         novo_veiculo.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
 
         # Validar o ano
-        if not isinstance(request.form["year"], int):
+        if not isinstance(int(request.form["year"]), int):
             flash("O ano deve ser um número inteiro.", category="danger")
             return False
 
         # Validar a diária
-        if float(request.form["price_per_day"]) <= 0:
+        if request.form["price_per_day"] <= 0:
             flash("A diária deve ser um número positivo.", category="danger")
             return False
 
@@ -402,12 +402,12 @@ def edit_vehicle(id):
             vehicle.categoria = "Gold"
 
         # Validar o ano
-        if not isinstance(request.form["year"], int):
+        if not isinstance(int(request.form["year"]), int):
             flash("O ano deve ser um número inteiro.", category="danger")
             return False
 
         # Validar a diária
-        if float(request.form["price_per_day"]) <= 0:
+        if request.form["price_per_day"] <= 0:
             flash("A diária deve ser um número positivo.", category="danger")
             return False
 
