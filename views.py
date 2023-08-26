@@ -167,6 +167,7 @@ def complete_payment():
             # Simulação de sucesso no pagamento
             # Adicionar a reserva
             customer_id = int(session["user_id"])
+            hora_recolha_datetime = datetime.strptime(hora_recolha, "%H:%M")
             reservation = Reservation(
                 customer_id=customer_id,
                 vehicle_id=veiculo_id,
@@ -175,7 +176,7 @@ def complete_payment():
                 end_date=datetime.strptime(data_recolha, "%Y-%m-%d")
                 + timedelta(days=duracao),
                 end_time=datetime.strptime(hora_recolha, "%H:%M"),
-                duration = duracao,
+                duration=duracao,
                 price=preco_total,
             )
             reservation.add_reservations()
@@ -186,6 +187,11 @@ def complete_payment():
             return render_template(
                 "payment_error.html", message=payment_response["message"]
             )
+    else:
+        # Lidar com o caso em que o método de pagamento não é válido
+        return render_template(
+            "payment_error.html", message="Método de pagamento inválido"
+        )
 
     # Redirecionar para a página de confirmação do pedido
     return redirect(url_for("order_confirmation"))
@@ -584,7 +590,9 @@ def register_client():
         morada = request.form["morada"]
         nif = request.form["nif"]
         if not str(nif).isdigit():
-            error_message = "O NIF deve conter apenas números. Por favor, tente novamente."
+            error_message = (
+                "O NIF deve conter apenas números. Por favor, tente novamente."
+            )
             return render_template("register_client.html", error_message=error_message)
 
         password = request.form["password"]
