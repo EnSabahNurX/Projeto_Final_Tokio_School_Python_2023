@@ -324,6 +324,26 @@ def add_vehicle():
         )
         # Salvar os caminhos das imagens
         novo_veiculo.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
+
+        # Validar o ano
+        if not isinstance(form.year.data, int):
+            flash("O ano deve ser um número inteiro.", category="danger")
+            return False
+
+        # Validar a diária
+        if form.price_per_day.data <= 0:
+            flash("A diária deve ser um número positivo.", category="danger")
+            return False
+
+        # Validar as datas de legalização
+        if form.last_legalization_date.data >= form.next_legalization_date.data:
+            flash(
+                "A última data de legalização deve ser anterior à próxima data de legalização.",
+                category="danger",
+            )
+            return False
+
+        # Salvar o veículo
         novo_veiculo.initialize_vehicle()
         db.session.add(novo_veiculo)
         db.session.commit()  # Salvar o novo veículo no banco de dados
