@@ -32,6 +32,7 @@ class Vehicle(db.Model):
     available_from = db.Column(db.Date, nullable=True)
     num_uses = db.Column(db.Integer, default=0)
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
+    reservations = db.relationship("Reservation", backref="vehicle", lazy=True)
 
     def __init__(self, type, brand, model, year, price_per_day, categoria=""):
         self.type = type
@@ -100,6 +101,8 @@ class Cliente(db.Model):
     nif = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
+    id = db.Column(db.Integer, primary_key=True)
+    reservations = db.relationship("Reservation", backref="cliente", lazy=True)
 
     def __init__(
         self,
