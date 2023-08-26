@@ -137,3 +137,7 @@ class Reservation(db.Model):
     end_date = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float, nullable=False)
+
+    def add_reservations(self):
+        db.session.add(self)
+        db.session.commit()

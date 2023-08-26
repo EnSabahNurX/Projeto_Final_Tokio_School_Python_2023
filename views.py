@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
-from models import db, Vehicle, VehicleType, Cliente
+from models import db, Vehicle, VehicleType, Cliente, Reservation
 from decorators import login_required
 from werkzeug.utils import secure_filename
 from app import app
@@ -165,6 +165,19 @@ def complete_payment():
     if payment_response:
         if payment_response["success"]:
             # Simulação de sucesso no pagamento
+            # Adicionar a reserva
+            customer_id = user_id
+            reservation = Reservation(
+                customer_id=customer_id,
+                vehicle_id=veiculo_id,
+                start_date=data_recolha,
+                start_time=hora_recolha,
+                end_date=data_recolha + timedelta(days=duracao),
+                end_time=hora_recolha,
+                price=preco_total,
+            )
+            reservation.add_reservations()
+
             return redirect(url_for("order_confirmation"))
         else:
             # Simulação de falha no pagamento
