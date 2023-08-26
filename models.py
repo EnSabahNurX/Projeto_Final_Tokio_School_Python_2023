@@ -3,6 +3,7 @@ from enum import Enum
 
 db = SQLAlchemy()
 
+
 # Definir as opções válidas para o campo 'type' (Carro e Mota)
 class VehicleType(Enum):
     CARRO = "Carro"
@@ -123,3 +124,15 @@ class Cliente(db.Model):
 
     def __repr__(self):
         return f"<Cliente {self.nome} {self.apelido}>"
+
+
+# Classe para o modelo de Reserva
+class Reservation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, nullable=False)
+    vehicle_id = db.Column(db.Integer, nullable=False)
+    start_date = db.Column(db.DateTime, nullable=False)
+    start_time = db.Column(db.String(255), nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Float, nullable=False)
