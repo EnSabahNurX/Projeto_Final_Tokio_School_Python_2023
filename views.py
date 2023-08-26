@@ -542,7 +542,7 @@ def client_login():
 
         # Verifique as credenciais do cliente aqui (substitua com a sua lógica)
         client = Cliente.query.filter_by(email=email).first()
-        if client.email == email and client.password == password:
+        if client and client.email == email and client.password == password:
             # Define a sessão para o usuário logado
             session["user_id"] = client.id
 
