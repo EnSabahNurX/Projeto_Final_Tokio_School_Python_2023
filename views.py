@@ -175,6 +175,7 @@ def complete_payment():
                 end_date=datetime.strptime(data_recolha, "%Y-%m-%d")
                 + timedelta(days=duracao),
                 end_time=datetime.strptime(hora_recolha, "%H:%M"),
+                duration = duracao,
                 price=preco_total,
             )
             reservation.add_reservations()
