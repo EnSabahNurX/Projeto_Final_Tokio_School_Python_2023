@@ -325,6 +325,14 @@ def add_vehicle():
         # Salvar os caminhos das imagens
         novo_veiculo.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
 
+        # Validar o tipo de veículo
+        if request.form["vehicle_type"] not in [
+            VehicleType.CAR,
+            VehicleType.MOTORCYCLE,
+        ]:
+            flash("O tipo de veículo deve ser 'Carro' ou 'Mota'.", category="danger")
+            return False
+
         # Validar o ano
         if not isinstance(int(request.form["year"]), int):
             flash("O ano deve ser um número inteiro.", category="danger")
@@ -400,6 +408,14 @@ def edit_vehicle(id):
             vehicle.categoria = "Silver"
         else:
             vehicle.categoria = "Gold"
+
+        # Validar o tipo de veículo
+        if request.form["vehicle_type"] not in [
+            VehicleType.CAR,
+            VehicleType.MOTORCYCLE,
+        ]:
+            flash("O tipo de veículo deve ser 'Carro' ou 'Mota'.", category="danger")
+            return False
 
         # Validar o ano
         if not isinstance(int(request.form["year"]), int):
