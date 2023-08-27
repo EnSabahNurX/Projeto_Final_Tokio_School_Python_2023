@@ -754,7 +754,6 @@ def client_reservations():
 @login_required
 def cancel_reservation(id):
     reservation = Reservation.query.get(id)
-
     if reservation:
         reservation.status = "Cancelada"
         db.session.commit()

@@ -9,7 +9,7 @@
             <h2>{{ veiculo.brand }} {{ veiculo.model }}</h2>
             <p>Data de Recolha: {{ data_recolha }}</p>
             <p>Hora de Recolha: {{ hora_recolha }}</p>
-            <p>Duração do Aluguer: {{ duracao }} dias</p>
+            <p>Duração do Aluguer: {{ duracao }} dia{% if duracao > 1 %}s{%endif%}</p>
             <p>Preço Total: €{{ preco_total }}</p>
         </div>
         <div class="col-md-6">

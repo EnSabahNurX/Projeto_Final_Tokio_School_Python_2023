@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- Adicionar a exibição de mensagens flash -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message[0] }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 <div class="row">
     <div class="col-md-6">
         <h2 class="text-center">Reservas Futuras</h2>
@@ -27,14 +39,16 @@
                         reservation.end_date.strftime('%d/%m/%Y') }} às {{
                         reservation.end_time.strftime('%H:%M') }}<br>
                         <strong class="mb-1">Duração total:</strong> {{ reservation.duration }} dia{% if
-                        reservation.duration > 0 %}s{%
+                        reservation.duration > 1 %}s{%
                         endif%}<br>
                         <strong class="mb-1">Status:</strong> {{ reservation.status }}<br>
+                        {% if reservation.status == "Ativa" %}
                         <div class="col-md-12">
                             <form method="POST" action="{{ url_for('cancel_reservation', id=reservation.id) }}">
                                 <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
                             </form>
                         </div>
+                        {% endif %}
                     </div>
 
                 </div>
@@ -68,7 +82,7 @@
                         reservation.end_date.strftime('%d/%m/%Y') }} às {{
                         reservation.end_time.strftime('%H:%M') }}<br>
                         <strong class="mb-1">Duração total:</strong> {{ reservation.duration }} dia{% if
-                        reservation.duration > 0 %}s{%
+                        reservation.duration > 1 %}s{%
                         endif%}<br>
                         <strong class="mb-1">Status:</strong> {{ reservation.status }}<br>
                     </div>
