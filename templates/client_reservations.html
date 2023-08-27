@@ -30,10 +30,13 @@
                         reservation.duration > 0 %}s{%
                         endif%}<br>
                         <strong class="mb-1">Status:</strong> {{ reservation.status }}<br>
+                        <div class="col-md-12">
+                            <form method="POST" action="{{ url_for('cancel_reservation', id=reservation.id) }}">
+                                <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
+                            </form>
+                        </div>
                     </div>
-                    <form method="POST" action="{{ url_for('cancel_reservation', id=reservation.id) }}">
-                        <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
-                    </form>
+
                 </div>
             </li>
             {% endfor %}
