@@ -7,10 +7,12 @@
             {% for reservation in future_reservations %}
             <li class="list-group-item">
                 <strong>Veículo:</strong> {{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}<br>
-                <strong>Recolha do veículo em :</strong> {{ reservation.start_date|datetimeformat("full") }}<br>
-                <strong>Devolução do veículo em:</strong> {{ reservation.end_date|datetimeformat("full") }}<br>
-                <strong>Duração total:</strong> {{ reservation.duration }} dia{% if reservation.duration > 0 %}s{% endif
-                %}<br>
+                <strong>Recolha do veículo em :</strong> {{ reservation.start_date.strftime('%d/%m/%Y') }} às {{
+                reservation.start_time.strftime('%H:%M') }}<br>
+                <strong>Devolução do veículo em:</strong> {{ reservation.end_date.strftime('%d/%m/%Y') }} às {{
+                reservation.end_time.strftime('%H:%M') }}<br>
+                <strong>Duração total:</strong> {{ reservation.duration }} dia{% if reservation.duration > 0 %}s{%
+                endif%}<br>
                 <strong>Status:</strong> {{ reservation.status }}<br>
             </li>
             {% endfor %}
@@ -22,10 +24,12 @@
             {% for reservation in past_reservations %}
             <li class="list-group-item">
                 <strong>Veículo:</strong> {{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}<br>
-                <strong>Recolha do veículo em :</strong> {{ reservation.start_date|datetimeformat("full") }}<br>
-                <strong>Devolução do veículo em:</strong> {{ reservation.end_date|datetimeformat("full") }}<br>
-                <strong>Duração total:</strong> {{ reservation.duration }} dia{% if reservation.duration > 0 %}s{% endif
-                %}<br>
+                <strong>Recolha do veículo em :</strong> {{ reservation.start_date.strftime('%d/%m/%Y') }} às {{
+                reservation.start_time.strftime('%H:%M') }}<br>
+                <strong>Devolução do veículo em:</strong> {{ reservation.end_date.strftime('%d/%m/%Y') }} às {{
+                reservation.end_time.strftime('%H:%M') }}<br>
+                <strong>Duração total:</strong> {{ reservation.duration }} dia{% if reservation.duration > 0 %}s{%
+                endif%}<br>
                 <strong>Status:</strong> {{ reservation.status }}<br>
             </li>
             {% endfor %}
