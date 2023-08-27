@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<!-- Adicionar a exibição de mensagens flash -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message[0] }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 <div class="container mt-4">
     <h1 class="mb-4">Pagamento</h1>
     <div class="row">
@@ -17,7 +28,7 @@
             {% if payment_method == 'multibanco' %}
             <p>Entidade: 12345</p>
             <p>Referência: 67890</p>
-            <p>Por favor, insira os detalhes do pagamento simulado:</p>
+            <p>Por favor, insira os detalhes do pagamento:</p>
             <form method="POST" action="{{ url_for('complete_payment') }}">
                 <div class="mb-3">
                     <label for="numero_cartao" class="form-label">Número do Cartão</label>

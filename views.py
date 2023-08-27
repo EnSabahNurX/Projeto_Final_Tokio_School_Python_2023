@@ -193,9 +193,6 @@ def complete_payment():
             "payment_error.html", message="Método de pagamento inválido"
         )
 
-    # Redirecionar para a página de confirmação do pedido
-    return redirect(url_for("order_confirmation"))
-
 
 def order_confirmation():
     return render_template("order_confirmation.html")
