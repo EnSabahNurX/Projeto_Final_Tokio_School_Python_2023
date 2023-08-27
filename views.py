@@ -732,6 +732,7 @@ def register_usage_route(vehicle_id):
 # Decorador para verificar o login do cliente
 @login_required
 def client_reservations():
+    Reservation.update_completed_reservations()
     customer_id = session["user_id"]
     future_reservations = Reservation.query.filter(
         Reservation.customer_id == customer_id, Reservation.start_date >= date.today()

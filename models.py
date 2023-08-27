@@ -164,3 +164,13 @@ class Reservation(db.Model):
     def add_reservations(self):
         db.session.add(self)
         db.session.commit()
+
+    def update_completed_reservations(self):
+        today = date.today()
+        completed_reservations = Reservation.query.filter(
+            Reservation.end_date < today, Reservation.status != "Concluída"
+        ).all()
+
+        for reservation in completed_reservations:
+            reservation.status = "Concluída"
+            db.session.commit()
