@@ -106,7 +106,6 @@ class Cliente(db.Model):
     price_per_day = db.Column(db.Float, nullable=False, default=50)
     password = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
-    id = db.Column(db.Integer, primary_key=True)
     reservations = db.relationship(
         "Reservation",
         backref="cliente",
