@@ -178,7 +178,6 @@ def complete_payment():
                 duration=duracao,
                 price=preco_total,
             )
-            print(reservation)
             reservation.add_reservations()
 
             return redirect(url_for("order_confirmation"))
