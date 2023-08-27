@@ -90,6 +90,7 @@ def vehicle_details(id):
     )
 
 
+# Decorador para verificar o login do cliente
 @login_required
 def reserve(id):
     # Obter o veículo a partir do ID
@@ -728,4 +729,23 @@ def register_usage_route(vehicle_id):
             "edit_vehicle",
             id=vehicle_id,
         )
+    )
+
+
+# Decorador para verificar o login do cliente
+@login_required
+def client_reservations():
+    client_id = session["client"]["id"]
+    future_reservations = Reservation.query.filter(
+        Reservation.client_id == client_id, Reservation.reservation_date >= date.today()
+    ).all()
+
+    past_reservations = Reservation.query.filter(
+        Reservation.client_id == client_id, Reservation.reservation_date < date.today()
+    ).all()
+
+    return render_template(
+        "client_reservations.html",
+        future_reservations=future_reservations,
+        past_reservations=past_reservations,
     )

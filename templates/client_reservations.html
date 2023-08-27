@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Minhas Reservas</h1>
+
+<h2>Reservas Futuras</h2>
+<ul>
+    {% for reservation in future_reservations %}
+    <li>
+        <p>Veículo: {{ reservation.vehicle.name }}</p>
+        <p>Data de Reserva: {{ reservation.reservation_date }}</p>
+        <p>Status: {{ reservation.status }}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+<h2>Reservas Passadas</h2>
+<ul>
+    {% for reservation in past_reservations %}
+    <li>
+        <p>Veículo: {{ reservation.vehicle.name }}</p>
+        <p>Data de Reserva: {{ reservation.reservation_date }}</p>
+        <p>Status: {{ reservation.status }}</p>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

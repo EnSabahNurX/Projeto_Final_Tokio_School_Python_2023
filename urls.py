@@ -121,3 +121,9 @@ app.add_url_rule(
     view_func=register_usage_route,
     methods=["POST"],
 )
+
+# Rota para visualizar as reservas do cliente
+app.add_url_rule(
+    "/client_reservations",
+    view_func=client_reservations,
+)
