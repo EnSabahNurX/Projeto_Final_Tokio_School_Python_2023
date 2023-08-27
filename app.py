@@ -7,10 +7,8 @@ from decorators import login_required
 from models import db
 from config import Config
 
-
 app = Flask(__name__)
 app.config.from_object(Config)
-
 
 # Inicialização do banco de dados
 db.init_app(app)

@@ -153,6 +153,7 @@ class Reservation(db.Model):
         nullable=False,
         name="fk_reservation_vehicle",
     )
+    status = db.Column(db.String(20), nullable=False, default="Ativa")
     start_date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_date = db.Column(db.Date, nullable=False)

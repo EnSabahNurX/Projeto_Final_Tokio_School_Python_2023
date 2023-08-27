@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +11,7 @@
     <!-- Link para o CSS do Font Awesome -->
     <link href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}" rel="stylesheet">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -22,14 +24,21 @@
                 <ul class="navbar-nav ms-auto">
                     {% if 'user_id' in session %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('client_logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                        <a class="nav-link" href="{{ url_for('client_logout') }}"><i class="fas fa-sign-out-alt"></i>
+                            Sair</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('client_reservations') }}"><i class="fas fa-calendar"></i>
+                            Minhas Reservas</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('client_login') }}"><i class="fas fa-sign-in-alt"></i> Entrar</a>
+                        <a class="nav-link" href="{{ url_for('client_login') }}"><i class="fas fa-sign-in-alt"></i>
+                            Entrar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register_client') }}"><i class="fas fa-user-plus"></i> Registar</a>
+                        <a class="nav-link" href="{{ url_for('register_client') }}"><i class="fas fa-user-plus"></i>
+                            Registar</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -71,4 +80,5 @@
     <!-- Script para o Bootstrap 5 e JS necessário -->
     <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 </body>
+
 </html>

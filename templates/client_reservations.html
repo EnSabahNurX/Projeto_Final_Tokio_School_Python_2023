@@ -1,27 +1,35 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Minhas Reservas</h1>
-
-<h2>Reservas Futuras</h2>
-<ul>
-    {% for reservation in future_reservations %}
-    <li>
-        <p>Veículo: {{ reservation.vehicle.name }}</p>
-        <p>Data de Reserva: {{ reservation.reservation_date }}</p>
-        <p>Status: {{ reservation.status }}</p>
-    </li>
-    {% endfor %}
-</ul>
-
-<h2>Reservas Passadas</h2>
-<ul>
-    {% for reservation in past_reservations %}
-    <li>
-        <p>Veículo: {{ reservation.vehicle.name }}</p>
-        <p>Data de Reserva: {{ reservation.reservation_date }}</p>
-        <p>Status: {{ reservation.status }}</p>
-    </li>
-    {% endfor %}
-</ul>
+<div class="row">
+    <div class="col-md-6">
+        <h2>Reservas Futuras</h2>
+        <ul class="list-group">
+            {% for reservation in future_reservations %}
+            <li class="list-group-item">
+                <strong>Veículo:</strong> {{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}<br>
+                <strong>Recolha do veículo em :</strong> {{ reservation.start_date|datetimeformat("full") }}<br>
+                <strong>Devolução do veículo em:</strong> {{ reservation.end_date|datetimeformat("full") }}<br>
+                <strong>Duração total:</strong> {{ reservation.duration }} dia{% if reservation.duration > 0 %}s{% endif
+                %}<br>
+                <strong>Status:</strong> {{ reservation.status }}<br>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h2>Reservas Passadas</h2>
+        <ul class="list-group">
+            {% for reservation in past_reservations %}
+            <li class="list-group-item">
+                <strong>Veículo:</strong> {{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}<br>
+                <strong>Recolha do veículo em :</strong> {{ reservation.start_date|datetimeformat("full") }}<br>
+                <strong>Devolução do veículo em:</strong> {{ reservation.end_date|datetimeformat("full") }}<br>
+                <strong>Duração total:</strong> {{ reservation.duration }} dia{% if reservation.duration > 0 %}s{% endif
+                %}<br>
+                <strong>Status:</strong> {{ reservation.status }}<br>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

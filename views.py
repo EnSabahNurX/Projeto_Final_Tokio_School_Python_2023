@@ -735,13 +735,13 @@ def register_usage_route(vehicle_id):
 # Decorador para verificar o login do cliente
 @login_required
 def client_reservations():
-    client_id = session["client"]["id"]
+    customer_id = session["user_id"]
     future_reservations = Reservation.query.filter(
-        Reservation.client_id == client_id, Reservation.reservation_date >= date.today()
+        Reservation.customer_id == customer_id, Reservation.start_date >= date.today()
     ).all()
 
     past_reservations = Reservation.query.filter(
-        Reservation.client_id == client_id, Reservation.reservation_date < date.today()
+        Reservation.customer_id == customer_id, Reservation.start_date < date.today()
     ).all()
 
     return render_template(
