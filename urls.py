@@ -90,10 +90,16 @@ app.add_url_rule(
 )
 
 # Rota para logout do cliente
-app.add_url_rule("/client_logout", view_func=client_logout)
+app.add_url_rule(
+    "/client_logout",
+    view_func=client_logout,
+)
 
 # Rota para logout do admin
-app.add_url_rule("/logout", view_func=logout)
+app.add_url_rule(
+    "/logout",
+    view_func=logout,
+)
 
 # Rota para a página de registro do cliente
 app.add_url_rule(
@@ -126,4 +132,11 @@ app.add_url_rule(
 app.add_url_rule(
     "/client_reservations",
     view_func=client_reservations,
+)
+
+# Rota para cancelar reserva do cliente
+app.add_url_rule(
+    "/cancel_reservation/<int:id>",
+    view_func=cancel_reservation,
+    methods=["POST"],
 )

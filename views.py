@@ -749,3 +749,17 @@ def client_reservations():
         future_reservations=future_reservations,
         past_reservations=past_reservations,
     )
+
+
+@login_required
+def cancel_reservation(id):
+    reservation = Reservation.query.get(id)
+
+    if reservation:
+        reservation.status = "Cancelada"
+        db.session.commit()
+        flash("Reserva cancelada com sucesso!", "success")
+    else:
+        flash("Reserva não encontrada.", "danger")
+
+    return redirect(url_for("client_reservations"))
