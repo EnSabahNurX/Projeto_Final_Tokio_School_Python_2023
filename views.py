@@ -167,18 +167,18 @@ def complete_payment():
             # Simulação de sucesso no pagamento
             # Adicionar a reserva
             customer_id = int(session["user_id"])
-            hora_recolha_datetime = datetime.strptime(hora_recolha, "%H:%M")
             reservation = Reservation(
                 customer_id=customer_id,
                 vehicle_id=veiculo_id,
                 start_date=datetime.strptime(data_recolha, "%Y-%m-%d"),
-                start_time=datetime.strptime(hora_recolha, "%H:%M"),
+                start_time=datetime.strptime(hora_recolha, "%H:%M").time(),
                 end_date=datetime.strptime(data_recolha, "%Y-%m-%d")
                 + timedelta(days=duracao),
-                end_time=datetime.strptime(hora_recolha, "%H:%M"),
+                end_time=datetime.strptime(hora_recolha, "%H:%M").time(),
                 duration=duracao,
                 price=preco_total,
             )
+            print(reservation)
             reservation.add_reservations()
 
             return redirect(url_for("order_confirmation"))

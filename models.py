@@ -155,9 +155,9 @@ class Reservation(db.Model):
         name="fk_reservation_vehicle",
     )
     start_date = db.Column(db.Date, nullable=False)
-    start_time = db.Column(db.String(255), nullable=False)
-    end_date = db.Column(db.Time, nullable=False)
-    end_time = db.Column(db.String(255), nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
