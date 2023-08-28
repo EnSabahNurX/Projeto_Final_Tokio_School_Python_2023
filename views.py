@@ -760,3 +760,15 @@ def cancel_reservation(id):
         flash("Reserva não encontrada.", "danger")
 
     return redirect(url_for("client_reservations"))
+
+
+@login_required
+def edit_client():
+    client_id = session["user_id"]
+    client = Cliente.query.get(client_id)
+
+    if request.method == "POST":
+        # Aqui você pode processar os dados enviados pelo formulário de edição
+        # Atualize os atributos do cliente e faça commit ao banco de dados
+
+        return render_template("edit_client.html", client=client)

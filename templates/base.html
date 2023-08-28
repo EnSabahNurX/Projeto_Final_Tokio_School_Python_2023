@@ -23,13 +23,20 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if 'user_id' in session %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Minha Conta
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('client_reservations') }}">Minhas Reservas</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('edit_client') }}">Editar Dados</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('client_logout') }}"><i class="fas fa-sign-out-alt"></i>
                             Sair</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('client_reservations') }}"><i class="fas fa-calendar"></i>
-                            Minhas Reservas</a>
                     </li>
                     {% else %}
                     <li class="nav-item">

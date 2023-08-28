@@ -140,3 +140,10 @@ app.add_url_rule(
     view_func=cancel_reservation,
     methods=["POST"],
 )
+
+# Rota para editar cadastro do cliente
+app.add_url_rule(
+    "/edit_client",
+    view_func=edit_client,
+    methods=["GET", "POST"],
+)
