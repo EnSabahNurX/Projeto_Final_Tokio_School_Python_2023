@@ -145,5 +145,12 @@ app.add_url_rule(
 app.add_url_rule(
     "/edit_client",
     view_func=edit_client,
-    methods=["GET", "POST"],
+    methods=["GET"],
+)
+
+# Rota para atualizar no banco de dados o cadastro do cliente
+app.add_url_rule(
+    "/update_client",
+    view_func=update_client,
+    methods=["POST"],
 )
