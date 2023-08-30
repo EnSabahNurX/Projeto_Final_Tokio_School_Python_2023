@@ -807,6 +807,7 @@ def update_client():
     new_data_nascimento = request.form.get("data_nascimento")
     new_morada = request.form.get("morada")
     new_nif = request.form.get("nif")
+    new_price_per_day = request.form.get("price_per_day")
     new_password = request.form.get("password")
 
     if (
@@ -817,6 +818,7 @@ def update_client():
         and new_data_nascimento
         and new_morada
         and new_nif
+        and new_price_per_day
     ):
         current_user.nome = new_nome
         current_user.apelido = new_apelido
@@ -827,6 +829,7 @@ def update_client():
         ).date()
         current_user.morada = new_morada
         current_user.nif = new_nif
+        current_user.price_per_day = new_price_per_day
 
         if new_password:
             current_user.password = new_password
