@@ -4,23 +4,6 @@ from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente, Reservation
 from werkzeug.utils import secure_filename
 from app import app
-from flask_login import (
-    LoginManager,
-    login_user,
-    logout_user,
-    login_required,
-    UserMixin,
-    current_user,
-)
-
-# COnfiguração do Flask Login
-login_manager = LoginManager(app)
-login_manager.login_view = "client_login"
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return Cliente.query.get(int(user_id))
 
 
 # Função para verificar o status de manutenção do veículo
