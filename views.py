@@ -83,16 +83,9 @@ def index():
         veiculo for veiculo in veiculos if veiculo.type == VehicleType.MOTA
     ]
 
-    # Verificar se há uma sessão ativa de cliente
-    if "client" in session:
-        cliente = session["client"]
-    else:
-        cliente = None
-
     return render_template(
         "index.html",
         veiculos=veiculos,
-        cliente=cliente,
         veiculos_carros=veiculos_carros,
         veiculos_motas=veiculos_motas,
         current_year=datetime.now().year,
