@@ -16,6 +16,12 @@ from flask_login import (
 )
 
 
+login_manager = LoginManager(app)
+login_manager.login_view = "client_login"
+@login_manager.user_loader
+def load_user(user_id):
+    return Cliente.query.get(int(user_id))
+
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
     # Obter todos os veículos em manutenção

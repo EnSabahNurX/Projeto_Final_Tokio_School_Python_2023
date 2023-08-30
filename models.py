@@ -137,6 +137,9 @@ class Cliente(db.Model):
     def is_active(self):
         return True
 
+    def get_id(self):
+        return self.id
+    
     def __repr__(self):
         return f"<Cliente {self.nome} {self.apelido}>"
 

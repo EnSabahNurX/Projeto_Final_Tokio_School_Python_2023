@@ -19,12 +19,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 
-login_manager = LoginManager(app)
-login_manager.login_view = "client_login"
-@login_manager.user_loader
-def load_user(user_id):
-    return Cliente.query.get(int(user_id))
-
 # Inicialização do banco de dados
 db.init_app(app)
 migrate = Migrate(app, db)
