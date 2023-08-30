@@ -4,11 +4,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from models import db
 from config import Config
-from flask_login import LoginManager
 
-login_manager = LoginManager()
+
 app = Flask(__name__)
 app.config.from_object(Config)
+
 
 # Inicialização do banco de dados
 db.init_app(app)

@@ -2,10 +2,9 @@ import os
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente, Reservation
-# from decorators import login_required
+from decorators import login_required
 from werkzeug.utils import secure_filename
 from app import app
-from flask_login import login_required, current_user
 
 
 # Função para verificar o status de manutenção do veículo
@@ -761,47 +760,3 @@ def cancel_reservation(id):
         flash("Reserva não encontrada.", "danger")
 
     return redirect(url_for("client_reservations"))
-
-
-@login_required
-def edit_client():
-    return render_template("edit_client.html")
-
-
-@login_required
-def update_client():
-    new_nome = request.form.get("nome")
-    new_apelido = request.form.get("apelido")
-    new_email = request.form.get("email")
-    new_telefone = request.form.get("telefone")
-    new_data_nascimento = request.form.get("data_nascimento")
-    new_morada = request.form.get("morada")
-    new_nif = request.form.get("nif")
-    new_password = request.form.get("password")
-
-    if (
-        new_nome
-        and new_apelido
-        and new_email
-        and new_telefone
-        and new_data_nascimento
-        and new_morada
-        and new_nif
-    ):
-        current_user.nome = new_nome
-        current_user.apelido = new_apelido
-        current_user.email = new_email
-        current_user.telefone = new_telefone
-        current_user.data_nascimento = new_data_nascimento
-        current_user.morada = new_morada
-        current_user.nif = new_nif
-
-        if new_password:
-            current_user.password = new_password
-
-        db.session.commit()
-        flash("Dados atualizados com sucesso!", "success")
-    else:
-        flash("Por favor, preencha todos os campos obrigatórios.", "danger")
-
-    return redirect(url_for("edit_client"))
