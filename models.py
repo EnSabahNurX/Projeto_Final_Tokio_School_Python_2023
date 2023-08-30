@@ -134,6 +134,9 @@ class Cliente(db.Model):
         self.password = password
         self.categoria = categoria
 
+    def is_active(self):
+        return True
+
     def __repr__(self):
         return f"<Cliente {self.nome} {self.apelido}>"
 
