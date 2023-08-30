@@ -185,7 +185,7 @@ def complete_payment():
         if payment_response["success"]:
             # Simulação de sucesso no pagamento
             # Adicionar a reserva
-            customer_id = int(session["user_id"])
+            customer_id = int(current_user.id)
             reservation = Reservation(
                 customer_id=customer_id,
                 vehicle_id=veiculo_id,
@@ -551,7 +551,7 @@ def delete_image(image_path, vehicle_id):
 
 
 def client_login():
-    if "user_id" in session:
+    if current_user.is_authenticated:
         # Se o usuário já estiver logado, redirecione para a página de reserva
         # Verifica se há uma URL de redirecionamento armazenada
         redirect_url = session.pop("redirect_url", url_for("index"))
@@ -565,7 +565,6 @@ def client_login():
         client = Cliente.query.filter_by(email=email).first()
         if client and client.email == email and client.password == password:
             # Define a sessão para o usuário logado
-            # session["user_id"] = client.id
             login_user(client)
             flash("Login bem-sucedido!", "success")
 
@@ -581,7 +580,7 @@ def client_login():
 
 
 def client_logout():
-    session.pop("user_id", None)  # Remove a chave 'client' da sessão
+    logout_user()
     # Redireciona para a página de login do cliente
     return redirect(url_for("client_login"))
 
@@ -753,7 +752,7 @@ def register_usage_route(vehicle_id):
 @login_required
 def client_reservations():
     Reservation.update_completed_reservations()
-    customer_id = session["user_id"]
+    customer_id = current_user.id
     future_reservations = Reservation.query.filter(
         Reservation.customer_id == customer_id, Reservation.start_date >= date.today()
     ).all()
