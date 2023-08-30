@@ -6,9 +6,9 @@
     <label for="categoria">Categoria:</label>
     <select name="categoria" id="categoria">
         <option value="all">Todos veículos</option>
-        <option value="gold">Gold</option>
-        <option value="silver">Silver</option>
-        <option value="economic">Económico</option>
+        <option {% if categoria=="Gold" %}selected{% endif %} value="Gold">Gold</option>
+        <option {% if categoria=="Silver" %}selected{% endif %} value="Silver">Silver</option>
+        <option {% if categoria=="Económico" %}selected{% endif %} value="Económico">Económico</option>
     </select>
     <button type="submit">Filtrar</button>
 </form>
@@ -46,12 +46,13 @@
     </div>
     {% else %}
     <div class="row row-cols-1 row-cols-md-3 g-4"></div>
+    <h2 class="mb-3">Carros</h2>
     <h4 class="mb-3">Lamento, não há veículos disponíveis nesta categoria.</h4>
     {% endif %}
     <br>
     <br>
     <!-- Motas Disponíveis -->
-    {% if veiculos_carros %}
+    {% if veiculos_motas %}
     <h2 class="mb-3">Motas</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for veiculo in veiculos_motas %}
@@ -80,6 +81,7 @@
     </div>
     {% else %}
     <div class="row row-cols-1 row-cols-md-3 g-4"></div>
+    <h2 class="mb-3">Motas</h2>
     <h4 class="mb-3">Lamento, não há veículos disponíveis nesta categoria.</h4>
     {% endif %}
 </div>

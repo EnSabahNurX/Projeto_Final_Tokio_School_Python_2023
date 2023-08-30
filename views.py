@@ -67,18 +67,13 @@ def index():
     categoria = request.args.get("categoria", "all")
 
     if current_user.is_authenticated:
-        categoria = request.args.get("categoria", current_user.categoria)
+        categoria = current_user.categoria
+
     # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do cliente quando logado
-    if categoria == "gold":
-        veiculos = Vehicle.query.filter_by(categoria="Gold", status=1).all()
-
-    elif categoria == "silver":
-        veiculos = Vehicle.query.filter_by(categoria="Silver", status=1).all()
-
-    elif categoria == "economic":
-        veiculos = Vehicle.query.filter_by(categoria="Económico", status=1).all()
-    else:
+    if categoria == "all":
         veiculos = Vehicle.query.filter_by(status=1).all()
+    else:
+        veiculos = Vehicle.query.filter_by(categoria=categoria, status=1).all()
 
     # Separar os veículos em carros e motas
     veiculos_carros = [
@@ -101,6 +96,7 @@ def index():
         veiculos_carros=veiculos_carros,
         veiculos_motas=veiculos_motas,
         current_year=datetime.now().year,
+        categoria=categoria,
     )
 
 
