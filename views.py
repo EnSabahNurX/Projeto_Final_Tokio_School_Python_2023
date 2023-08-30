@@ -66,11 +66,12 @@ def index():
     # Atribui a categoria padrão para os veículos exibidos na tela inicial sem cliente logado
     categoria = request.args.get("categoria", "all")
 
+    # Cliente logado por padrão a categoria do cadastro
     if current_user.is_authenticated:
         if categoria == "all":
             categoria = current_user.categoria
 
-    # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do cliente quando logado
+    # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do filtro selecionada
     if categoria == "all":
         veiculos = Vehicle.query.filter_by(status=1).all()
     else:
