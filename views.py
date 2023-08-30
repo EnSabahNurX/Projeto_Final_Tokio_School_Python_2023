@@ -557,6 +557,8 @@ def client_login():
         if client and client.email == email and client.password == password:
             # Define a sessão para o usuário logado
             session["user_id"] = client.id
+            login_user(client)
+            flash("Login bem-sucedido!", "success")
 
             # Verifica se há uma URL de redirecionamento armazenada
             redirect_url = session.pop("redirect_url", url_for("index"))
