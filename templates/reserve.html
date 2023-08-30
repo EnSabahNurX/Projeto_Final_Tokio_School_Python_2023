@@ -24,6 +24,9 @@
             <h2>{{ veiculo.brand }} {{ veiculo.model }}</h2>
             <p>Ano: {{ veiculo.year }}</p>
             <p>Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
+            <br>
+            <br>
+            <h5>Agendamento de recolha do veículo</h5>
             <form method="POST">
                 <div class="mb-3">
                     <label for="data_recolha" class="form-label">Data de Recolha</label>
