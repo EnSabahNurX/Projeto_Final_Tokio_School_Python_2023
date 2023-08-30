@@ -66,16 +66,17 @@ def index():
     # Atribui a categoria padrão para os veículos exibidos na tela inicial sem cliente logado
     categoria = request.args.get("categoria", "all")
 
-    # if current_user.is_authenticated:
+    if current_user.is_authenticated:
+        categoria = request.args.get("categoria", current_user.categoria)
     # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do cliente quando logado
     if categoria == "gold":
-        veiculos = Veiculo.query.filter_by(categoria="gold", status=1).all()
+        veiculos = Vehicle.query.filter_by(categoria="Gold", status=1).all()
 
     elif categoria == "silver":
-        veiculos = Veiculo.query.filter_by(categoria="silver", status=1).all()
+        veiculos = Vehicle.query.filter_by(categoria="Silver", status=1).all()
 
     elif categoria == "economic":
-        veiculos = Veiculo.query.filter_by(categoria="economic", status=1).all()
+        veiculos = Vehicle.query.filter_by(categoria="Económico", status=1).all()
     else:
         veiculos = Vehicle.query.filter_by(status=1).all()
 

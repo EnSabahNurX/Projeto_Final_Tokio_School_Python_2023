@@ -8,7 +8,7 @@
         <option value="all">Todos veículos</option>
         <option value="gold">Gold</option>
         <option value="silver">Silver</option>
-        <option value="economic">Econômico</option>
+        <option value="economic">Económico</option>
     </select>
     <button type="submit">Filtrar</button>
 </form>
@@ -17,6 +17,7 @@
     <h1 class="mb-4">Veículos Disponíveis</h1>
 
     <!-- Carros Disponíveis -->
+    {% if veiculos_carros %}
     <h2 class="mb-3">Carros</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for veiculo in veiculos_carros %}
@@ -43,10 +44,15 @@
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="row row-cols-1 row-cols-md-3 g-4"></div>
+    <h4 class="mb-3">Lamento, não há veículos disponíveis nesta categoria.</h4>
+    {% endif %}
     <br>
     <br>
     <!-- Motas Disponíveis -->
-    <h2 class="mb-3">Carros</h2>
+    {% if veiculos_carros %}
+    <h2 class="mb-3">Motas</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for veiculo in veiculos_motas %}
         <div class="col">
@@ -72,5 +78,9 @@
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="row row-cols-1 row-cols-md-3 g-4"></div>
+    <h4 class="mb-3">Lamento, não há veículos disponíveis nesta categoria.</h4>
+    {% endif %}
 </div>
 {% endblock %}
