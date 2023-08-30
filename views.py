@@ -807,7 +807,7 @@ def update_client():
     new_data_nascimento = request.form.get("data_nascimento")
     new_morada = request.form.get("morada")
     new_nif = request.form.get("nif")
-    new_price_per_day = request.form.get("price_per_day")
+    new_price_per_day = float(request.form["price_per_day"])
     new_password = request.form.get("password")
 
     if (
@@ -833,6 +833,15 @@ def update_client():
 
         if new_password:
             current_user.password = new_password
+
+        # Define a categoria do cliente com base na diária escolhida
+        if new_price_per_day > 250:
+            categoria = "Gold"
+        elif new_price_per_day <= 50:
+            categoria = "Económico"
+        else:
+            categoria = "Silver"
+        current_user.categoria = categoria
 
         db.session.commit()
         flash("Dados atualizados com sucesso!", "success")

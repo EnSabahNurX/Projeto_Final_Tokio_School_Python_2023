@@ -50,8 +50,8 @@
         </div>
         <div class="mb-3">
             <label for="price_per_day" class="form-label">Faixa de aluguer desejada</label>
-            <input type="number" step="0.01" class="form-control" id="price_per_day" name="{{ price_per_day }}"
-                required>
+            <input type="number" step="0.01" class="form-control" id="price_per_day" name="price_per_day"
+                value="{{ current_user.price_per_day }}" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Nova Senha</label>
