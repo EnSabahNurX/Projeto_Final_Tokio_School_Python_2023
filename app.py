@@ -2,11 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_migrate import Migrate
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
-from werkzeug.utils import secure_filename
-from decorators import login_required
 from models import db
 from config import Config
+from flask_login import LoginManager
 
+login_manager = LoginManager()
 app = Flask(__name__)
 app.config.from_object(Config)
 
