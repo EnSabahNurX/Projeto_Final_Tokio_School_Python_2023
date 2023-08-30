@@ -2,7 +2,6 @@ import os
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente, Reservation
-
 # from decorators import login_required
 from werkzeug.utils import secure_filename
 from app import app
