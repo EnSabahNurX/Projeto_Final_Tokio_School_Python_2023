@@ -1,5 +1,6 @@
 from app import app
 from views import *
+from admin_views import *
 
 # Rota inicial
 app.add_url_rule(
