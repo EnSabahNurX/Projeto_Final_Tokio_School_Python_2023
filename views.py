@@ -2,6 +2,7 @@ from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente, Reservation
 from app import app
+from admin_views import check_maintenance_status
 from flask_login import (
     LoginManager,
     login_user,
