@@ -2,6 +2,17 @@
 
 {% block content %}
 <!-- Adicionar a exibição de mensagens flash -->
+<form method="GET" action="{{ url_for('index') }}">
+    <label for="categoria">Categoria:</label>
+    <select name="categoria" id="categoria">
+        <option value="all">Todos veículos</option>
+        <option value="gold">Gold</option>
+        <option value="silver">Silver</option>
+        <option value="economic">Econômico</option>
+    </select>
+    <button type="submit">Filtrar</button>
+</form>
+
 <div class="container mt-4">
     <h1 class="mb-4">Veículos Disponíveis</h1>
 

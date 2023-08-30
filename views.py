@@ -63,8 +63,21 @@ def index():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
 
-    # Consultar todos os veículos disponíveis no banco de dados
-    veiculos = Vehicle.query.filter_by(status=1).all()
+    # Atribui a categoria padrão para os veículos exibidos na tela inicial sem cliente logado
+    categoria = request.args.get("categoria", "all")
+
+    # if current_user.is_authenticated:
+    # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do cliente quando logado
+    if categoria == "gold":
+        veiculos = Veiculo.query.filter_by(categoria="gold", status=1).all()
+
+    elif categoria == "silver":
+        veiculos = Veiculo.query.filter_by(categoria="silver", status=1).all()
+
+    elif categoria == "economic":
+        veiculos = Veiculo.query.filter_by(categoria="economic", status=1).all()
+    else:
+        veiculos = Vehicle.query.filter_by(status=1).all()
 
     # Separar os veículos em carros e motas
     veiculos_carros = [
@@ -639,12 +652,12 @@ def register_client():
             return render_template("register_client.html", error_message=error_message)
 
         # Define a categoria do cliente com base na diária escolhida
-        if price_per_day >= 250:
+        if price_per_day > 250:
             categoria = "Gold"
-        elif price_per_day >= 50:
-            categoria = "Silver"
-        else:
+        elif price_per_day <= 50:
             categoria = "Económico"
+        else:
+            categoria = "Silver"
 
         # Cria um novo objeto Cliente e adiciona ao banco de dados
         novo_cliente = Cliente(
