@@ -67,7 +67,8 @@ def index():
     categoria = request.args.get("categoria", "all")
 
     if current_user.is_authenticated:
-        categoria = current_user.categoria
+        if categoria == "all":
+            categoria = current_user.categoria
 
     # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do cliente quando logado
     if categoria == "all":
