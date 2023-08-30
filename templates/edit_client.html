@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Adicionar a exibição de mensagens flash -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message[0] }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 <div class="container">
     <h2 class="mb-4">Editar Dados do Cliente</h2>
     <form method="post" action="{{ url_for('update_client') }}">

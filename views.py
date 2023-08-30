@@ -18,9 +18,12 @@ from flask_login import (
 
 login_manager = LoginManager(app)
 login_manager.login_view = "client_login"
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Cliente.query.get(int(user_id))
+
 
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
@@ -562,7 +565,7 @@ def client_login():
         client = Cliente.query.filter_by(email=email).first()
         if client and client.email == email and client.password == password:
             # Define a sessão para o usuário logado
-            session["user_id"] = client.id
+            # session["user_id"] = client.id
             login_user(client)
             flash("Login bem-sucedido!", "success")
 
@@ -808,7 +811,9 @@ def update_client():
         current_user.apelido = new_apelido
         current_user.email = new_email
         current_user.telefone = new_telefone
-        current_user.data_nascimento = new_data_nascimento
+        current_user.data_nascimento = datetime.strptime(
+            new_data_nascimento, "%Y-%m-%d"
+        ).date()
         current_user.morada = new_morada
         current_user.nif = new_nif
 
@@ -817,6 +822,7 @@ def update_client():
 
         db.session.commit()
         flash("Dados atualizados com sucesso!", "success")
+        return redirect(url_for("index"))
     else:
         flash("Por favor, preencha todos os campos obrigatórios.", "danger")
 
