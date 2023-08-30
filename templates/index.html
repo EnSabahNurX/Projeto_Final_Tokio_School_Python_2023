@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<!-- Adicionar a exibição de mensagens flash -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message[0] }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 <div class="container mt-4">
     <h1 class="mb-4">Veículos Disponíveis</h1>
 
@@ -43,12 +54,12 @@
                 <!-- Imagem do veículo aqui -->
                 <div class="d-flex flex-column align-items-center">
                     {% if veiculo.imagens %}
-                        {% for image_path in veiculo.imagens.split(',') %}
-                            {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
-                                alt="Imagem do Veículo" class="img-fluid img-thumbnail" style="height: 150px;">
-                            {% endif %}
+                    {% for image_path in veiculo.imagens.split(',') %}
+                    {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
+                        alt="Imagem do Veículo" class="img-fluid img-thumbnail" style="height: 150px;">
+                        {% endif %}
                         {% endfor %}
-                    {% endif %}
+                        {% endif %}
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">{{ veiculo.brand }}</h5>
