@@ -20,7 +20,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{db_path}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static/images")
-    BOOTSTRAP_BOOTSWATCH_THEME = "yeti"
+    BOOTSTRAP_BOOTSWATCH_THEME = "cyborg"
     BOOTSTRAP_USE_MINIFIED = True
     BOOTSTRAP_USE_CDN = True
     BOOTSTRAP_FONTAWESOME = True
