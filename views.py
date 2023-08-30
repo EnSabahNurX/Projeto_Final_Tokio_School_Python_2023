@@ -2,7 +2,6 @@ from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
 from models import db, Vehicle, VehicleType, Cliente, Reservation
 from app import app
-from admin_views import check_maintenance_status
 from flask_login import (
     LoginManager,
     login_user,
@@ -16,6 +15,38 @@ from flask_login import (
 login_manager = LoginManager(app)
 login_manager.login_view = "client_login"
 
+
+# Função para verificar o status de manutenção do veículo
+def check_maintenance_status():
+    # Obter todos os veículos em manutenção
+    vehicles_in_maintenance = Vehicle.query.filter_by(in_maintenance=True).all()
+
+    # Verificar se a data atual é igual ou superior à data de próxima manutenção
+    today = date.today()
+    for vehicle in vehicles_in_maintenance:
+        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
+            # Definir o veículo como disponível e definir in_maintenance como False
+            vehicle.status = True
+            vehicle.in_maintenance = False
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=180
+            )
+            db.session.commit()
+
+# Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
+def register_usage(vehicle):
+    vehicle.num_uses += 1
+
+    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
+        days_since_last_maintenance = (
+            datetime.now().date() - vehicle.last_maintenance_date
+        ).days
+        if days_since_last_maintenance >= 30:
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=30
+            )
+
+    db.session.commit()
 
 @login_manager.user_loader
 def load_user(user_id):
