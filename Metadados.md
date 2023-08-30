@@ -1,0 +1,55 @@
+Tabela: Vehicle
+- Colunas:
+  - id: Chave primária que identifica cada veículo.
+  - type: Enumeração que define o tipo do veículo (Carro ou Mota).
+  - brand: Marca do veículo.
+  - model: Modelo do veículo.
+  - year: Ano de fabrico do veículo.
+  - price_per_day: Preço por dia do aluguel do veículo.
+  - status: Indica se o veículo está disponível para aluguel ou não.
+  - categoria: Categoria do veículo, baseada no preço por dia.
+  - in_maintenance: Indica se o veículo está em manutenção.
+  - last_maintenance_date: Data da última manutenção do veículo.
+  - next_maintenance_date: Data da próxima manutenção do veículo.
+  - maintenance_history: Histórico de manutenções realizadas no veículo.
+  - last_legalization_date: Data da última legalização do veículo.
+  - next_legalization_date: Data da próxima legalização do veículo.
+  - legalization_history: Histórico de legalizações do veículo.
+  - imagens: Caminho para as imagens do veículo.
+  - available_from: Data de disponibilidade do veículo.
+  - num_uses: Número de vezes que o veículo foi utilizado.
+  - max_uses_before_maintenance: Número máximo de utilizações antes de uma manutenção.
+- Relacionamentos:
+  - reservations: Relacionamento com a tabela Reservation, indicando as reservas associadas a cada veículo.
+
+Tabela: Cliente
+- Colunas:
+  - id: Chave primária que identifica cada cliente.
+  - nome: Nome do cliente.
+  - apelido: Apelido do cliente.
+  - email: Email do cliente (único).
+  - telefone: Número de telefone do cliente.
+  - data_nascimento: Data de nascimento do cliente.
+  - morada: Morada do cliente.
+  - nif: Número de identificação fiscal do cliente (único).
+  - price_per_day: Preço por dia do aluguel para o cliente.
+  - password: Senha do cliente.
+  - categoria: Categoria do cliente.
+- Relacionamentos:
+  - reservations: Relacionamento com a tabela Reservation, indicando as reservas associadas a cada cliente.
+
+Tabela: Reservation
+- Colunas:
+  - id: Chave primária que identifica cada reserva.
+  - customer_id: Chave estrangeira referenciando o cliente associado à reserva.
+  - vehicle_id: Chave estrangeira referenciando o veículo associado à reserva.
+  - status: Status da reserva (Ativa, Concluída, etc.).
+  - start_date: Data de início da reserva.
+  - start_time: Hora de início da reserva.
+  - end_date: Data de término da reserva.
+  - end_time: Hora de término da reserva.
+  - duration: Duração da reserva (em horas, dias, etc.).
+  - price: Preço total da reserva.
+- Relacionamentos:
+  - cliente: Relacionamento com a tabela Cliente, indicando o cliente associado à reserva.
+  - vehicle: Relacionamento com a tabela Vehicle, indicando o veículo associado à reserva.
