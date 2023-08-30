@@ -557,6 +557,8 @@ def client_login():
         redirect_url = session.pop("redirect_url", url_for("index"))
         return redirect(redirect_url)
 
+    next_url = request.args.get("next") or url_for("index")
+
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -570,13 +572,20 @@ def client_login():
 
             # Verifica se há uma URL de redirecionamento armazenada
             redirect_url = session.pop("redirect_url", url_for("index"))
-            return redirect(redirect_url)
+            return redirect(next_url)
 
         # Em caso de credenciais inválidas, exiba uma mensagem de erro
         error_message = "Credenciais de login inválidas. Por favor, tente novamente."
-        return render_template("client_login.html", error_message=error_message)
+        return render_template(
+            "client_login.html",
+            error_message=error_message,
+            next_url=next_url,
+        )
 
-    return render_template("client_login.html")
+    return render_template(
+        "client_login.html",
+        next_url=next_url,
+    )
 
 
 def client_logout():
