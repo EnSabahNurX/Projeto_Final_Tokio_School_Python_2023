@@ -1,4 +1,4 @@
-#!/mnt/547384a5-8511-493a-9e41-edb29d1726e5/home/ricardo/VSCode/projeto_final/.venv/bin/python
+#!/home/ricardo/VSCode/projeto_final/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
