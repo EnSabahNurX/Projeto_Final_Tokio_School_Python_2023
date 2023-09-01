@@ -183,3 +183,14 @@ class Reservation(db.Model):
         for reservation in completed_reservations:
             reservation.status = "Concluída"
             db.session.commit()
+
+
+class Categoria(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), nullable=False, unique=True)
+
+    # Relacionamento com Veículos
+    veiculos = db.relationship("Veiculo", backref="categoria", lazy=True)
+
+    # Relacionamento com Clientes
+    clientes = db.relationship("Cliente", backref="categoria", lazy=True)
