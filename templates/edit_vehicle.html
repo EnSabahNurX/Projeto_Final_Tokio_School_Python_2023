@@ -4,18 +4,6 @@
 
 <div class="container mt-4">
     <h1>Editar Veículo</h1>
-    <!-- Adicionar a exibição de mensagens flash -->
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="container mt-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message[0] }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
     <form method="post" action="/edit_vehicle/{{ vehicle.id }}" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="vehicle_type" class="form-label">Tipo de Veículo</label>

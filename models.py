@@ -11,6 +11,17 @@ class VehicleType(Enum):
     MOTA = "Mota"
 
 
+# Classe para o modelo de Categoria
+class Categoria(db.Model):
+    __tablename__ = "categorias"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), nullable=False, unique=True)
+
+    def __init__(self, nome):
+        self.nome = nome
+
+
 # Classe para o modelo de Veículo
 class Veiculo(db.Model):
     __tablename__ = "veiculos"
@@ -33,7 +44,7 @@ class Veiculo(db.Model):
     num_uses = db.Column(db.Integer, default=0)
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
     categoria_id = db.Column(db.Integer, db.ForeignKey("categorias.id"), nullable=False)
-    categoria = db.relationship("Categoria", lazy="joined")
+    categoria = db.relationship("Categoria", backref=db.backref("veiculos", lazy=True))
     reservations = db.relationship(
         "Reservation",
         backref="veiculos",
@@ -46,7 +57,7 @@ class Veiculo(db.Model):
         self.model = model
         self.year = year
         self.price_per_day = price_per_day
-        self.categoria_id = categoria_id
+        self.categoria = categoria
         self.maintenance_history = ""
         self.last_legalization_date = None
         self.next_legalization_date = None
@@ -186,20 +197,3 @@ class Reservation(db.Model):
         for reservation in completed_reservations:
             reservation.status = "Concluída"
             db.session.commit()
-
-
-# Classe para o modelo de Categoria
-class Categoria(db.Model):
-    __tablename__ = "categorias"
-
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(
-        db.String(50),
-        unique=True,
-        nullable=False,
-    )
-
-    veiculos = db.relationship("Veiculo", backref="categoria", lazy=True)
-
-    def __init__(self, nome):
-        self.nome = nome
