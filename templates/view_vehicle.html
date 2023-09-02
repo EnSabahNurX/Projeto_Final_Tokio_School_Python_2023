@@ -9,7 +9,7 @@
             <p class="card-text"><strong>Tipo de Veículo:</strong> {{ vehicle.type.value }}</p>
             <p class="card-text"><strong>Ano:</strong> {{ vehicle.year }}</p>
             <p class="card-text"><strong>Preço por Dia:</strong> {{ vehicle.price_per_day }}</p>
-            <p class="card-text"><strong>Categoria:</strong> {{ vehicle.categoria }}</p>
+            <p class="card-text"><strong>Categoria:</strong> {{ vehicle.categoria.nome }}</p>
             <p class="card-text"><strong>Status:</strong> {% if vehicle.status %}Disponível{% else %}Indisponível{%
                 endif%}</p>
             <p class="card-text"><strong>Disponível a partir de:</strong> {{ vehicle.available_from }}</p>

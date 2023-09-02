@@ -37,7 +37,7 @@
                 <td>{{ vehicle.model }}</td>
                 <td>{{ vehicle.year }}</td>
                 <td>{{ vehicle.price_per_day }}</td>
-                <td>{{ vehicle.categoria }}</td>
+                <td>{{ vehicle.categoria.nome }}</td>
                 <td>{% if vehicle.status %}Disponível{% else %}Indisponível{%
                     endif %}</td>
                 <td>{% if vehicle.in_maintenance %}Sim{% else %}Não{% endif %}</td>

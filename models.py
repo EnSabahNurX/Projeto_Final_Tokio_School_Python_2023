@@ -80,14 +80,6 @@ class Veiculo(db.Model):
         one_year_later = date.today() + timedelta(days=365)
         self.next_legalization_date = one_year_later
 
-        # Atualizar a categoria do veículo com base no preço por dia
-        if self.price_per_day >= 250:
-            self.categoria = "Gold"
-        elif self.price_per_day >= 50:
-            self.categoria = "Silver"
-        else:
-            self.categoria = "Económico"
-
         # Definir as datas de manutenção
         self.last_maintenance_date = datetime.now().date()
         self.next_maintenance_date = self.last_maintenance_date + timedelta(days=180)
