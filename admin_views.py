@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
-from models import db, Vehicle, VehicleType, Cliente, Reservation, Categoria
+from models import db, Veiculo, VehicleType, Cliente, Reservation, Categoria
 from werkzeug.utils import secure_filename
 from views import check_maintenance_status, register_usage
 from app import app
@@ -49,7 +49,7 @@ def admin_panel():
         return redirect(url_for("admin_panel"))
 
     # Consultar todos os veículos no banco de dados
-    vehicles = Vehicle.query.all()
+    vehicles = Veiculo.query.all()
     # Lógica para verificar veículos que precisam de manutenção
     today = date.today()
     vehicles_needing_maintenance = [
@@ -112,7 +112,7 @@ def admin_panel():
 
 
 def view_vehicle(id):
-    vehicle = Vehicle.query.get_or_404(id)
+    vehicle = Veiculo.query.get_or_404(id)
     imagens_paths = vehicle.imagens.split(",") if vehicle.imagens else []
     return render_template(
         "view_vehicle.html",
@@ -142,7 +142,7 @@ def add_vehicle():
             imagens_paths.append(path)
 
         # Criar um novo objeto Veiculo e adicioná-lo ao banco de dados
-        novo_veiculo = Vehicle(
+        novo_veiculo = Veiculo(
             type=VehicleType[type.upper()],
             brand=brand,
             model=model,
@@ -187,7 +187,7 @@ def add_vehicle():
 
 def edit_vehicle(id):
     # Obter o veículo pelo ID
-    vehicle = Vehicle.query.get_or_404(id)
+    vehicle = Veiculo.query.get_or_404(id)
 
     if request.method == "POST":
         # Obter os dados do formulário
@@ -291,7 +291,7 @@ def edit_vehicle(id):
 
 def delete_vehicle(id):
     # Obter o veículo pelo ID
-    vehicle = Vehicle.query.get_or_404(id)
+    vehicle = Veiculo.query.get_or_404(id)
 
     # Remover o veículo do banco de dados
     db.session.delete(vehicle)
@@ -302,7 +302,7 @@ def delete_vehicle(id):
 
 def delete_image(image_path, vehicle_id):
     # Encontrar o veículo no banco de dados pelo ID
-    vehicle = Vehicle.query.get(vehicle_id)
+    vehicle = Veiculo.query.get(vehicle_id)
     if not vehicle:
         flash("Veículo não encontrado.", "error")
         return redirect(url_for("edit_vehicle", id=vehicle_id))
@@ -349,7 +349,7 @@ def logout():
 
 def legalize_vehicle(id):
     # Obter o veículo pelo ID
-    vehicle = Vehicle.query.get_or_404(id)
+    vehicle = Veiculo.query.get_or_404(id)
 
     # Atualizar a data da última legalização
     vehicle.last_legalization_date = date.today()
@@ -374,7 +374,7 @@ def legalize_vehicle(id):
 
 
 def maintenance_vehicle(id):
-    vehicle = Vehicle.query.get_or_404(id)
+    vehicle = Veiculo.query.get_or_404(id)
 
     if request.method == "POST":
         # Verificar se o botão de manutenção foi pressionado
@@ -422,7 +422,7 @@ def maintenance_vehicle(id):
 
 def register_usage_route(vehicle_id):
     # Obter o veículo pelo ID
-    vehicle = Vehicle.query.get_or_404(vehicle_id)
+    vehicle = Veiculo.query.get_or_404(vehicle_id)
 
     # Registrar a utilização e verificar a próxima manutenção
     register_usage(vehicle)

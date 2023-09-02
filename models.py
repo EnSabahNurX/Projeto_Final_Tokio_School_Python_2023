@@ -12,7 +12,7 @@ class VehicleType(Enum):
 
 
 # Classe para o modelo de Veículo
-class Vehicle(db.Model):
+class Veiculo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(VehicleType), nullable=False)
     brand = db.Column(db.String(100), nullable=False)
@@ -34,7 +34,7 @@ class Vehicle(db.Model):
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
     reservations = db.relationship(
         "Reservation",
-        backref="vehicle",
+        backref="veiculo",
         lazy=True,
     )
 
@@ -158,7 +158,7 @@ class Reservation(db.Model):
     )
     vehicle_id = db.Column(
         db.Integer,
-        db.ForeignKey("vehicle.id"),
+        db.ForeignKey("veiculo.id"),
         nullable=False,
         name="fk_reservation_vehicle",
     )

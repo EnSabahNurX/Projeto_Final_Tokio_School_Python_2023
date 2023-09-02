@@ -1,6 +1,6 @@
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
-from models import db, Vehicle, VehicleType, Cliente, Reservation, Categoria
+from models import db, Veiculo, VehicleType, Cliente, Reservation, Categoria
 from app import app
 from flask_login import (
     LoginManager,
@@ -19,7 +19,7 @@ login_manager.login_view = "client_login"
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
     # Obter todos os veículos em manutenção
-    vehicles_in_maintenance = Vehicle.query.filter_by(in_maintenance=True).all()
+    vehicles_in_maintenance = Veiculo.query.filter_by(in_maintenance=True).all()
 
     # Verificar se a data atual é igual ou superior à data de próxima manutenção
     today = date.today()
@@ -69,9 +69,9 @@ def index():
 
     # Consultar todos os veículos disponíveis no banco de dados conforme a categoria do filtro selecionada
     if categoria == "all":
-        veiculos = Vehicle.query.filter_by(status=1).all()
+        veiculos = Veiculo.query.filter_by(status=1).all()
     else:
-        veiculos = Vehicle.query.filter_by(categoria=categoria, status=1).all()
+        veiculos = Veiculo.query.filter_by(categoria=categoria, status=1).all()
 
     # Separar os veículos em carros e motas
     veiculos_carros = [
@@ -96,7 +96,7 @@ def vehicle_details(id):
     check_maintenance_status()
 
     # Consultar o veículo pelo ID no banco de dados
-    veiculo = Vehicle.query.get_or_404(id)
+    veiculo = Veiculo.query.get_or_404(id)
     image_paths = veiculo.imagens.split(",")
     images_with_index = [
         {"index": index, "path": path} for index, path in enumerate(image_paths)
@@ -113,7 +113,7 @@ def vehicle_details(id):
 @login_required
 def reserve(id):
     # Obter o veículo a partir do ID
-    veiculo = Vehicle.query.get(id)
+    veiculo = Veiculo.query.get(id)
 
     if request.method == "POST":
         # Receber os dados do formulário
@@ -160,7 +160,7 @@ def complete_payment():
         return render_template("payment_error.html", message="Duração inválida")
 
     # Obter o veículo a partir do ID
-    veiculo = Vehicle.query.get(veiculo_id)
+    veiculo = Veiculo.query.get(veiculo_id)
 
     # Calcular o preço total do aluguer
     preco_total = duracao * veiculo.price_per_day
