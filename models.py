@@ -36,7 +36,7 @@ class Veiculo(db.Model):
     categoria_id = db.Column(db.Integer, db.ForeignKey("categorias.id"), nullable=False)
     reservations = db.relationship(
         "Reservation",
-        backref="veiculo",
+        backref="veiculos",
         lazy=True,
     )
 
@@ -111,7 +111,7 @@ class Cliente(db.Model):
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
     reservations = db.relationship(
         "Reservation",
-        backref="cliente",
+        backref="clientes",
         lazy=True,
     )
 
@@ -155,13 +155,13 @@ class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(
         db.Integer,
-        db.ForeignKey("cliente.id"),
+        db.ForeignKey("clientes.id"),
         nullable=False,
         name="fk_reservation_customer",
     )
     vehicle_id = db.Column(
         db.Integer,
-        db.ForeignKey("veiculo.id"),
+        db.ForeignKey("veiculos.id"),
         nullable=False,
         name="fk_reservation_vehicle",
     )
