@@ -4,7 +4,13 @@
 
 <div class="container mt-4">
     <h1>Painel de Administração</h1>
-    <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar Novo Veículo</a>
+    <li class="nav-item">
+        <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar Novo Veículo</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('categorias') }}">Gerenciar Categorias</a>
+    </li>
+
     <h2 class="mt-4">Lista de Veículos</h2>
     <!-- Adicionar a exibição de mensagens flash -->
     {% with messages = get_flashed_messages() %}
