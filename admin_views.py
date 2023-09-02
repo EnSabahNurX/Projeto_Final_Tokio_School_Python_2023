@@ -133,7 +133,6 @@ def add_vehicle():
 
         # Verifique se a categoria já existe no banco de dados
         categoria = Categoria.query.filter_by(nome=categoria_nome).first()
-
         # Processar o upload das imagens
         imagens = request.files.getlist("imagens")
         imagens_paths = []

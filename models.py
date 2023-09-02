@@ -21,7 +21,7 @@ class Veiculo(db.Model):
     year = db.Column(db.Integer, nullable=False)
     price_per_day = db.Column(db.Float, nullable=False)
     status = db.Column(db.Boolean, default=True)
-    categoria = db.Column(db.String(50), nullable=False, default="")
+    #categoria = db.Column(db.String(50), nullable=False, default="")
     in_maintenance = db.Column(db.Boolean, default=False)
     last_maintenance_date = db.Column(db.Date)
     next_maintenance_date = db.Column(db.Date)
@@ -33,7 +33,7 @@ class Veiculo(db.Model):
     available_from = db.Column(db.Date, nullable=True)
     num_uses = db.Column(db.Integer, default=0)
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
-    categoria_id = db.Column(db.Integer, db.ForeignKey("categorias.id"), nullable=False)
+    categoria = db.Column(db.Integer, db.ForeignKey("categorias.id"), nullable=False)
     reservations = db.relationship(
         "Reservation",
         backref="veiculos",
