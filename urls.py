@@ -155,3 +155,24 @@ app.add_url_rule(
     view_func=update_client,
     methods=["POST"],
 )
+
+# Rota para visualizar categorias
+app.add_url_rule(
+    "/admin/categorias",
+    view_func=categorias,
+    methods=["GET", "POST"],
+)
+
+# Rota para editar categorias
+app.add_url_rule(
+    "/admin/categorias/edit/<int:id>",
+    view_func=editar_categoria,
+    methods=["GET", "POST"],
+)
+
+# Rota para remover categorias
+app.add_url_rule(
+    "/admin/categorias/delete/<int:id",
+    view_func=deletar_categoria,
+    methods=["GET", "POST"],
+)
