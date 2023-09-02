@@ -33,7 +33,7 @@ class Veiculo(db.Model):
     num_uses = db.Column(db.Integer, default=0)
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
     categoria_id = db.Column(db.Integer, db.ForeignKey("categorias.id"), nullable=False)
-    categoria = db.relationship("Categoria", backref=db.backref("veiculos", lazy=True))
+    categoria = db.relationship("Categoria", lazy="joined")
     reservations = db.relationship(
         "Reservation",
         backref="veiculos",
@@ -198,6 +198,8 @@ class Categoria(db.Model):
         unique=True,
         nullable=False,
     )
+
+    veiculos = db.relationship("Veiculo", backref="categoria", lazy=True)
 
     def __init__(self, nome):
         self.nome = nome
