@@ -1,0 +1,27 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Gerenciar Categorias</h1>
+    <form method="post" class="mt-4">
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome da Categoria</label>
+            <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar Categoria</button>
+    </form>
+    <h2 class="mt-4">Lista de Categorias</h2>
+    <ul>
+        {% for categoria in categorias %}
+        <li>
+            {{ categoria.nome }}
+            <a href="{{ url_for('editar_categoria', id=categoria.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('deletar_categoria', id=categoria.id) }}" class="d-inline-block">
+                <button type="submit" class="btn btn-danger btn-sm"
+                    onclick="return confirm('Tem certeza que deseja excluir esta categoria?')">Excluir</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
