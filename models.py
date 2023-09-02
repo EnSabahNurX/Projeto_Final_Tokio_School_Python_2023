@@ -185,7 +185,7 @@ class Reservation(db.Model):
             db.session.commit()
 
 
-class Categoria(db.Model):
+""" class Categoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50), nullable=False, unique=True)
 
@@ -194,3 +194,4 @@ class Categoria(db.Model):
 
     # Relacionamento com Clientes
     clientes = db.relationship("Cliente", backref="categoria", lazy=True)
+ """
