@@ -13,6 +13,7 @@ class VehicleType(Enum):
 
 # Classe para o modelo de Veículo
 class Veiculo(db.Model):
+    __tablename__ = "veiculos"
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(VehicleType), nullable=False)
     brand = db.Column(db.String(100), nullable=False)
@@ -32,6 +33,7 @@ class Veiculo(db.Model):
     available_from = db.Column(db.Date, nullable=True)
     num_uses = db.Column(db.Integer, default=0)
     max_uses_before_maintenance = db.Column(db.Integer, default=50)
+    categoria_id = db.Column(db.Integer, db.ForeignKey("categorias.id"), nullable=False)
     reservations = db.relationship(
         "Reservation",
         backref="veiculo",
@@ -95,6 +97,7 @@ class Veiculo(db.Model):
 
 # Modelo de classe para clientes
 class Cliente(db.Model):
+    __tablename__ = "clientes"
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
     apelido = db.Column(db.String(100), nullable=False)
