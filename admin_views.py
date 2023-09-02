@@ -435,3 +435,47 @@ def register_usage_route(vehicle_id):
             id=vehicle_id,
         )
     )
+
+@app.route('/admin/categorias', methods=['GET', 'POST'])
+def categorias():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+
+        if not nome:
+            flash('Por favor, forneça um nome para a categoria', 'danger')
+        else:
+            categoria = Categoria(nome=nome)
+            db.session.add(categoria)
+            db.session.commit()
+            flash('Categoria adicionada com sucesso', 'success')
+
+    categorias = Categoria.query.all()
+    return render_template('admin_categorias.html', categorias=categorias)
+
+@app.route('/admin/categorias/edit/<int:id>', methods=['GET', 'POST'])
+def editar_categoria(id):
+    categoria = Categoria.query.get(id)
+
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+
+        if not nome:
+            flash('Por favor, forneça um nome para a categoria', 'danger')
+        else:
+            categoria.nome = nome
+            db.session.commit()
+            flash('Categoria editada com sucesso', 'success')
+            return redirect(url_for('categorias'))
+
+    return render_template('editar_categoria.html', categoria=categoria)
+
+@app.route('/admin/categorias/delete/<int:id>', methods=['POST'])
+def deletar_categoria(id):
+    categoria = Categoria.query.get(id)
+
+    if categoria:
+        db.session.delete(categoria)
+        db.session.commit()
+        flash('Categoria removida com sucesso', 'success')
+
+    return redirect(url_for('categorias'))
