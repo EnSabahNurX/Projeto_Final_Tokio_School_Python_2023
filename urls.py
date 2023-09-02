@@ -172,7 +172,7 @@ app.add_url_rule(
 
 # Rota para remover categorias
 app.add_url_rule(
-    "/admin/categorias/delete/<int:id",
+    "/admin/categorias/delete/<int:id>",
     view_func=deletar_categoria,
     methods=["GET", "POST"],
 )
