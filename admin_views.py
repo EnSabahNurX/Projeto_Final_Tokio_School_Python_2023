@@ -129,7 +129,10 @@ def add_vehicle():
         model = request.form["model"]
         year = int(request.form["year"])
         price_per_day = float(request.form["price_per_day"])
-        categoria = request.form["categoria"]
+        categoria_nome = request.form["categoria"]
+
+        # Verifique se a categoria já existe no banco de dados
+        categoria = Categoria.query.filter_by(nome=categoria_nome).first()
 
         # Processar o upload das imagens
         imagens = request.files.getlist("imagens")
@@ -149,6 +152,7 @@ def add_vehicle():
             model=model,
             year=year,
             price_per_day=price_per_day,
+            categoria=categoria,
         )
         # Salvar os caminhos das imagens
         novo_veiculo.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
