@@ -192,10 +192,17 @@ class Categoria(db.Model):
     __tablename__ = "categorias"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(255), unique=True, nullable=False)
+    nome = db.Column(
+        db.String(50),
+        unique=True,
+        nullable=False,
+    )
 
     # Relacionamento entre Categoria e Veículos
-    veiculos = db.relationship("Veiculo", backref="categoria", lazy=True)
+    veiculos = db.relationship(
+        "Veiculo",
+        lazy=True,
+    )
 
     def __init__(self, nome):
         self.nome = nome
