@@ -129,6 +129,7 @@ def add_vehicle():
         model = request.form["model"]
         year = int(request.form["year"])
         price_per_day = float(request.form["price_per_day"])
+        categoria = request.form["categoria"]
 
         # Processar o upload das imagens
         imagens = request.files.getlist("imagens")

@@ -29,15 +29,6 @@
             <input type="number" step="0.01" class="form-control" id="price_per_day" name="price_per_day" required>
         </div>
         <div class="mb-3">
-            <select class="form-select" id="categoria" name="categoria">
-                
-                {% for categoria in categorias %}
-                <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="mb-3">
             <label for="last_legalization_date" class="form-label">Última Legalização</label>
             <input type="date" class="form-control" id="last_legalization_date" name="last_legalization_date" required>
         </div>
@@ -61,7 +52,7 @@
     document.getElementById("price_per_day").addEventListener("input", function () {
         const diaria = parseFloat(this.value);
         let categoria = "";
-        if (diaria == 50) {
+        if (diaria > 250) {
             categoria = "Gold";
         } else if (diaria <= 50) {
             categoria = "Económico";
