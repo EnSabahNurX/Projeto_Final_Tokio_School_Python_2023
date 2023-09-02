@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6">
-            <div id="vehicleCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+            <div id="vehicleCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" data-interval="2000">
                 <div class="carousel-indicators">
                     {% for image in images_with_index %}
                     <button type="button" data-bs-target="#vehicleCarousel" data-bs-slide-to="{{ image.index }}" {% if

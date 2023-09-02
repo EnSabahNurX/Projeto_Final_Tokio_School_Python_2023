@@ -129,9 +129,16 @@ def add_vehicle():
         model = request.form["model"]
         year = int(request.form["year"])
         price_per_day = float(request.form["price_per_day"])
-        categoria_nome = request.form["categoria"]
 
-        # Verifique se a categoria já existe no banco de dados
+        categoria_nome = "Silver"
+        if price_per_day > 250:
+            categoria_nome = "Gold"
+        elif price_per_day <= 50:
+            categoria_nome = "Económico"
+        else:
+            categoria_nome = "Silver"
+
+        # Atribui o objeto categoria de acordo com o nome categoria que foi calculado
         categoria = Categoria.query.filter_by(nome=categoria_nome).first()
 
         # Processar o upload das imagens
@@ -208,6 +215,17 @@ def edit_vehicle(id):
         available_from_str = request.form["available_from"]
         max_uses_before_maintenance = int(request.form["max_uses_before_maintenance"])
 
+        categoria_nome = "Silver"
+        if price_per_day > 250:
+            categoria_nome = "Gold"
+        elif price_per_day <= 50:
+            categoria_nome = "Económico"
+        else:
+            categoria_nome = "Silver"
+        # Atribui o objeto categoria de acordo com o nome categoria que foi calculado
+
+        categoria = Categoria.query.filter_by(nome=categoria_nome).first()
+
         # Converter as datas do formulário em objetos date
         vehicle.last_maintenance_date = datetime.strptime(
             last_maintenance_date_str, "%Y-%m-%d"
@@ -224,14 +242,6 @@ def edit_vehicle(id):
         vehicle.available_from = datetime.strptime(
             available_from_str, "%Y-%m-%d"
         ).date()
-
-        # Atualizar a categoria do veículo com base no novo preço por dia
-        if price_per_day <= 50:
-            vehicle.categoria = "Económico"
-        elif price_per_day <= 250:
-            vehicle.categoria = "Silver"
-        else:
-            vehicle.categoria = "Gold"
 
         # Validar o ano
         if not isinstance(int(request.form["year"]), int):
@@ -276,6 +286,7 @@ def edit_vehicle(id):
         vehicle.model = model
         vehicle.year = year
         vehicle.price_per_day = price_per_day
+        vehicle.categoria = categoria
         vehicle.max_uses_before_maintenance = max_uses_before_maintenance
 
         # Salvar os caminhos das imagens

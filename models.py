@@ -64,13 +64,6 @@ class Veiculo(db.Model):
         self.legalization_history = ""
         self.imagens = ""
 
-    def update_categoria(self):
-        if self.price_per_day <= 50:
-            self.categoria = "Económico"
-        elif self.price_per_day <= 250:
-            self.categoria = "Silver"
-        else:
-            self.categoria = "Gold"
 
     def initialize_vehicle(self):
         # Define a data de criação do veículo como a data de última legalização
