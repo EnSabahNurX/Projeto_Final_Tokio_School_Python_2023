@@ -46,6 +46,7 @@ class Veiculo(db.Model):
         self.model = model
         self.year = year
         self.price_per_day = price_per_day
+        self.categoria_id = categoria_id
         self.maintenance_history = ""
         self.last_legalization_date = None
         self.next_legalization_date = None
