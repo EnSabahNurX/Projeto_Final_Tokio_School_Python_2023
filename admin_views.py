@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
-from models import db, Vehicle, VehicleType, Cliente, Reservation
+from models import db, Vehicle, VehicleType, Cliente, Reservation, Categoria
 from werkzeug.utils import secure_filename
 from views import check_maintenance_status, register_usage
 from app import app
@@ -436,46 +436,46 @@ def register_usage_route(vehicle_id):
         )
     )
 
-@app.route('/admin/categorias', methods=['GET', 'POST'])
+
 def categorias():
-    if request.method == 'POST':
-        nome = request.form.get('nome')
+    if request.method == "POST":
+        nome = request.form.get("nome")
 
         if not nome:
-            flash('Por favor, forneça um nome para a categoria', 'danger')
+            flash("Por favor, forneça um nome para a categoria", "danger")
         else:
             categoria = Categoria(nome=nome)
             db.session.add(categoria)
             db.session.commit()
-            flash('Categoria adicionada com sucesso', 'success')
+            flash("Categoria adicionada com sucesso", "success")
 
     categorias = Categoria.query.all()
-    return render_template('admin_categorias.html', categorias=categorias)
+    return render_template("admin_categorias.html", categorias=categorias)
 
-@app.route('/admin/categorias/edit/<int:id>', methods=['GET', 'POST'])
+
 def editar_categoria(id):
     categoria = Categoria.query.get(id)
 
-    if request.method == 'POST':
-        nome = request.form.get('nome')
+    if request.method == "POST":
+        nome = request.form.get("nome")
 
         if not nome:
-            flash('Por favor, forneça um nome para a categoria', 'danger')
+            flash("Por favor, forneça um nome para a categoria", "danger")
         else:
             categoria.nome = nome
             db.session.commit()
-            flash('Categoria editada com sucesso', 'success')
-            return redirect(url_for('categorias'))
+            flash("Categoria editada com sucesso", "success")
+            return redirect(url_for("categorias"))
 
-    return render_template('editar_categoria.html', categoria=categoria)
+    return render_template("editar_categoria.html", categoria=categoria)
 
-@app.route('/admin/categorias/delete/<int:id>', methods=['POST'])
+
 def deletar_categoria(id):
     categoria = Categoria.query.get(id)
 
     if categoria:
         db.session.delete(categoria)
         db.session.commit()
-        flash('Categoria removida com sucesso', 'success')
+        flash("Categoria removida com sucesso", "success")
 
-    return redirect(url_for('categorias'))
+    return redirect(url_for("categorias"))

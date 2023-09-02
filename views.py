@@ -1,6 +1,6 @@
 from datetime import datetime, date, timedelta
 from flask import render_template, request, redirect, url_for, session, flash
-from models import db, Vehicle, VehicleType, Cliente, Reservation
+from models import db, Vehicle, VehicleType, Cliente, Reservation, Categoria
 from app import app
 from flask_login import (
     LoginManager,
@@ -33,6 +33,7 @@ def check_maintenance_status():
             )
             db.session.commit()
 
+
 # Função para registrar uma nova utilização do veículo e verificar a próxima manutenção
 def register_usage(vehicle):
     vehicle.num_uses += 1
@@ -47,6 +48,7 @@ def register_usage(vehicle):
             )
 
     db.session.commit()
+
 
 @login_manager.user_loader
 def load_user(user_id):
