@@ -182,3 +182,25 @@ app.add_url_rule(
     view_func=deletar_categoria,
     methods=["GET", "POST"],
 )
+
+
+# Rota para listagem de clientes
+app.add_url_rule(
+    "/list_clients",
+    view_func=list_clients,
+)
+
+# Rota para excluir um cliente
+app.add_url_rule(
+    "/delete_client/<int:id>",
+    view_func=delete_client,
+    methods=["POST"],
+)
+
+
+# Rota para editar um cliente existente pelo admin
+app.add_url_rule(
+    "/admin_edit_client/<int:id>",
+    view_func=admin_edit_client,
+    methods=["GET", "POST"],
+)

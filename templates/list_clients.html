@@ -1,0 +1,44 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mt-4">Lista de Clientes</h2>
+
+    <table class="table mt-2">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Apelido</th>
+                <th scope="col">Email</th>
+                <th scope="col">Telefone</th>
+                <!-- Adicione outras colunas aqui conforme necessário -->
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <th scope="row">{{ client.id }}</th>
+                <td>{{ client.nome }}</td>
+                <td>{{ client.apelido }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.telefone }}</td>
+                <!-- Adicione outras colunas aqui conforme necessário -->
+                <td>
+                    <a href="{{ url_for('admin_edit_client/{{ client.id }}', id=client.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                    <form class="d-inline-block" method="post" action="{{ url_for('delete_client', id=client.id) }}">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Tens certeza que deseja excluir este cliente?')">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end mt-4">
+        <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Voltar</a>
+        <a href="{{ url_for('register_client') }}" class="btn btn-primary">Adicionar Cliente</a>
+    </div>
+</div>
+{% endblock %}

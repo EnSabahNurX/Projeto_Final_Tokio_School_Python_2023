@@ -510,3 +510,50 @@ def deletar_categoria(id):
         flash("Categoria removida com sucesso", "success")
 
     return redirect(url_for("categorias"))
+
+
+def list_clients():
+    clients = Cliente.query.all()
+    return render_template("list_clients.html", clients=clients)
+
+
+def delete_client(id):
+    cliente = Cliente.query.get_or_404(id)
+    db.session.delete(cliente)
+    db.session.commit()
+    flash("Cliente excluído com sucesso!", "success")
+    return redirect(url_for("list_clients"))
+
+
+def admin_edit_client(id):
+    cliente = Cliente.query.get_or_404(id)
+
+    if request.method == "POST":
+        # Atualize os campos do cliente com base nos dados do formulário
+        cliente.nome = request.form["nome"]
+        cliente.apelido = request.form["apelido"]
+        cliente.email = request.form["email"]
+        cliente.telefone = request.form["telefone"]
+        cliente.data_nascimento = datetime.strptime(
+            request.form.get("data_nascimento"), "%Y-%m-%d"
+        ).date()
+        cliente.morada = request.form.get("morada")
+        cliente.nif = request.form.get("nif")
+        cliente.price_per_day = float(request.form["price_per_day"])
+        if request.form.get("password"):
+            cliente.password = request.form.get("password")
+
+        # Define a categoria do cliente com base na diária escolhida
+        if cliente.price_per_day > 250:
+            categoria = "Gold"
+        elif cliente.price_per_day <= 50:
+            categoria = "Económico"
+        else:
+            categoria = "Silver"
+        cliente.categoria = categoria
+
+        db.session.commit()
+        flash("Cliente atualizado com sucesso!", "success")
+        return redirect(url_for("list_clients"))
+
+    return render_template("admin_edit_client.html", cliente=cliente)

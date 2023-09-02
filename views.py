@@ -413,8 +413,8 @@ def update_client():
 
         db.session.commit()
         flash("Dados atualizados com sucesso!", "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("list_client"))
     else:
         flash("Por favor, preencha todos os campos obrigatórios.", "danger")
 
-    return redirect(url_for("edit_client"))
+    return redirect(url_for("admin_edit_client"))

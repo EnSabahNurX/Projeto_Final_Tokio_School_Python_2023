@@ -2,6 +2,9 @@
 
 {% block content %}
 <div class="container mt-4">
+    <a href="{{ url_for('add_vehicle') }}" class="btn btn-primary">Adicionar Novo Veículo</a>
+</div>
+<div class="container mt-4">
     <h2 class="mt-4">Lista de Veículos</h2>
 
     <table class="table mt-2">
@@ -87,7 +90,7 @@
         </tbody>
     </table>
     <div class="d-flex justify-content-end mt-4">
-        <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Voltar</a>
+        <a href="{{ url_for('list_vehicles') }}" class="btn btn-secondary me-2">Voltar</a>
     </div>
 </div>
 {% endblock %}
