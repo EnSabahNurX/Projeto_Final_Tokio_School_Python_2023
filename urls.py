@@ -48,6 +48,12 @@ app.add_url_rule(
     view_func=admin_panel,
     methods=["GET", "POST"],
 )
+# Rota para a listagem de veículos
+app.add_url_rule(
+    "/admin/list-vehicles",
+    view_func=list_vehicles,
+)
+
 
 # Rota para visualisar os detalhes do veículo pelo admin
 app.add_url_rule(

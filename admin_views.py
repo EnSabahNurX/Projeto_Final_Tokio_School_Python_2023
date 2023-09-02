@@ -106,7 +106,22 @@ def admin_panel():
     return render_template(
         "admin.html",
         vehicles=vehicles,
-        date=date.today(),
+        date=today,
+        estoque_suficiente=estoque_suficiente,
+    )
+
+
+def list_vehicles():
+    vehicles = Veiculo.query.all()
+    today = date.today()
+    # Verificar se há veículos suficientes no estoque
+    num_veiculos = len(vehicles)
+    num_clientes = len(Cliente.query.all())
+    estoque_suficiente = num_veiculos >= num_clientes + 5
+    return render_template(
+        "list_vehicles.html",
+        vehicles=vehicles,
+        date=today,
         estoque_suficiente=estoque_suficiente,
     )
 

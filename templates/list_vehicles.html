@@ -1,0 +1,93 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mt-4">Lista de Veículos</h2>
+
+    <table class="table mt-2">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Ano</th>
+                <th scope="col">Diária (€)</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Status</th>
+                <th scope="col">Em Manutenção</th>
+                <th scope="col">Próxima Manutenção</th>
+                <th scope="col">Próxima Legalização</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicle in vehicles %}
+            <tr>
+                <th scope="row">{{ vehicle.id }}</th>
+                <td>{{ vehicle.type.value }}</td>
+                <td>{{ vehicle.brand }}</td>
+                <td>{{ vehicle.model }}</td>
+                <td>{{ vehicle.year }}</td>
+                <td>{{ vehicle.price_per_day }}</td>
+                <td>{{ vehicle.categoria.nome }}</td>
+                <td>{% if vehicle.status %}Disponível{% else %}Indisponível{%
+                    endif %}</td>
+                <td>{% if vehicle.in_maintenance %}Sim{% else %}Não{% endif %}</td>
+                <td>{% if vehicle.next_maintenance_date %}{{
+                    vehicle.next_maintenance_date.strftime('%d/%m/%Y') }}{%
+                    endif %}</td>
+                <td>
+                    {% set days_to_legalization =
+                    (vehicle.next_legalization_date - date.today()).days %}
+                    {% if days_to_legalization > 30 %}
+                    {% if vehicle.next_legalization_date %}{{
+                    vehicle.next_legalization_date.strftime('%d/%m/%Y') }}{%
+                    endif %}
+                    {% elif days_to_legalization >= 0 %}
+                    <div class="alert alert-warning" role="alert">
+                        A legalização está próxima! Faltam {{
+                        days_to_legalization }} dias.
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        A legalização está atrasada! Faltam {{
+                        -days_to_legalization }} dias.
+                    </div>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('view_vehicle', id=vehicle.id) }}" class="btn btn-sm btn-success">Visualizar</a>
+                    <a href="{{ url_for('edit_vehicle', id=vehicle.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                    <form class="d-inline-block" method="post" action="{{ url_for('delete_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Tens certeza que deseja excluir este veículo?')">Excluir</button>
+                    </form>
+                    {% if vehicle.in_maintenance %}
+                    <form method="post" action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-success" name="complete_maintenance"
+                            value="1">Concluir
+                            Manutenção</button>
+                    </form>
+                    {% else %}
+                    <!-- Formulário para enviar o veículo para manutenção -->
+                    <form method="post" action="{{ url_for('maintenance_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-warning" name="maintenance"
+                            onclick="return confirm('Tens certeza que quer por este veículo em estado de manutenção?')">Manutenção</button>
+                    </form>
+                    {% endif %}
+                    <!-- Formulário para concluir a legalização do veículo -->
+                    <form method="post" action="{{ url_for('legalize_vehicle', id=vehicle.id) }}">
+                        <button type="submit" class="btn btn-sm btn-info" name="legalize"
+                            onclick="return confirm('Confirmar que o veículo foi legalizado?')">Legalizado</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end mt-4">
+        <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary me-2">Voltar</a>
+    </div>
+</div>
+{% endblock %}
