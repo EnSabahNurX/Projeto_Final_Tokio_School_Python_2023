@@ -1,5 +1,7 @@
 # Projeto Final Tokio School Python 2023
 
+**Resumo:
+
 A Luxury Wheels, é uma empresa de aluguer de carros que deseja desenvolver um site, onde os clientes deverão conseguir registar-se e alugar um veículo, e uma app para a gestão da frota, a partir do qual a empresa consiga gerir todos os seus veículos.
 
 - Classes
@@ -33,3 +35,21 @@ Estrutura da app:
 
 
 O objetivo principal é criar um site para o sistema de aluguel de veículos funcione normalmente, se for possível criar um app para a empresa fazer o gerenciamento do negócio e integrar tudo com a base de dados do site.
+
+**Instruções:
+
+- Crie um ambiente virtual em Python;
+
+    python -m venv .venv
+
+- Active o ambiente virtual;
+
+    source .venv/bin/activate
+
+- Instale todos os binários necessários;
+
+    pip install -r requirements.txt --upgrade
+
+- Inicie a aplicação Python para por o servidor Flask online;
+
+    python app.py
