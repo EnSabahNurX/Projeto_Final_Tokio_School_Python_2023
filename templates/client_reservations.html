@@ -20,18 +20,18 @@
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-md-3">
-                        {% if reservation.vehicle.imagens %}
-                        {% for image_path in reservation.vehicle.imagens.split(',') %}
+                        {% if reservation.veiculos.imagens %}
+                        {% for image_path in reservation.veiculos.imagens.split(',') %}
                         {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
-                            alt="{{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}"
+                            alt="{{ reservation.veiculos.brand }} {{ reservation.veiculos.model }}"
                             class="img-fluid img-thumbnail rounded" style="max-height: 300px;">
                             {% endif %}
                             {% endfor %}
                             {% endif %}
                     </div>
                     <div class="col-md-9">
-                        <strong class="mb-1">Veículo:</strong> {{ reservation.vehicle.brand }} {{
-                        reservation.vehicle.model }}<br>
+                        <strong class="mb-1">Veículo:</strong> {{ reservation.veiculos.brand }} {{
+                        reservation.veiculos.model }}<br>
                         <strong class="mb-1">Recolha do veículo em:</strong> {{
                         reservation.start_date.strftime('%d/%m/%Y') }} às {{
                         reservation.start_time.strftime('%H:%M') }}<br>
@@ -63,18 +63,18 @@
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-md-3">
-                        {% if reservation.vehicle.imagens %}
-                        {% for image_path in reservation.vehicle.imagens.split(',') %}
+                        {% if reservation.veiculos.imagens %}
+                        {% for image_path in reservation.veiculos.imagens.split(',') %}
                         {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
-                            alt="{{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}"
+                            alt="{{ reservation.veiculos.brand }} {{ reservation.veiculos.model }}"
                             class="img-fluid img-thumbnail rounded" style="max-height: 300px;">
                             {% endif %}
                             {% endfor %}
                             {% endif %}
                     </div>
                     <div class="col-md-9">
-                        <strong class="mb-1">Veículo:</strong> {{ reservation.vehicle.brand }} {{
-                        reservation.vehicle.model }}<br>
+                        <strong class="mb-1">Veículo:</strong> {{ reservation.veiculos.brand }} {{
+                        reservation.veiculos.model }}<br>
                         <strong class="mb-1">Recolha do veículo em:</strong> {{
                         reservation.start_date.strftime('%d/%m/%Y') }} às {{
                         reservation.start_time.strftime('%H:%M') }}<br>

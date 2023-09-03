@@ -337,13 +337,23 @@ def register_client():
 def client_reservations():
     Reservation.update_completed_reservations()
     customer_id = current_user.id
-    future_reservations = Reservation.query.filter(
-        Reservation.customer_id == customer_id, Reservation.start_date >= date.today()
-    ).all()
+    future_reservations = (
+        Reservation.query.filter(
+            Reservation.customer_id == customer_id,
+            Reservation.start_date >= date.today(),
+        )
+        .order_by(Reservation.start_date)
+        .all()
+    )
 
-    past_reservations = Reservation.query.filter(
-        Reservation.customer_id == customer_id, Reservation.start_date < date.today()
-    ).all()
+    past_reservations = (
+        Reservation.query.filter(
+            Reservation.customer_id == customer_id,
+            Reservation.start_date < date.today(),
+        )
+        .order_by(Reservation.start_date.desc())
+        .all()
+    )
 
     return render_template(
         "client_reservations.html",
