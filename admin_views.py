@@ -557,3 +557,16 @@ def admin_edit_client(id):
         return redirect(url_for("list_clients"))
 
     return render_template("admin_edit_client.html", cliente=cliente)
+
+
+def export_csv():
+    # Lógica para exportar os dados da tabela de veículos para um arquivo CSV
+    # Recomenda-se usar uma biblioteca Python para gerar o arquivo CSV, como 'csv' ou 'pandas'
+
+    # Suponha que você já tenha gerado o conteúdo CSV em uma variável chamada 'csv_content'
+    
+    # Crie uma resposta (Response) para o navegador com o conteúdo CSV
+    response = Response(csv_content, content_type='text/csv')
+    response.headers['Content-Disposition'] = 'attachment; filename=vehicles.csv'
+    
+    return response

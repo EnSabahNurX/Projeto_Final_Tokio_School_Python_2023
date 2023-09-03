@@ -204,3 +204,10 @@ app.add_url_rule(
     view_func=admin_edit_client,
     methods=["GET", "POST"],
 )
+
+# Rota para exportar listagem de veículos para csv
+app.add_url_rule(
+    "/export_csv",
+    view_func=export_csv,
+    methods=["GET"],
+)
