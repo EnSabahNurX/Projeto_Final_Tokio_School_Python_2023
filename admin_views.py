@@ -1,6 +1,8 @@
 import os
+import csv
+from io import StringIO
 from datetime import datetime, date, timedelta
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, redirect, url_for, session, flash, Response
 from models import db, Veiculo, VehicleType, Cliente, Reservation, Categoria
 from werkzeug.utils import secure_filename
 from views import check_maintenance_status, register_usage
@@ -560,13 +562,57 @@ def admin_edit_client(id):
 
 
 def export_csv():
-    # Lógica para exportar os dados da tabela de veículos para um arquivo CSV
-    # Recomenda-se usar uma biblioteca Python para gerar o arquivo CSV, como 'csv' ou 'pandas'
+    # Consulta todos os veículos na tabela de Veículos
+    vehicles = Veiculo.query.all()
 
-    # Suponha que você já tenha gerado o conteúdo CSV em uma variável chamada 'csv_content'
-    
-    # Crie uma resposta (Response) para o navegador com o conteúdo CSV
-    response = Response(csv_content, content_type='text/csv')
-    response.headers['Content-Disposition'] = 'attachment; filename=vehicles.csv'
-    
+    # Cria um objeto StringIO para armazenar o conteúdo CSV
+    csv_buffer = StringIO()
+    csv_writer = csv.writer(csv_buffer)
+
+    # Escreve os títulos das colunas no arquivo CSV
+    csv_writer.writerow(
+        [
+            "ID",
+            "Tipo",
+            "Marca",
+            "Modelo",
+            "Ano",
+            "Diária (€)",
+            "Categoria",
+            "Status",
+            "Em Manutenção",
+            "Próxima Manutenção",
+            "Próxima Legalização",
+        ]
+    )
+
+    # Escreve os dados de cada veículo no arquivo CSV
+    for vehicle in vehicles:
+        csv_writer.writerow(
+            [
+                vehicle.id,
+                vehicle.type.value,
+                vehicle.brand,
+                vehicle.model,
+                vehicle.year,
+                vehicle.price_per_day,
+                vehicle.categoria.nome,
+                "Disponível" if vehicle.status else "Indisponível",
+                "Sim" if vehicle.in_maintenance else "Não",
+                vehicle.next_maintenance_date.strftime("%d/%m/%Y")
+                if vehicle.next_maintenance_date
+                else "",
+                vehicle.next_legalization_date.strftime("%d/%m/%Y")
+                if vehicle.next_legalization_date
+                else "",
+            ]
+        )
+
+    # Prepare a resposta com o conteúdo CSV
+    response = Response(csv_buffer.getvalue(), content_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=vehicles.csv"
+
+    # Fecha o buffer
+    csv_buffer.close()
+
     return response
