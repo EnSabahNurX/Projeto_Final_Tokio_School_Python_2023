@@ -55,3 +55,8 @@ O objetivo principal é criar um site para o sistema de aluguel de veículos fun
     python app.py
 
 - Para funcionar correctamente é necessário antes de tudo registar no Painel de Administração as categorias Gold, Silver e Económico;
+
+- Somente para a fase desenvolvimento foi instituído um login padrão para o admin dentro da URL 'admin':
+
+    login: "admin"
+    password: "password"
