@@ -4,16 +4,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from models import db
 from config import Config
-from flask_login import (
-    LoginManager,
-    login_user,
-    logout_user,
-    login_required,
-    UserMixin,
-    current_user,
-)
-from werkzeug.security import generate_password_hash, check_password_hash
-
 
 app = Flask(__name__)
 app.config.from_object(Config)

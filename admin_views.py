@@ -42,14 +42,6 @@ def admin_panel():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
 
-    if request.method == "POST":
-        # Obter dados do formulário e adicionar um novo veículo
-        # Restante do código...
-
-        # Exibir uma mensagem flash de sucesso após adicionar o veículo
-        flash("Novo veículo adicionado com sucesso!", "success")
-        return redirect(url_for("admin_panel"))
-
     # Consultar todos os veículos no banco de dados
     vehicles = Veiculo.query.all()
     # Lógica para verificar veículos que precisam de manutenção
