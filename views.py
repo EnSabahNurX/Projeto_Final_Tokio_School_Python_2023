@@ -71,7 +71,11 @@ def index():
     if categoria == "all":
         veiculos = Veiculo.query.filter_by(status=1).all()
     else:
-        veiculos = Veiculo.query.filter_by(categoria=categoria, status=1).all()
+        veiculos = (
+            Veiculo.query.join(Categoria)
+            .filter(Categoria.nome == categoria, Veiculo.status == 1)
+            .all()
+        )
 
     # Separar os veículos em carros e motas
     veiculos_carros = [
@@ -413,8 +417,8 @@ def update_client():
 
         db.session.commit()
         flash("Dados atualizados com sucesso!", "success")
-        return redirect(url_for("list_client"))
+        return redirect(url_for("index"))
     else:
         flash("Por favor, preencha todos os campos obrigatórios.", "danger")
 
-    return redirect(url_for("admin_edit_client"))
+    return redirect(url_for("edit_client"))
