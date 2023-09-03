@@ -41,7 +41,7 @@ def check_admin_session():
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
     # Obter todos os veículos em manutenção
-    vehicles_in_maintenance = Vehicle.query.filter_by(in_maintenance=True).all()
+    vehicles_in_maintenance = Veiculo.query.filter_by(in_maintenance=True).all()
 
     # Verificar se a data atual é igual ou superior à data de próxima manutenção
     today = date.today()

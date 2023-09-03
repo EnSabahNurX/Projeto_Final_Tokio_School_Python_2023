@@ -26,7 +26,7 @@
                 <td>{{ client.telefone }}</td>
                 <!-- Adicione outras colunas aqui conforme necessário -->
                 <td>
-                    <a href="{{ url_for('admin_edit_client/{{ client.id }}', id=client.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                    <a href="{{ url_for('admin_edit_client', id=client.id) }}" class="btn btn-sm btn-primary">Editar</a>
                     <form class="d-inline-block" method="post" action="{{ url_for('delete_client', id=client.id) }}">
                         <button type="submit" class="btn btn-sm btn-danger"
                             onclick="return confirm('Tens certeza que deseja excluir este cliente?')">Excluir</button>
