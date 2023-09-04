@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-md-6">
             <img src="{{ url_for('static', filename='images/' ~ veiculo.imagens.split(',')[0]) }}"
-                alt="Imagem do Veículo" class="img-fluid">
+                alt="Imagem do Veículo" class="img-fluid rounded">
         </div>
         <div class="col-md-6">
             <h2>{{ veiculo.brand }} {{ veiculo.model }}</h2>
@@ -26,7 +26,7 @@
             <p>Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
             <br>
             <br>
-            <h5>Agendamento de recolha do veículo</h5>
+            <h5>Agendamento de Recolha do Veículo</h5>
             <form method="POST">
                 <div class="mb-3">
                     <label for="data_recolha" class="form-label">Data de Recolha</label>
@@ -48,12 +48,16 @@
                         <option value="multibanco">Multibanco</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Continuar para Pagamento</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-credit-card"></i> Continuar para Pagamento
+                </button>
             </form>
         </div>
     </div>
     <div class="d-flex justify-content-end mt-4">
-        <a href="{{ url_for('index') }}" class="btn btn-secondary me-2">Voltar</a>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
     </div>
 </div>
 <script>
@@ -70,5 +74,4 @@
         });
     });
 </script>
-
 {% endblock %}

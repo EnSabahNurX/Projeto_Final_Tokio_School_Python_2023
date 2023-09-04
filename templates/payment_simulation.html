@@ -20,7 +20,7 @@
             <h2>{{ veiculo.brand }} {{ veiculo.model }}</h2>
             <p>Data de Recolha: {{ data_recolha }}</p>
             <p>Hora de Recolha: {{ hora_recolha }}</p>
-            <p>Duração do Aluguer: {{ duracao }} dia{% if duracao > 1 %}s{%endif%}</p>
+            <p>Duração do Aluguer: {{ duracao }} dia{% if duracao > 1 %}s{% endif %}</p>
             <p>Preço Total: €{{ preco_total }}</p>
         </div>
         <div class="col-md-6">
@@ -52,8 +52,10 @@
                 <input type="hidden" name="hora_recolha" value="{{ hora_recolha }}">
                 <input type="hidden" name="duracao" value="{{ duracao }}">
                 <input type="hidden" name="preco_total" value="{{ preco_total }}">
-                <input type="hidden" name="payment_method" value="mbway">
-                <button type="submit" class="btn btn-primary">Confirmar Pagamento</button>
+                <input type="hidden" name="payment_method" value="multibanco">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-credit-card"></i> Confirmar Pagamento
+                </button>
             </form>
             {% elif payment_method == 'mbway' %}
             <form method="POST" action="{{ url_for('complete_payment') }}">
@@ -67,11 +69,12 @@
                 <input type="hidden" name="duracao" value="{{ duracao }}">
                 <input type="hidden" name="preco_total" value="{{ preco_total }}">
                 <input type="hidden" name="payment_method" value="mbway">
-                <button type="submit" class="btn btn-primary">Confirmar Pagamento</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-mobile"></i> Confirmar Pagamento
+                </button>
             </form>
             {% endif %}
         </div>
     </div>
 </div>
-
 {% endblock %}

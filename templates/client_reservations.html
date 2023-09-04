@@ -17,7 +17,7 @@
         <h2 class="text-center">Reservas Futuras</h2>
         <ul class="list-group list-group-flush">
             {% for reservation in future_reservations %}
-            <li class="list-group-item">
+            <li class="list-group-item rounded m-1">
                 <div class="row">
                     <div class="col-md-3">
                         {% if reservation.veiculos.imagens %}
@@ -45,12 +45,13 @@
                         {% if reservation.status == "Ativa" %}
                         <div class="col-md-12">
                             <form method="POST" action="{{ url_for('cancel_reservation', id=reservation.id) }}">
-                                <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Cancelar Reserva
+                                </button>
                             </form>
                         </div>
                         {% endif %}
                     </div>
-
                 </div>
             </li>
             {% endfor %}
@@ -60,7 +61,7 @@
         <h2 class="text-center">Reservas Passadas</h2>
         <ul class="list-group list-group-flush">
             {% for reservation in past_reservations %}
-            <li class="list-group-item">
+            <li class="list-group-item rounded m-1">
                 <div class="row">
                     <div class="col-md-3">
                         {% if reservation.veiculos.imagens %}
