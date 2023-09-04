@@ -59,6 +59,10 @@ def index():
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
 
+    # Obter os parâmetros de data de início e data de entrega da solicitação
+    data_inicio = request.args.get("data_inicio")
+    data_entrega = request.args.get("data_entrega")
+
     # Atribui a categoria padrão para os veículos exibidos na tela inicial sem cliente logado
     categoria = request.args.get("categoria", "all")
 
@@ -77,6 +81,16 @@ def index():
             .all()
         )
 
+    # Filtrar os veículos disponíveis dentro do período selecionado
+    if data_inicio and data_entrega:
+        data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d").date()
+        data_entrega = datetime.strptime(data_entrega, "%Y-%m-%d").date()
+        veiculos = [
+            veiculo
+            for veiculo in veiculos
+            if is_vehicle_available(veiculo, data_inicio, data_entrega)
+        ]
+
     # Separar os veículos em carros e motas
     veiculos_carros = [
         veiculo for veiculo in veiculos if veiculo.type == VehicleType.CARRO
@@ -93,6 +107,32 @@ def index():
         current_year=datetime.now().year,
         categoria=categoria,
     )
+
+
+def is_vehicle_available(veiculo, data_inicio, data_entrega):
+    # Verificar se o veículo está disponível durante o período selecionado
+    # Verificar se o veículo não está em manutenção
+    if veiculo.in_maintenance:
+        return False
+
+    # Converter as datas de início e término para datetime
+    data_inicio_datetime = datetime.combine(data_inicio, datetime.min.time())
+    data_entrega_datetime = datetime.combine(data_entrega, datetime.max.time())
+
+    # Consultar as reservas que coincidem com o período selecionado
+    reservas_conflitantes = Reservation.query.filter(
+        Reservation.vehicle_id == veiculo.id,
+        Reservation.status == "Ativa",
+        Reservation.start_date <= data_entrega,
+        Reservation.end_date >= data_inicio,
+    ).all()
+
+    # Se houver reservas conflitantes, o veículo não está disponível
+    if reservas_conflitantes:
+        return False
+
+    # Se não houver reservas conflitantes e o veículo não estiver em manutenção, está disponível
+    return True
 
 
 def vehicle_details(id):
