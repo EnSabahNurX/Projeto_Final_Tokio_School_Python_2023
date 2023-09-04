@@ -24,3 +24,16 @@ class Config:
     BOOTSTRAP_USE_MINIFIED = True
     BOOTSTRAP_USE_CDN = True
     BOOTSTRAP_FONTAWESOME = True
+    BOOTSTRAP_COLORS = {
+        "primary": "#007bff",
+        "secondary": "#6c757d",
+        "success": "#28a745",
+        "danger": "#dc3545",
+        "warning": "#ffc107",
+        "info": "#00bcd4",
+    }
+
+    BOOTSTRAP_FONTAWESOME_ICONS = [
+        "fas fa-car",
+        "fas fa-motorcycle",
+    ]
