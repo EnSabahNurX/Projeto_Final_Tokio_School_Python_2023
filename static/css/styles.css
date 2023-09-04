@@ -1,17 +1,27 @@
+/* styles.css */
+
+/* Estilos gerais */
 body {
-    font-family: 'Roboto', sans-serif; /* Fonte Roboto */
+    background-color: #f0f0f0;
+    background: linear-gradient(to bottom, #f0f0f0, #d8d8d8);
+    font-family: 'Roboto', sans-serif;
 }
 
 .container {
     padding: 20px;
-    border-radius: 10px; /* Borda arredondada */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .card {
-    border: none; /* Remova as bordas dos cartões */
-    border-radius: 10px; /* Borda arredondada */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
 }
 
 .card-title {
@@ -24,12 +34,38 @@ body {
 }
 
 .btn-primary {
-    background-color: #007bff; /* Cor do botão primário */
+    background-color: #007bff;
     border-color: #007bff;
-    color: #fff; /* Cor do texto do botão primário */
+    color: #fff;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3; /* Cor do botão primário ao passar o mouse */
+    background-color: #0056b3;
     border-color: #0056b3;
+}
+
+/* Estilos específicos para formulário e filtros */
+form {
+    margin-bottom: 20px;
+}
+
+select, input[type="date"], button {
+    margin-right: 10px;
+}
+
+/* Estilos para cabeçalhos e títulos */
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+h4 {
+    font-size: 20px;
+    color: #555;
 }

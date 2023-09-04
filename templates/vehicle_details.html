@@ -15,7 +15,7 @@
                     {% for image in images_with_index %}
                     <div class="carousel-item {% if loop.first %}active{% endif %}">
                         <img src="{{ url_for('static', filename='images/' ~ image.path) }}" alt="Imagem do Veículo"
-                            class="d-block w-100">
+                            class="d-block img-fluid rounded w-100">
                     </div>
                     {% endfor %}
                 </div>

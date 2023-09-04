@@ -29,7 +29,7 @@
         <div class="col">
             <div class="card h-100">
                 <!-- Imagem do veículo aqui -->
-                <div class="d-flex flex-column align-items-center">
+                <div class="d-flex flex-column align-items-center mx-auto p-2">
                     {% if veiculo.imagens %}
                     {% for image_path in veiculo.imagens.split(',') %}
                     {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
@@ -43,7 +43,7 @@
                     <p class="card-text">{{ veiculo.model }}</p>
                     <p class="card-text">Ano: {{ veiculo.year }}</p>
                     <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary">Detalhes</a>
+                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Detalhes</a>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
         <div class="col">
             <div class="card h-100">
                 <!-- Imagem do veículo aqui -->
-                <div class="d-flex flex-column align-items-center">
+                <div class="d-flex flex-column align-items-center mx-auto p-2">
                     {% if veiculo.imagens %}
                     {% for image_path in veiculo.imagens.split(',') %}
                     {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
@@ -78,7 +78,7 @@
                     <p class="card-text">{{ veiculo.model }}</p>
                     <p class="card-text">Ano: {{ veiculo.year }}</p>
                     <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary">Detalhes</a>
+                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Detalhes</a>
                 </div>
             </div>
         </div>
