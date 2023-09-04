@@ -11,9 +11,9 @@
         <option {% if categoria=="Económico" %}selected{% endif %} value="Económico">Económico</option>
     </select>
     <label for="data_inicio">Data de Início:</label>
-    <input type="date" name="data_inicio" id="data_inicio" value="data_inicio">
+    <input type="date" name="data_inicio" id="data_inicio" value="{{ data_inicio }}">
     <label for="data_entrega">Data de Entrega:</label>
-    <input type="date" name="data_entrega" id="data_entrega" value="data_entrega">
+    <input type="date" name="data_entrega" id="data_entrega" value="{{ data_entrega }}">
     <button type="submit">Filtrar</button>
 </form>
 
@@ -86,7 +86,7 @@
     {% else %}
     <div class="row row-cols-1 row-cols-md-3 g-4"></div>
     <h2 class="mb-3">Motas</h2>
-    <h4 class="mb-3">Lamento, não há veículos disponíveis nesta categoria.</h4>
+    <h4 class="mb-3">Lamento, não há veículos disponíveis nesta categoria ou para este período.</h4>
     {% endif %}
 </div>
 {% endblock %}
