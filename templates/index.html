@@ -3,18 +3,22 @@
 {% block content %}
 <!-- Adicionar a exibição de mensagens flash -->
 <form method="GET" action="{{ url_for('index') }}">
-    <label for="categoria">Categoria:</label>
-    <select name="categoria" id="categoria">
-        <option value="all">Todos veículos</option>
-        <option {% if categoria=="Gold" %}selected{% endif %} value="Gold">Gold</option>
-        <option {% if categoria=="Silver" %}selected{% endif %} value="Silver">Silver</option>
-        <option {% if categoria=="Económico" %}selected{% endif %} value="Económico">Económico</option>
-    </select>
-    <label for="data_inicio">Data de Início:</label>
-    <input type="date" name="data_inicio" id="data_inicio" value="{{ data_inicio }}">
-    <label for="data_entrega">Data de Entrega:</label>
-    <input type="date" name="data_entrega" id="data_entrega" value="{{ data_entrega }}">
-    <button type="submit">Filtrar</button>
+    <div class="filter-container">
+        <label for="categoria">Categoria:</label>
+        <select name="categoria" id="categoria">
+            <option value="all">Todos veículos</option>
+            <option {% if categoria=="Gold" %}selected{% endif %} value="Gold">Gold</option>
+            <option {% if categoria=="Silver" %}selected{% endif %} value="Silver">Silver</option>
+            <option {% if categoria=="Económico" %}selected{% endif %} value="Económico">Económico</option>
+        </select>
+        <label for="data_inicio">Data de Início:</label>
+        <input type="date" name="data_inicio" id="data_inicio" value="{{ data_inicio }}">
+        <label for="data_entrega">Data de Entrega:</label>
+        <input type="date" name="data_entrega" id="data_entrega" value="{{ data_entrega }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> Filtrar
+        </button>
+    </div>
 </form>
 
 <div class="container mt-4">
@@ -29,7 +33,7 @@
         <div class="col">
             <div class="card h-100">
                 <!-- Imagem do veículo aqui -->
-                <div class="d-flex flex-column align-items-center mx-auto p-2">
+                <div class="image-container d-flex justify-content-center align-items-center p-3">
                     {% if veiculo.imagens %}
                     {% for image_path in veiculo.imagens.split(',') %}
                     {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
@@ -43,7 +47,9 @@
                     <p class="card-text">{{ veiculo.model }}</p>
                     <p class="card-text">Ano: {{ veiculo.year }}</p>
                     <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Detalhes</a>
+                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Detalhes
+                    </a>
                 </div>
             </div>
         </div>
@@ -64,7 +70,7 @@
         <div class="col">
             <div class="card h-100">
                 <!-- Imagem do veículo aqui -->
-                <div class="d-flex flex-column align-items-center mx-auto p-2">
+                <div class="image-container d-flex justify-content-center align-items-center p-3">
                     {% if veiculo.imagens %}
                     {% for image_path in veiculo.imagens.split(',') %}
                     {% if loop.index <= 1 %} <img src="{{ url_for('static', filename='images/' ~ image_path) }}"
@@ -78,7 +84,9 @@
                     <p class="card-text">{{ veiculo.model }}</p>
                     <p class="card-text">Ano: {{ veiculo.year }}</p>
                     <p class="card-text">Preço por dia: €{{ '%.2f' % veiculo.price_per_day }}</p>
-                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Detalhes</a>
+                    <a href="{{ url_for('vehicle_details', id=veiculo.id) }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Detalhes
+                    </a>
                 </div>
             </div>
         </div>
