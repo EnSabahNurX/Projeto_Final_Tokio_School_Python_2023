@@ -81,10 +81,19 @@ def index():
             .all()
         )
 
+    # Verificar se as datas não foram fornecidas e, se não, definir as datas padrão
+    if not data_inicio:
+        data_inicio = date.today()
+    else:
+        data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d").date()
+
+    if not data_entrega:
+        data_entrega = date.today() + timedelta(days=1)
+    else:
+        data_entrega = datetime.strptime(data_entrega, "%Y-%m-%d").date()
+
     # Filtrar os veículos disponíveis dentro do período selecionado
     if data_inicio and data_entrega:
-        data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d").date()
-        data_entrega = datetime.strptime(data_entrega, "%Y-%m-%d").date()
         veiculos = [
             veiculo
             for veiculo in veiculos
