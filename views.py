@@ -92,6 +92,16 @@ def index():
     else:
         data_entrega = datetime.strptime(data_entrega, "%Y-%m-%d").date()
 
+    # Verificar se a data de início é maior ou igual à data atual
+    if data_inicio < date.today():
+        flash("A data de início não pode ser no passado.", "danger")
+        return redirect(url_for("index"))
+
+    # Verificar se a data de início é menor que a data de entrega
+    if data_inicio >= data_entrega:
+        flash("A data de início deve ser anterior à data de entrega.", "danger")
+        return redirect(url_for("index"))
+
     # Filtrar os veículos disponíveis dentro do período selecionado
     if data_inicio and data_entrega:
         veiculos = [
