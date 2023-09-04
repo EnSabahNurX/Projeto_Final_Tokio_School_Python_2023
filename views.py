@@ -106,6 +106,8 @@ def index():
         veiculos_motas=veiculos_motas,
         current_year=datetime.now().year,
         categoria=categoria,
+        data_inicio=data_inicio,
+        data_entrega=data_entrega,
     )
 
 
@@ -123,8 +125,8 @@ def is_vehicle_available(veiculo, data_inicio, data_entrega):
     reservas_conflitantes = Reservation.query.filter(
         Reservation.vehicle_id == veiculo.id,
         Reservation.status == "Ativa",
-        Reservation.start_date <= data_entrega,
-        Reservation.end_date >= data_inicio,
+        Reservation.start_date <= data_entrega_datetime,
+        Reservation.end_date >= data_inicio_datetime,
     ).all()
 
     # Se houver reservas conflitantes, o veículo não está disponível
