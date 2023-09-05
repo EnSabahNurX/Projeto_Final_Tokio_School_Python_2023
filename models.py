@@ -5,14 +5,20 @@ from datetime import datetime, date, timedelta
 db = SQLAlchemy()
 
 
-# Definir as opções válidas para o campo 'type' (Carro e Mota)
 class VehicleType(Enum):
+    """
+    Enumeração que define os tipos de veículos (Carro e Mota).
+    """
+
     CARRO = "Carro"
     MOTA = "Mota"
 
 
-# Classe para o modelo de Categoria
 class Categoria(db.Model):
+    """
+    Modelo de Categoria de Veículo.
+    """
+
     __tablename__ = "categorias"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,8 +28,11 @@ class Categoria(db.Model):
         self.nome = nome
 
 
-# Classe para o modelo de Veículo
 class Veiculo(db.Model):
+    """
+    Modelo de Veículo.
+    """
+
     __tablename__ = "veiculos"
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(VehicleType), nullable=False)
@@ -51,7 +60,10 @@ class Veiculo(db.Model):
         lazy=True,
     )
 
-    def __init__(self, type, brand, model, year, price_per_day, categoria=""):
+    def __init__(self, type, brand, model, year, price_per_day, categoria=None):
+        """
+        Inicializa um veículo com os parâmetros especificados.
+        """
         self.type = type
         self.brand = brand
         self.model = model
@@ -64,35 +76,40 @@ class Veiculo(db.Model):
         self.legalization_history = ""
         self.imagens = ""
 
-
     def initialize_vehicle(self):
-        # Define a data de criação do veículo como a data de última legalização
+        """
+        Inicializa as datas e valores padrão para um veículo novo.
+        """
         self.last_legalization_date = date.today()
-
-        # Calcular a data da próxima legalização (1 ano à frente)
         one_year_later = date.today() + timedelta(days=365)
         self.next_legalization_date = one_year_later
-
-        # Definir as datas de manutenção
         self.last_maintenance_date = datetime.now().date()
         self.next_maintenance_date = self.last_maintenance_date + timedelta(days=180)
-        # Define a disponibilidade como hoje por padrão
         self.available_from = date.today()
 
     def start_maintenance(self):
+        """
+        Inicia o registro de manutenção para um veículo.
+        """
         self.in_maintenance = True
         self.status = False
         self.last_maintenance_date = date.today()
         self.next_maintenance_date = self.last_maintenance_date + timedelta(days=30)
 
     def end_maintenance(self):
+        """
+        Finaliza o registro de manutenção para um veículo.
+        """
         self.in_maintenance = False
         self.status = True
         self.next_maintenance_date = self.last_maintenance_date + timedelta(days=180)
 
 
-# Modelo de classe para clientes
 class Cliente(db.Model):
+    """
+    Modelo de Cliente.
+    """
+
     __tablename__ = "clientes"
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -107,7 +124,7 @@ class Cliente(db.Model):
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
     reservations = db.relationship(
         "Reservation",
-        backref="clientes",
+        backref="cliente",
         lazy=True,
     )
 
@@ -123,6 +140,9 @@ class Cliente(db.Model):
         password,
         categoria,
     ):
+        """
+        Inicializa um cliente com os parâmetros especificados.
+        """
         self.nome = nome
         self.apelido = apelido
         self.email = email
@@ -134,20 +154,36 @@ class Cliente(db.Model):
         self.categoria = categoria
 
     def is_active(self):
+        """
+        Verifica se o cliente está ativo.
+        """
         return True
 
     def is_authenticated(self):
+        """
+        Verifica se o cliente está autenticado.
+        """
         return True
 
     def get_id(self):
+        """
+        Obtém o ID do cliente.
+        """
         return self.id
 
     def __repr__(self):
+        """
+        Representação de string do objeto Cliente.
+        """
         return f"<Cliente {self.nome} {self.apelido}>"
 
 
 # Classe para o modelo de Reserva
 class Reservation(db.Model):
+    """
+    Modelo de Reserva.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(
         db.Integer,
@@ -170,10 +206,17 @@ class Reservation(db.Model):
     price = db.Column(db.Float, nullable=False)
 
     def add_reservations(self):
+        """
+        Adiciona uma reserva ao banco de dados.
+        """
         db.session.add(self)
         db.session.commit()
 
+    @staticmethod
     def update_completed_reservations():
+        """
+        Atualiza as reservas concluídas para o status "Concluída".
+        """
         today = date.today()
         completed_reservations = Reservation.query.filter(
             Reservation.end_date < today, Reservation.status != "Concluída"
