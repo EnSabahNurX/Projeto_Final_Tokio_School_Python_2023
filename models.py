@@ -36,8 +36,8 @@ class Veiculo(db.Model):
     __tablename__ = "veiculos"
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(VehicleType), nullable=False)
-    brand = db.Column(db.String(100), nullable=False)
-    model = db.Column(db.String(100), nullable=False)
+    brand = db.Column(db.String(100), nullable=False, index=True)
+    model = db.Column(db.String(100), nullable=False, index=True)
     year = db.Column(db.Integer, nullable=False)
     price_per_day = db.Column(db.Float, nullable=False)
     status = db.Column(db.Boolean, default=True)
@@ -112,13 +112,13 @@ class Cliente(db.Model):
 
     __tablename__ = "clientes"
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
-    apelido = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    telefone = db.Column(db.String(20), nullable=False)
+    nome = db.Column(db.String(100), nullable=False, index=True)
+    apelido = db.Column(db.String(100), nullable=False, index=True)
+    email = db.Column(db.String(100), unique=True, nullable=False, index=True)
+    telefone = db.Column(db.String(20), nullable=False, index=True)
     data_nascimento = db.Column(db.Date, nullable=False)
     morada = db.Column(db.String(200), nullable=False)
-    nif = db.Column(db.Integer, unique=True, nullable=False)
+    nif = db.Column(db.Integer, unique=True, nullable=False, index=True)
     price_per_day = db.Column(db.Float, nullable=False, default=50)
     password = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(20), nullable=False, default="Económico")
@@ -190,12 +190,14 @@ class Reservation(db.Model):
         db.ForeignKey("clientes.id"),
         nullable=False,
         name="fk_reservation_customer",
+        index=True,
     )
     vehicle_id = db.Column(
         db.Integer,
         db.ForeignKey("veiculos.id"),
         nullable=False,
         name="fk_reservation_vehicle",
+        index=True,
     )
     status = db.Column(db.String(20), nullable=False, default="Ativa")
     start_date = db.Column(db.Date, nullable=False)
