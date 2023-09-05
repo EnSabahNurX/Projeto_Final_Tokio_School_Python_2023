@@ -4,9 +4,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from models import db
 from config import Config
-from datetime import date, timedelta
 
+# Criação da aplicação Flask
 app = Flask(__name__)
+
+# A carregar as configurações Flask guardadas em config.py
 app.config.from_object(Config)
 
 # Inicialização do banco de dados
@@ -15,6 +17,9 @@ migrate = Migrate(app, db)
 
 # Registrar as rotas do arquivo urls.py
 from urls import *
+
+# Importar a função para checar manutenção após o banco ter inicializado
+from admin_views import check_maintenance_status
 
 
 # Middleware: Verifica a sessão de administrador antes de acessar rotas específicas
@@ -30,27 +35,6 @@ def check_admin_session():
     if request.path in admin_routes:
         if "admin" not in session:
             return redirect(url_for("login"))
-
-
-# Função para verificar e atualizar o status de manutenção do veículo
-def check_maintenance_status():
-    """
-    Verifica o status de manutenção de veículos e atualiza conforme necessário.
-    """
-    # Obter todos os veículos em manutenção
-    vehicles_in_maintenance = Veiculo.query.filter_by(in_maintenance=True).all()
-
-    # Verificar se a data atual é igual ou superior à data de próxima manutenção
-    today = date.today()
-    for vehicle in vehicles_in_maintenance:
-        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
-            # Definir o veículo como disponível e atualizar os dados de manutenção
-            vehicle.status = True
-            vehicle.in_maintenance = False
-            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
-                days=180
-            )
-            db.session.commit()
 
 
 # Criar um scheduler para executar tarefas em segundo plano

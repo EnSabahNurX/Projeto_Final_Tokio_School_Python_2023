@@ -18,8 +18,42 @@ from flask import (
 )
 from models import db, Veiculo, VehicleType, Cliente, Reservation, Categoria
 from werkzeug.utils import secure_filename
-from views import check_maintenance_status, register_usage
 from app import app
+
+
+def check_maintenance_status():
+    """
+    Verifica o status de manutenção dos veículos e atualiza quando necessário.
+    """
+    vehicles_in_maintenance = Veiculo.query.filter_by(in_maintenance=True).all()
+    today = date.today()
+
+    for vehicle in vehicles_in_maintenance:
+        if vehicle.next_maintenance_date and vehicle.next_maintenance_date <= today:
+            vehicle.status = True
+            vehicle.in_maintenance = False
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=180
+            )
+            db.session.commit()
+
+
+def register_usage(vehicle):
+    """
+    Registra uma nova utilização do veículo e verifica a próxima manutenção.
+    """
+    vehicle.num_uses += 1
+
+    if vehicle.num_uses >= vehicle.max_uses_before_maintenance:
+        days_since_last_maintenance = (
+            datetime.now().date() - vehicle.last_maintenance_date
+        ).days
+        if days_since_last_maintenance >= 30:
+            vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
+                days=30
+            )
+
+    db.session.commit()
 
 
 def check_admin_session():
