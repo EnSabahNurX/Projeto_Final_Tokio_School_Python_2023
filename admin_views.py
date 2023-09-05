@@ -23,6 +23,10 @@ from app import app
 
 
 def check_admin_session():
+    """
+    Verifica se a sessão de administrador está ativa para rotas que requerem autenticação de administrador.
+    Redireciona para a página de login se não houver uma sessão de administrador ativa.
+    """
     # Lista de rotas que requerem autenticação de administrador
     admin_routes = ["/admin", "/add_vehicle", "/edit_vehicle/", "/delete_vehicle/"]
 
@@ -32,6 +36,10 @@ def check_admin_session():
 
 
 def login():
+    """
+    Rota de login para administradores.
+    Verifica se já há uma sessão de administrador ativa ou tenta autenticar um administrador.
+    """
     # Verifica se já há uma sessão de admin ativa
     if "admin" in session:
         return redirect(url_for("admin_panel"))
@@ -52,6 +60,10 @@ def login():
 
 
 def admin_panel():
+    """
+    Rota para o painel de administração.
+    Exibe informações sobre veículos, alertas de manutenção, status de estoque e mais.
+    """
     # Chamar a função para verificar a manutenção do veículo
     check_maintenance_status()
 
@@ -119,12 +131,17 @@ def admin_panel():
 
 
 def list_vehicles():
+    """
+    Lista todos os veículos disponíveis e verifica o estoque suficiente.
+    """
     vehicles = Veiculo.query.all()
     today = date.today()
+
     # Verificar se há veículos suficientes no estoque
     num_veiculos = len(vehicles)
     num_clientes = len(Cliente.query.all())
     estoque_suficiente = num_veiculos >= num_clientes + 5
+
     return render_template(
         "list_vehicles.html",
         vehicles=vehicles,
@@ -134,8 +151,12 @@ def list_vehicles():
 
 
 def view_vehicle(id):
+    """
+    Exibe detalhes de um veículo específico com base no ID fornecido.
+    """
     vehicle = Veiculo.query.get_or_404(id)
     imagens_paths = vehicle.imagens.split(",") if vehicle.imagens else []
+
     return render_template(
         "view_vehicle.html",
         vehicle=vehicle,
@@ -144,6 +165,9 @@ def view_vehicle(id):
 
 
 def add_vehicle():
+    """
+    Adiciona um novo veículo ao banco de dados a partir dos dados do formulário.
+    """
     if request.method == "POST":
         # Obter dados do formulário
         type = request.form["vehicle-type"]
@@ -152,15 +176,14 @@ def add_vehicle():
         year = int(request.form["year"])
         price_per_day = float(request.form["price_per_day"])
 
+        # Determinar a categoria do veículo
         categoria_nome = "Silver"
         if price_per_day > 250:
             categoria_nome = "Gold"
         elif price_per_day <= 50:
-            categoria_nome = "Económico"
-        else:
-            categoria_nome = "Silver"
+            categoria_nome = "Econômico"
 
-        # Atribui o objeto categoria de acordo com o nome categoria que foi calculado
+        # Obter a categoria do banco de dados
         categoria = Categoria.query.filter_by(nome=categoria_nome).first()
 
         # Processar o upload das imagens
@@ -168,8 +191,7 @@ def add_vehicle():
         imagens_paths = []
         for imagem in imagens:
             filename = secure_filename(imagem.filename)
-            # Caminho relativo à pasta 'static'
-            path = filename
+            path = filename  # Caminho relativo à pasta 'static'
             full_path = os.path.join(app.config["UPLOAD_FOLDER"], path)
             imagem.save(full_path)
             imagens_paths.append(path)
@@ -183,8 +205,9 @@ def add_vehicle():
             price_per_day=price_per_day,
             categoria=categoria,
         )
+
         # Salvar os caminhos das imagens
-        novo_veiculo.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
+        novo_veiculo.imagens = ",".join(imagens_paths)
 
         # Validar o ano
         if not isinstance(int(request.form["year"]), int):
@@ -220,6 +243,9 @@ def add_vehicle():
 
 
 def edit_vehicle(id):
+    """
+    Permite a edição dos detalhes de um veículo existente com base no ID fornecido.
+    """
     # Obter o veículo pelo ID
     vehicle = Veiculo.query.get_or_404(id)
 
@@ -237,15 +263,14 @@ def edit_vehicle(id):
         available_from_str = request.form["available_from"]
         max_uses_before_maintenance = int(request.form["max_uses_before_maintenance"])
 
+        # Determinar a categoria do veículo
         categoria_nome = "Silver"
         if price_per_day > 250:
             categoria_nome = "Gold"
         elif price_per_day <= 50:
-            categoria_nome = "Económico"
-        else:
-            categoria_nome = "Silver"
-        # Atribui o objeto categoria de acordo com o nome categoria que foi calculado
+            categoria_nome = "Econômico"
 
+        # Obter a categoria do banco de dados
         categoria = Categoria.query.filter_by(nome=categoria_nome).first()
 
         # Converter as datas do formulário em objetos date
@@ -296,13 +321,12 @@ def edit_vehicle(id):
                 continue
 
             filename = secure_filename(imagem.filename)
-            # Caminho relativo à pasta 'static'
-            path = filename
+            path = filename  # Caminho relativo à pasta 'static'
             full_path = os.path.join(app.config["UPLOAD_FOLDER"], path)
             imagem.save(full_path)
             imagens_paths.append(path)
 
-        # Atualizar os dados do veículo
+        # Atualizar os dados do veículo com base no formulário
         vehicle.type = VehicleType[type.upper()]
         vehicle.brand = brand
         vehicle.model = model
@@ -311,45 +335,53 @@ def edit_vehicle(id):
         vehicle.categoria = categoria
         vehicle.max_uses_before_maintenance = max_uses_before_maintenance
 
-        # Salvar os caminhos das imagens
-        vehicle.imagens = ",".join(imagens_paths).lstrip("").lstrip(",")
+        # Atualizar os caminhos das imagens
+        vehicle.imagens = ",".join(imagens_paths)
+
+        # Salvar as alterações no banco de dados
         db.session.commit()
 
-        # Redirecionar de volta para o painel de administração
-        flash("Veículo atualizado com sucesso!", "success")
-        return redirect(url_for("admin_panel"))
+        # Redirecionar para a visualização do veículo com mensagem de sucesso
+        flash("Detalhes do veículo atualizados com sucesso!", "success")
+        return redirect(url_for("view_vehicle", id=id))
 
-    # Renderizar a página de edição de veículo com o formulário preenchido
-    return render_template(
-        "edit_vehicle.html",
-        vehicle=vehicle,
-        VehicleType=VehicleType,
-    )
+    return render_template("edit_vehicle.html", vehicle=vehicle)
 
 
 def delete_vehicle(id):
+    """
+    Remove um veículo do banco de dados com base no ID fornecido.
+    """
     # Obter o veículo pelo ID
     vehicle = Veiculo.query.get_or_404(id)
 
-    # Remover o veículo do banco de dados
-    db.session.delete(vehicle)
-    db.session.commit()
+    if request.method == "POST":
+        # Remover o veículo do banco de dados
+        db.session.delete(vehicle)
+        db.session.commit()
 
-    return redirect(url_for("admin_panel"))
+        # Redirecionar para o painel de administração com mensagem de sucesso
+        flash("Veículo removido com sucesso!", "success")
+        return redirect(url_for("admin_panel"))
+
+    return render_template("delete_vehicle.html", vehicle=vehicle)
 
 
 def delete_image(image_path, vehicle_id):
-    # Encontrar o veículo no banco de dados pelo ID
+    """
+    Remove uma imagem associada a um veículo específico.
+    """
+    # Encontra o veículo no banco de dados pelo ID
     vehicle = Veiculo.query.get(vehicle_id)
     if not vehicle:
         flash("Veículo não encontrado.", "error")
         return redirect(url_for("edit_vehicle", id=vehicle_id))
 
     if request.method == "POST" or request.form.get("_method") == "DELETE":
-        # Verificar se a imagem está associada ao veículo
+        # Verifica se a imagem está associada ao veículo
         if image_path in vehicle.imagens.split(","):
-            # Remover a imagem do servidor
             try:
+                # Remove a imagem do servidor
                 os.remove(os.path.join(app.config["UPLOAD_FOLDER"], image_path))
             except Exception as e:
                 flash(
@@ -357,12 +389,12 @@ def delete_image(image_path, vehicle_id):
                     "warning",
                 )
 
-            # Atualizar o registro do veículo no banco de dados para refletir a remoção da imagem
+            # Atualiza o registro do veículo no banco de dados para refletir a remoção da imagem
             imagens = vehicle.imagens.split(",")
             imagens.remove(image_path)
             vehicle.imagens = ",".join(imagens).lstrip("").lstrip(",")
 
-            # Salvar as alterações no banco de dados
+            # Salva as alterações no banco de dados
             db.session.commit()
 
             flash("Imagem removida com sucesso!", "success")
@@ -380,74 +412,72 @@ def delete_image(image_path, vehicle_id):
 
 
 def logout():
-    # Remover a sessão de administrador
+    """
+    Encerra a sessão do administrador.
+    """
+    # Remove a sessão de administrador
     session.pop("admin", None)
     return redirect(url_for("login"))
 
 
 def legalize_vehicle(id):
-    # Obter o veículo pelo ID
+    """
+    Legaliza um veículo atualizando as datas de legalização.
+    """
+    # Obtém o veículo pelo ID
     vehicle = Veiculo.query.get_or_404(id)
 
-    # Atualizar a data da última legalização
+    # Atualiza a data da última legalização
     vehicle.last_legalization_date = date.today()
 
-    # Atualizar a data da próxima legalização (1 ano após a última legalização)
+    # Atualiza a data da próxima legalização (1 ano após a última legalização)
     vehicle.next_legalization_date = vehicle.last_legalization_date + timedelta(
         days=365
     )
 
-    # Salvar o histórico de legalizações
+    # Salva o histórico de legalizações
     vehicle.legalization_history += (
         f'Legalização realizada {vehicle.last_legalization_date.strftime("%Y-%m-%d")};'
     )
 
-    # Salvar as alterações no banco de dados
+    # Salva as alterações no banco de dados
     db.session.commit()
 
-    # Exibir mensagem flash informando que o veículo foi legalizado
     flash("Veículo legalizado com sucesso!", "info")
 
     return redirect(url_for("admin_panel"))
 
 
 def maintenance_vehicle(id):
+    """
+    Inicia ou conclui a manutenção de um veículo.
+    """
     vehicle = Veiculo.query.get_or_404(id)
 
     if request.method == "POST":
-        # Verificar se o botão de manutenção foi pressionado
         if "maintenance" in request.form:
-            # Atualizar o status do veículo para indisponível, definir a data de manutenção e a próxima manutenção
+            # Inicia a manutenção do veículo
             vehicle.status = False
             vehicle.in_maintenance = True
             vehicle.last_maintenance_date = date.today()
-            vehicle.next_maintenance_date = date.today() + timedelta(
-                days=6 * 30
-            )  # Próxima manutenção em 6 meses
-            # Atualizar histórico de manutenção
+            vehicle.next_maintenance_date = date.today() + timedelta(days=6 * 30)
             vehicle.maintenance_history += f'Manutenção iniciada {vehicle.last_maintenance_date.strftime("%Y-%m-%d")};'
 
             db.session.commit()
 
-            # Adicionar mensagem flash para informar que o veículo está em manutenção
             flash("Veículo enviado para manutenção com sucesso!", "success")
 
-        # Verificar se o botão de concluir manutenção foi pressionado
         elif "complete_maintenance" in request.form:
-            # Atualizar o status do veículo para disponível, definir in_maintenance como False
+            # Conclui a manutenção do veículo
             vehicle.status = True
             vehicle.in_maintenance = False
-
-            # Atualizar a próxima data de manutenção (180 dias após a última manutenção)
             vehicle.next_maintenance_date = vehicle.last_maintenance_date + timedelta(
                 days=180
             )
-            # Atualizar histórico de manutenção
             vehicle.maintenance_history += f'Manutenção concluída {vehicle.last_maintenance_date.strftime("%Y-%m-%d")};'
 
             db.session.commit()
 
-            # Adicionar mensagem flash para informar sobre a conclusão da manutenção
             flash("Veículo concluiu a manutenção com sucesso!", "success")
 
         return redirect(url_for("admin_panel"))
@@ -459,13 +489,16 @@ def maintenance_vehicle(id):
 
 
 def register_usage_route(vehicle_id):
-    # Obter o veículo pelo ID
+    """
+    Registra a utilização de um veículo pelo ID e redireciona para a página de edição do veículo.
+    """
+    # Obtém o veículo pelo ID
     vehicle = Veiculo.query.get_or_404(vehicle_id)
 
-    # Registrar a utilização e verificar a próxima manutenção
+    # Registra a utilização e verifica a próxima manutenção
     register_usage(vehicle)
 
-    # Redirecionar de volta para a página de edição do veículo
+    # Redireciona de volta para a página de edição do veículo
     flash("Utilização registrada com sucesso!", "success")
     return redirect(
         url_for(
@@ -476,6 +509,9 @@ def register_usage_route(vehicle_id):
 
 
 def categorias():
+    """
+    Exibe a lista de categorias e permite adicionar novas categorias.
+    """
     if request.method == "POST":
         nome = request.form.get("nome")
 
@@ -492,6 +528,9 @@ def categorias():
 
 
 def editar_categoria(id):
+    """
+    Permite editar uma categoria existente pelo seu ID.
+    """
     categoria = Categoria.query.get(id)
 
     if request.method == "POST":
@@ -509,6 +548,9 @@ def editar_categoria(id):
 
 
 def deletar_categoria(id):
+    """
+    Deleta uma categoria existente pelo seu ID.
+    """
     categoria = Categoria.query.get(id)
 
     if categoria:
@@ -520,11 +562,17 @@ def deletar_categoria(id):
 
 
 def list_clients():
+    """
+    Exibe a lista de clientes.
+    """
     clients = Cliente.query.all()
     return render_template("list_clients.html", clients=clients)
 
 
 def delete_client(id):
+    """
+    Deleta um cliente pelo seu ID.
+    """
     cliente = Cliente.query.get_or_404(id)
     db.session.delete(cliente)
     db.session.commit()
@@ -533,10 +581,13 @@ def delete_client(id):
 
 
 def admin_edit_client(id):
+    """
+    Permite a edição de informações de um cliente pelo seu ID.
+    """
     cliente = Cliente.query.get_or_404(id)
 
     if request.method == "POST":
-        # Atualize os campos do cliente com base nos dados do formulário
+        # Atualiza os campos do cliente com base nos dados do formulário
         cliente.nome = request.form["nome"]
         cliente.apelido = request.form["apelido"]
         cliente.email = request.form["email"]
@@ -567,6 +618,9 @@ def admin_edit_client(id):
 
 
 def export_csv():
+    """
+    Exporta dados dos veículos para um arquivo CSV.
+    """
     # Consulta todos os veículos na tabela de Veículos
     vehicles = Veiculo.query.all()
 
@@ -624,6 +678,9 @@ def export_csv():
 
 
 def export_excel():
+    """
+    Exporta dados dos veículos para um arquivo Excel.
+    """
     # Obtenha os dados dos veículos do banco de dados (substitua esta parte pelo seu código existente)
     vehicles = Veiculo.query.all()
 
