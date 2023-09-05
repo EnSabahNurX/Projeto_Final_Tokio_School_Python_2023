@@ -20,6 +20,10 @@ from urls import *
 # Função de middleware para verificar a sessão de administrador
 @app.before_request
 def check_admin_session():
+    """
+    Middleware para verificar se o usuário está autenticado como administrador
+    antes de acessar rotas protegidas.
+    """
     # Lista de rotas que requerem autenticação de administrador
     admin_routes = ["/admin", "/add_vehicle", "/edit_vehicle/", "/delete_vehicle/"]
 
@@ -30,6 +34,9 @@ def check_admin_session():
 
 # Função para verificar o status de manutenção do veículo
 def check_maintenance_status():
+    """
+    Verifica o status de manutenção de veículos e atualiza conforme necessário.
+    """
     # Obter todos os veículos em manutenção
     vehicles_in_maintenance = Veiculo.query.filter_by(in_maintenance=True).all()
 
