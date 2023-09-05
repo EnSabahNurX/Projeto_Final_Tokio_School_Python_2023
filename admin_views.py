@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Font, Alignment, PatternFill
 import csv
 from io import StringIO, BytesIO
 from datetime import datetime, date, timedelta
@@ -660,18 +661,40 @@ def export_excel():
     excel_output = BytesIO()
 
     # Use o Pandas para escrever o DataFrame no arquivo Excel
-    writer = pd.ExcelWriter(excel_output, engine="openpyxl")
-    writer.book = Workbook()
-    df.to_excel(writer, sheet_name="Veículos", index=False)
-    worksheet = writer.sheets["Veículos"]
+    df.to_excel(excel_output, index=False, engine="openpyxl", sheet_name="Veículos")
+
+    # Carregue o arquivo Excel criado
+    excel_output.seek(0)
+    wb = Workbook()
+    with BytesIO(excel_output.read()) as excel_read:
+        wb = load_workbook(excel_read)
+
+    # Acesse a planilha
+    ws = wb.active
 
     # Estilize a planilha (você pode personalizar isso de acordo com suas necessidades)
-    for cell in worksheet["1"]:
-        cell.font = cell.font.copy(bold=True)
-    for row in worksheet.iter_rows(min_row=2, max_row=len(vehicles) + 1):
+    header_font = Font(bold=True, color="FFFFFFFF")  # Fonte para cabeçalho
+    header_fill = PatternFill(
+        start_color="333333", end_color="333333", fill_type="solid"
+    )  # Cor de fundo para cabeçalho
+    cell_alignment = Alignment(
+        horizontal="center", vertical="center"
+    )  # Alinhamento das células
+
+    # Estilize o cabeçalho (primeira linha)
+    for cell in ws[1]:
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = cell_alignment
+
+    # Estilize o restante das células
+    for row in ws.iter_rows(min_row=2, max_row=len(vehicles) + 1):
         for cell in row:
-            cell.alignment = cell.alignment.copy(horizontal="center")
-    writer.save()
+            cell.alignment = cell_alignment
+
+    # Salve o arquivo Excel atualizado
+    excel_output = BytesIO()
+    wb.save(excel_output)
 
     # Configurar a resposta HTTP para baixar o arquivo Excel
     excel_output.seek(0)
