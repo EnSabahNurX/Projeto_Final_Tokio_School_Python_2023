@@ -11,7 +11,6 @@ app = Flask(__name__)
 # Carrega as configurações relacionadas ao Flask de config.py
 app.config.from_object(Config)
 
-
 # Inicialização do banco de dados
 db.init_app(app)
 
@@ -73,7 +72,7 @@ scheduler.add_job(
 atexit.register(lambda: scheduler.shutdown())
 
 
-# Criação das tabelas do banco de dados
+# Criação das tabelas do banco de dados, este comando verifica automaticamente se já existe a tabela
 with app.app_context():
     db.create_all()
 
