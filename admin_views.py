@@ -1,8 +1,20 @@
 import os
+import pandas as pd
+from openpyxl import Workbook
 import csv
-from io import StringIO
+from io import StringIO, BytesIO
 from datetime import datetime, date, timedelta
-from flask import render_template, request, redirect, url_for, session, flash, Response
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    flash,
+    Response,
+    make_response,
+)
 from models import db, Veiculo, VehicleType, Cliente, Reservation, Categoria
 from werkzeug.utils import secure_filename
 from views import check_maintenance_status, register_usage
@@ -606,5 +618,67 @@ def export_csv():
 
     # Fecha o buffer
     csv_buffer.close()
+
+    return response
+
+
+def export_excel():
+    # Obtenha os dados dos veículos do banco de dados (substitua esta parte pelo seu código existente)
+    vehicles = Veiculo.query.all()
+
+    # Crie um DataFrame pandas com os dados dos veículos
+    data = {
+        "ID": [vehicle.id for vehicle in vehicles],
+        "Tipo": [vehicle.type.value for vehicle in vehicles],
+        "Marca": [vehicle.brand for vehicle in vehicles],
+        "Modelo": [vehicle.model for vehicle in vehicles],
+        "Ano": [vehicle.year for vehicle in vehicles],
+        "Diária (€)": [vehicle.price_per_day for vehicle in vehicles],
+        "Categoria": [vehicle.categoria.nome for vehicle in vehicles],
+        "Status": [
+            "Disponível" if vehicle.status else "Indisponível" for vehicle in vehicles
+        ],
+        "Em Manutenção": [
+            "Sim" if vehicle.in_maintenance else "Não" for vehicle in vehicles
+        ],
+        "Próxima Manutenção": [
+            vehicle.next_maintenance_date.strftime("%d/%m/%Y")
+            if vehicle.next_maintenance_date
+            else ""
+            for vehicle in vehicles
+        ],
+        "Próxima Legalização": [
+            vehicle.next_legalization_date.strftime("%d/%m/%Y")
+            if vehicle.next_legalization_date
+            else ""
+            for vehicle in vehicles
+        ],
+    }
+    df = pd.DataFrame(data)
+
+    # Crie um objeto BytesIO para armazenar o arquivo Excel
+    excel_output = BytesIO()
+
+    # Use o Pandas para escrever o DataFrame no arquivo Excel
+    writer = pd.ExcelWriter(excel_output, engine="openpyxl")
+    writer.book = Workbook()
+    df.to_excel(writer, sheet_name="Veículos", index=False)
+    worksheet = writer.sheets["Veículos"]
+
+    # Estilize a planilha (você pode personalizar isso de acordo com suas necessidades)
+    for cell in worksheet["1"]:
+        cell.font = cell.font.copy(bold=True)
+    for row in worksheet.iter_rows(min_row=2, max_row=len(vehicles) + 1):
+        for cell in row:
+            cell.alignment = cell.alignment.copy(horizontal="center")
+    writer.save()
+
+    # Configurar a resposta HTTP para baixar o arquivo Excel
+    excel_output.seek(0)
+    response = make_response(excel_output.read())
+    response.headers[
+        "Content-Type"
+    ] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response.headers["Content-Disposition"] = "attachment; filename=veiculos.xlsx"
 
     return response

@@ -211,3 +211,10 @@ app.add_url_rule(
     view_func=export_csv,
     methods=["GET"],
 )
+
+# Rota para exportar listagem de veículos para excel
+app.add_url_rule(
+    "/export_excel",
+    view_func=export_excel,
+    methods=["GET"],
+)
