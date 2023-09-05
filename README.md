@@ -38,6 +38,8 @@ O objetivo principal é criar um site para o sistema de aluguel de veículos fun
 
 ## Instruções:
 
+- Após fazer o download completo de todo o conteúdo e descompactá-lo, acesse o caminho do diretório pelo temrinal;
+
 - Crie um ambiente virtual em Python;
 
     python -m venv .venv
