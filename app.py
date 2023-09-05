@@ -5,15 +5,22 @@ import atexit
 from models import db
 from config import Config
 
+# Craição do app para rodar o server Flask
 app = Flask(__name__)
+
+# Carrega as configurações relacionadas ao Flask de config.py
 app.config.from_object(Config)
 
 
 # Inicialização do banco de dados
 db.init_app(app)
+
+# Cria função para execução de migrações para as alterações no esquema da base de dados, por exemplo:
+# flask db init
+# flask db migrate && flask db upgrade
 migrate = Migrate(app, db)
 
-# Registrar as rotas do arquivo urls.py
+# Registrar as rotas do arquivo urls.py, é feito a importação somente após criado o app e feita a inicialização do banco de dados
 from urls import *
 
 
